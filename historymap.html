@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>市区町村境界時系列マップ</title>
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+   <script>
+
+      var map;
+      var date;
+      var lineLayer;
+      var polygonLayer;
+      var labelLayer;
+      var labelLayerGroup;
+
+      function init() {
+        map = L.map('mapid');
+        map.setView([35.7, 139.5], 10);
+        map.createPane("base").style.zIndex = 100;
+
+
+        map.createPane("polygon").style.zIndex = 150;
+        map.createPane("mura").style.zIndex = 200;
+        map.createPane("ku").style.zIndex = 205;
+        map.createPane("sp_ku").style.zIndex = 210;
+        map.createPane("gun").style.zIndex = 215;
+        map.createPane("shicho").style.zIndex = 220;
+        map.createPane("ken").style.zIndex = 225;
+        map.createPane("mizu").style.zIndex = 230;
+        map.createPane("umi").style.zIndex = 235;
+
+        labelLayerGroup = new L.LayerGroup();
+        date = Date.parse('2000/01/01');
+        lineRedraw();
+        polygonRedraw();
+        labelRedraw();
+
+        var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+            pane: "base"
+        });
+        var standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+            pane: "base"
+        });
+        var shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+            pane: "base",
+            opacity: 0.5
+        });
+        var photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+            pane: "base"
+        });
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+            pane: "base"
+        });
+        map.addLayer(paleMap);
+        map.addLayer(labelLayerGroup);
+        var baseMaps = {
+          "淡色地図(地理院地図)": paleMap,
+          "標準地図(地理院地図)": standardMap,
+          "陰影起伏図": shadeMap,
+          "航空写真": photo,
+          "OpenStreetMap": osm
+        };
+        var overlayMaps = {
+          "市区町村名ラベルを表示": labelLayerGroup
+        };
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
+
+
+        map.on("zoomend", function(e){
+          var currentZoom = map.getZoom();
+          if(currentZoom <= 9){
+            labelLayerGroup.removeLayer(labelLayer);
+          }else{
+            labelLayerGroup.addLayer(labelLayer);
+          }
+        });
+
+      }
+
+      function lineRedraw(){
+        $.getJSON("line.geojson", function (data) {
+          lineLayer = L.geoJson(data, {
+            filter: function(feature){
+              if (Date.parse(feature.properties.START) <= date & Date.parse(feature.properties.END) > date) return true
+            },
+            style: function(feature){
+              switch(feature.properties.TYPE){
+                case '村': return{color:"#639394", pane:"mura"}
+                case '区': return{color:"#857944", pane:"ku"}
+                case '特別区': return{color:"#326333", pane:"sp_ku"}
+                case '郡': return{color:"#326333", pane:"gun"}
+                case '支庁': return{color:"#995514", pane:"shicho"}
+                case '県': return{color:"#8a2725", pane:"ken"}
+                case '湖': return{color:"#5363b5", pane:"mizu"}
+                case '海': return{color:"#223c8a", pane:"umi"}
+              }
+            }
+          });
+          lineLayer.addTo(map);
+        });
+      }
+
+      function polygonRedraw(){
+        $.getJSON("polygon.geojson", function (data) {
+          polygonLayer = L.geoJson(data, {
+            filter: function(feature){
+              if (feature.properties.TYPE == '湖') return false
+              if (Date.parse(feature.properties.START) <= date & Date.parse(feature.properties.END) > date) return true
+            },
+            style: {"fillColor":"#ff0000" ,"fillOpacity":0, "opacity":0, "pane":"polygon"},
+            onEachFeature: function (feature, layer) {
+              var popupCont = /*'<b>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</b>' + '<br>' + '都道府県：' + (feature.properties.KEN ?? '') + '<br>' + '支庁：' + (feature.properties.SHICHO ?? '') + '<br>' + '郡：' + (feature.properties.GUN ?? '') + '<br>' + '開始：' + feature.properties.START + '<br>' + '終了：' + feature.properties.END*/
+                '<div class="tableTitle">' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>' +
+                '<table><tr><th>都道府県</th><td>' + (feature.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (feature.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (feature.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + feature.properties.START + '</td></tr><tr><th>終了</th><td>' + feature.properties.END + '</td></tr></table>';
+              layer.bindPopup(popupCont);
+              layer.on({
+                click: clickEvent
+              });
+            }
+          });
+          polygonLayer.addTo(map);
+        });
+      }
+
+      function labelRedraw(){
+        $.getJSON("name.geojson", function(data){
+          labelLayer = L.geoJson(data, {
+            filter: function(feature){
+              if (Date.parse(feature.properties.START) <= date & Date.parse(feature.properties.END) > date) return true
+            },
+            onEachFeature: function (feature, layer) {
+              var nameLength = (feature.properties.NAME ?? feature.properties.TYPE).length;
+              var className
+              switch(feature.properties.TYPE){
+                case '町': className = 'labelClassMachi'; break;
+                case '市': className = 'labelClassShi'; break;
+                case '区': className = 'labelClassKu'; break;
+                case '特別区': className = 'labelClassShi'; break;
+                default: className = 'labelClass';
+              }
+              layer.setIcon(new L.DivIcon({
+                className: className,
+                html: '<div>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>',
+                iconSize: [nameLength*30, 30]
+              }));
+              layer.options.interactive = false;
+            }
+          });
+          if(map.getZoom() >= 10){
+            labelLayerGroup.addLayer(labelLayer);
+          }
+        });
+      }
+
+      function buttonClick(){
+        var form = document.forms.date;
+        date = Date.parse(form.year.value + '/' + form.month.value + '/' + '1');
+        map.removeLayer(lineLayer);
+        map.removeLayer(polygonLayer);
+        labelLayerGroup.removeLayer(labelLayer);
+        lineRedraw();
+        polygonRedraw();
+        labelRedraw();
+      }
+
+      var clickedObj
+
+      function clickEvent(e){
+        //前回クリックしたオブジェクトのハイライトを消去
+        if(clickedObj){
+          clickedObj.setStyle({
+            fillOpacity: 0
+          });
+        }
+
+        //クリックしたオブジェクトをハイライト
+        e.target.setStyle({
+          fillOpacity: 0.3
+        });
+        clickedObj = e.target
+      }
+
+    </script>
+
+</head>
+
+<body onload="init()">
+
+  <div class="title">市区町村境界時系列マップ(仮)</div>
+  <div><a href="/about.html">このページについて</a></div>
+
+  <div id="mapid" style="width:100%;height:82vh"></div>
+  <form name="date">
+    <select name="year" autocomplete="off">
+      <option value="1947">1947年(昭和22年)</option>
+      <option value="1948">1948年(昭和23年)</option>
+      <option value="1949">1949年(昭和24年)</option>
+      <option value="1950">1950年(昭和25年)</option>
+      <option value="1951">1951年(昭和26年)</option>
+      <option value="1952">1952年(昭和27年)</option>
+      <option value="1953">1953年(昭和28年)</option>
+      <option value="1954">1954年(昭和29年)</option>
+      <option value="1955">1955年(昭和30年)</option>
+      <option value="1956">1956年(昭和31年)</option>
+      <option value="1957">1957年(昭和32年)</option>
+      <option value="1958">1958年(昭和33年)</option>
+      <option value="1959">1959年(昭和34年)</option>
+      <option value="1960">1960年(昭和35年)</option>
+      <option value="1961">1961年(昭和36年)</option>
+      <option value="1962">1962年(昭和37年)</option>
+      <option value="1963">1963年(昭和38年)</option>
+      <option value="1964">1964年(昭和39年)</option>
+      <option value="1965">1965年(昭和40年)</option>
+      <option value="1966">1966年(昭和41年)</option>
+      <option value="1967">1967年(昭和42年)</option>
+      <option value="1968">1968年(昭和43年)</option>
+      <option value="1969">1969年(昭和44年)</option>
+      <option value="1970">1970年(昭和45年)</option>
+      <option value="1971">1971年(昭和46年)</option>
+      <option value="1972">1972年(昭和47年)</option>
+      <option value="1973">1973年(昭和48年)</option>
+      <option value="1974">1974年(昭和49年)</option>
+      <option value="1975">1975年(昭和50年)</option>
+      <option value="1976">1976年(昭和51年)</option>
+      <option value="1977">1977年(昭和52年)</option>
+      <option value="1978">1978年(昭和53年)</option>
+      <option value="1979">1979年(昭和54年)</option>
+      <option value="1980">1980年(昭和55年)</option>
+      <option value="1981">1981年(昭和56年)</option>
+      <option value="1982">1982年(昭和57年)</option>
+      <option value="1983">1983年(昭和58年)</option>
+      <option value="1984">1984年(昭和59年)</option>
+      <option value="1985">1985年(昭和60年)</option>
+      <option value="1986">1986年(昭和61年)</option>
+      <option value="1987">1987年(昭和62年)</option>
+      <option value="1988">1988年(昭和63年)</option>
+      <option value="1989">1989年(昭和64年/平成元年)</option>
+      <option value="1990">1990年(平成2年)</option>
+      <option value="1991">1991年(平成3年)</option>
+      <option value="1992">1992年(平成4年)</option>
+      <option value="1993">1993年(平成5年)</option>
+      <option value="1994">1994年(平成6年)</option>
+      <option value="1995">1995年(平成7年)</option>
+      <option value="1996">1996年(平成8年)</option>
+      <option value="1997">1997年(平成9年)</option>
+      <option value="1998">1998年(平成10年)</option>
+      <option value="1999">1999年(平成11年)</option>
+      <option value="2000" selected>2000年(平成12年)</option>
+      <option value="2001">2001年(平成13年)</option>
+      <option value="2002">2002年(平成14年)</option>
+      <option value="2003">2003年(平成15年)</option>
+      <option value="2004">2004年(平成16年)</option>
+      <option value="2005">2005年(平成17年)</option>
+      <option value="2006">2006年(平成18年)</option>
+      <option value="2007">2007年(平成19年)</option>
+      <option value="2008">2008年(平成20年)</option>
+      <option value="2009">2009年(平成21年)</option>
+      <option value="2010">2010年(平成22年)</option>
+      <option value="2011">2011年(平成23年)</option>
+      <option value="2012">2012年(平成24年)</option>
+      <option value="2013">2013年(平成25年)</option>
+      <option value="2014">2014年(平成26年)</option>
+      <option value="2015">2015年(平成27年)</option>
+      <option value="2016">2016年(平成28年)</option>
+      <option value="2017">2017年(平成29年)</option>
+      <option value="2018">2018年(平成30年)</option>
+      <option value="2019">2019年(平成31年/令和元年)</option>
+      <option value="2020">2020年(令和2年)</option>
+      <option value="2021">2021年(令和3年)</option>
+    </select>
+    <select name="month" autocomplete="off">
+      <option value="1" selected>1月</option>
+      <option value="2">2月</option>
+      <option value="3">3月</option>
+      <option value="4">4月</option>
+      <option value="5">5月</option>
+      <option value="6">6月</option>
+      <option value="7">7月</option>
+      <option value="8">8月</option>
+      <option value="9">9月</option>
+      <option value="10">10月</option>
+      <option value="11">11月</option>
+      <option value="12">12月</option>
+    </select>
+    1日
+    <input type="button" value="表示更新" onclick="buttonClick()"/>
+  </form>
+  <div>[1947/5/3以降のデータを表示可能]埼玉県、千葉県、東京都、神奈川県、山梨県、長野県、静岡県<br>
+  [1970/4/1以降のデータを表示可能]上記以外の地域</div>
+</body>
+</html>

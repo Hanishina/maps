@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>市区町村境界時系列マップについて</title>
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+  <div><a  class="title" href="/historymap.html">市区町村境界時系列マップ(仮)</a></div>
+  <h2>この地図について</h2>
+  <div>
+    合併などで変化した日本の市区町村の境界を時系列で確認することができるweb地図です。<br>
+    画面下部のプルダウンリストから年、月を選択し「表示更新」ボタンを押すと指定した日付の市区町村境界が表示されます。<br>
+    画面右上のボタンからベースマップの種類、および市区町村名ラベルの表示有無を選択できます。(市区町村名ラベルはズームレベル10以上で表示されます)<br>
+    地図はドラッグで移動できます。マウスホイールまたは左上の+-ボタンで拡大・縮小が可能です。<br>
+    地図上をクリックするとクリック位置にある市区町村の範囲と情報が表示されます。
+  </div>
+
+  <h2>表示可能範囲</h2>
+  <div>
+    市区町村界データは現在作成中につき一部の時期のみ表示できます。<br>
+    <div class="border">
+    <b>埼玉県、千葉県、東京都、神奈川県、山梨県、長野県、静岡県</b>　　1947年5月3日以降のデータを表示可能<br>
+    <b>上記以外の地域</b>　　1970年4月1日以降のデータを表示可能<br>
+    </div>
+    上記より前の日付を選択すると正しく表示されません。<br>
+    なお、上記期間内であっても一部の境界変更などが反映されていない場合があります。
+  </div>
+
+  <h2>境界線凡例</h2>
+  <div>
+    <font color="#223c8a">青線</font>：海岸線<br>
+    <font color="#5363b5">薄い青線</font>：湖岸線<br>
+    <font color="#8a2725">赤線</font>：都道府県境界<br>
+    <font color="#995514">橙線</font>：支庁/振興局境界(北海道)<br>
+    <font color="#326333">緑線</font>：市郡境界<br>
+    <font color="#639394">水色線</font>：同一郡内の町村境界<br>
+    <font color="#857944">黄色線</font>：政令指定都市の区境界<br>
+  </div>
+
+  <h2>ポップアップ凡例</h2>
+  <div>
+    <b>都道府県</b>：その自治体が所属する都道府県名。<br>
+    <b>支庁</b>：その自治体が所属する支庁・振興局名。(北海道・東京都島嶼部・長崎県対馬)<br>
+    <b>郡</b>：その自治体が所属する郡名。政令指定都市の区の場合は政令指定都市名を表示。<br>
+    <b>開始</b>：当該ポリゴンの開始年月日。未定義の場合は「1889/04/01」を表示。<br>
+    <b>終了</b>：当該ポリゴンの終了年月日。未定義の場合は「2999/12/31」を表示。<br>
+    (上記「開始」「終了」はポリゴンの存在期間を示すもので、自治体の存在期間を示すものではありません。市町村名や郡の変更、境界変更、海岸線の変更等でもポリゴンは更新されるため、存在期間は分断されます。)<br>
+  <div>
+
+  <h2>データについて</h2>
+  <div>
+    市区町村の境界線データは、下記資料を基に作成したものです。一部推測を含みます。<br>
+    海岸線・湖岸線に関しては、5年おきの更新になっています。ただし地域・期間によってはそれよりも長い更新スパンとなっている場合があります。<br>
+  </div>
+
+  <h2>参考資料</h2>
+  <div>
+    (現在編集中。主なもののみ記載)
+    <h3>行政界</h3>
+    <div>
+      <a href="https://maps.gsi.go.jp">地理院地図</a><br>
+      国土地理院(陸地測量部)発行の20万分の1地勢(帝国)図/5万分の1地形図/2.5万分の1地形図<br>
+      <br>
+      ・旧版地形図の閲覧には以下のサイトを使用。<br>
+      <a href="https://ktgis.net/kjmapw/index.html">今昔マップon the web</a><br>
+      <a href="https://hgis.pref.miyazaki.lg.jp/hinata/">ひなたGIS</a><br>
+      <br>
+      ・以下のデータは行政界作成の際に参考として利用。これらを直接加工して作成したものではありません。<br>
+      <a href="https://www.e-stat.go.jp/gis">国勢調査町丁・字等別境界データ</a><br>
+      <a href="https://geoshape.ex.nii.ac.jp/city/">歴史的行政区域データセットβ版</a><br>
+      <a href="https://www.maff.go.jp/j/tokei/census/shuraku_data/2015/ma/index.html">農林水産省　農業集落境界データ</a><br>
+    </div>
+    <h3>市町村の合併情報</h3>
+    <div>
+      <a href="https://www.e-stat.go.jp/municipalities/cities">e-Stat :廃置分合等情報を探す</a><br>
+      『全訂　全国市町村名変遷総覧』(市町村自治研究会監)<br>
+      官報・都道府県公報<br>
+      各都道府県編纂の市町村合併誌<br>
+      各自治体の例規集<br>
+    </div>
+    <!-- <h3>市町村名等</h3>
+    <div>
+
+    </div> -->
+  </div>
+
+  <h2>免責等</h2>
+  <div>
+    このデータは、はにしなが個人で作成しているものです。<br>
+    内容の正確性については保証できません。<br>
+    このデータを使用したことによって生じた不利益に関して、当方は一切の責任を負いかねます。<br>
+    <br>
+    はにしな　<a href="https://twitter.com/hanishina?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @hanishina</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> <br>
+  </div>
+</body>
+</html>
