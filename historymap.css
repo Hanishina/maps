@@ -58,6 +58,10 @@ body{
   font-size: 30px;
 }
 
+a.title:link{
+  color: #000;
+}
+
 a.title:visited{
   color: #000;
 }
