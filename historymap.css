@@ -1,9 +1,69 @@
+.header{
+  display: flex;
+  align-items: flex-end;
+}
+
+.mapCont{
+  display: flex;
+  flex-direction: row;
+}
+@media screen and (orientation: portrait) {
+  .mapCont{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+#containerA{
+  width: 50%;
+  border: solid;
+  border-color: #3c708f;
+}
+@media screen and (orientation: portrait) {
+  #containerA{
+    width: 100%;
+    border: solid;
+    border-color: #3c708f;
+  }
+}
+
+#containerB{
+  width: 50%;
+  border: solid;
+  border-color: #3c708f;
+}
+@media screen and (orientation: portrait) {
+  #containerB{
+    width: 100%;
+    border: solid;
+    border-color: #3c708f;
+  }
+}
+
+#mapA{
+  height: 82vh;
+}
+@media screen and (orientation: portrait) {
+  #mapA{
+    height: 41vh;
+  }
+}
+
+#mapB{
+  height: 82vh;
+}
+@media screen and (orientation: portrait) {
+  #mapB{
+    height: 41vh;
+  }
+}
+
 div.labelClass{
   font-size: 12px;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
               -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0-1px 0 #FFF,
+              0px 1px 0 #FFF,  0 -1px 0 #FFF,
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
@@ -12,7 +72,7 @@ div.labelClassMachi{
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
               -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0-1px 0 #FFF,
+              0px 1px 0 #FFF,  0 -1px 0 #FFF,
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
@@ -22,7 +82,7 @@ div.labelClassShi{
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
               -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0-1px 0 #FFF,
+              0px 1px 0 #FFF,  0 -1px 0 #FFF,
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
@@ -31,7 +91,7 @@ div.labelClassKu{
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
               -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0-1px 0 #FFF,
+              0px 1px 0 #FFF,  0 -1px 0 #FFF,
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
