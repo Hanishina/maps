@@ -22,7 +22,14 @@
      var labelLayers = [];
      var labelLayerGroups = [];
 
+     var mediaQ = window.matchMedia("(orientation: portrait)");
+     var orientation;
+     var dualChkbx;
+     var containerA;
+     var containerB;
+
      function init(){
+
        maps[0] = L.map('mapA');
        maps[1] = L.map('mapB');
 
@@ -107,21 +114,14 @@
        maps[0].sync(maps[1], {syncCursor: true});
        maps[1].sync(maps[0], {syncCursor: true});
 
-       var dualChkbx = document.getElementById("dual");
-       var containerA = document.getElementById("containerA");
-       var containerB = document.getElementById("containerB");
-       dualChkbx.addEventListener("change", function(e){
-          if(dualChkbx.checked){
-            containerA.style.width = "50%";
-            containerB.style.display = "block";
-            maps[0]._onResize();
-          }else{
-            containerA.style.width = "100%";
-            containerB.style.display = "none";
-            maps[0]._onResize();
-          }
-       });
+       dualChkbx = document.getElementById("dual");
+       containerA = document.getElementById("containerA");
+       containerB = document.getElementById("containerB");
+       dualChkbx.addEventListener("change", changeDisplay);
        dualChkbx.checked = true;
+
+       checkOrientation(mediaQ);
+       mediaQ.addListener(checkOrientation);
 
      }
 
@@ -232,6 +232,45 @@
          fillOpacity: 0.3
        });
        clickedObj = e.target
+     }
+
+     //画面の向きを検出
+     function checkOrientation(mediaQ){
+       if(mediaQ.matches){
+         orientation = "portrait";
+       }else{
+         orientation = "landscape";
+       }
+       changeDisplay();
+     }
+
+     function changeDisplay(){
+        if(dualChkbx.checked){  //二画面表示
+          switch (orientation) {
+            case "portrait":
+              containerA.style.width = "100%";
+              mapA.style.height = "41vh";
+            break;
+            default:
+              containerA.style.width = "50%";
+              mapA.style.height = "82vh";
+          }
+          containerB.style.display = "block";
+          maps[0]._onResize();
+        }else{  //一画面表示
+          switch (orientation) {
+            case "portrait":
+              containerA.style.width = "100%";
+              mapA.style.height = "82vh";
+            break;
+            default:
+              containerA.style.width = "100%";
+              mapA.style.height = "82vh";
+          }
+          containerA.style.width = "100%";
+          containerB.style.display = "none";
+          maps[0]._onResize();
+        }
      }
 
    </script>
