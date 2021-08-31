@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>市区町村境界時系列マップについて</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+  
   <link href="historymap.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -14,14 +24,15 @@
     画面下部のプルダウンリストから年、月を選択し「表示更新」ボタンを押すと指定した日付の市区町村境界が表示されます。<br>
     画面右上のボタンからベースマップの種類、および市区町村名ラベルの表示有無を選択できます。(市区町村名ラベルはズームレベル10以上で表示されます)<br>
     地図はドラッグで移動できます。マウスホイールまたは左上の+-ボタンで拡大・縮小が可能です。<br>
-    地図上をクリックするとクリック位置にある市区町村の範囲と情報が表示されます。
+    地図上をクリックするとクリック位置にある市区町村の範囲と情報が表示されます。<br>
+    「2画面表示」にチェックを入れると地図が二つ表示されます。二つの地図の表示範囲は連動します。
   </div>
 
   <h2>表示可能範囲</h2>
   <div>
     市区町村界データは現在作成中につき一部の時期のみ表示できます。<br>
     <div class="border">
-    <b>埼玉県、千葉県、東京都、神奈川県、山梨県、長野県、静岡県</b>　　1947年5月3日以降のデータを表示可能<br>
+    <b>埼玉県、千葉県、東京都、神奈川県、山梨県、長野県、岐阜県、静岡県、愛知県</b>　　1947年5月3日以降のデータを表示可能<br>
     <b>上記以外の地域</b>　　1970年4月1日以降のデータを表示可能<br>
     </div>
     上記より前の日付を選択すると正しく表示されません。<br>
