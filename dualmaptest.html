@@ -252,12 +252,12 @@
             case "portrait":
               containerA.style.width = "100%";
               mapA.style.height = "41vh";
-              alert("change as portrait mode!");
+              alert("change as portrait mode!!");
             break;
-            default:
+            case "landscape":
               containerA.style.width = "50%";
               mapA.style.height = "82vh";
-              alert("change as landscape mode!");
+              alert("change as landscape mode!!");
           }
           containerB.style.display = "block";
           maps[0]._onResize();
@@ -267,7 +267,7 @@
               containerA.style.width = "100%";
               mapA.style.height = "82vh";
             break;
-            default:
+            case "landscape":
               containerA.style.width = "100%";
               mapA.style.height = "82vh";
           }
