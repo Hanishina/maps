@@ -33,7 +33,7 @@
      var labelLayerGroups = [];
 
      var mediaQ = window.matchMedia("screen and (orientation: portrait)");
-     var orientation;
+     var orient;
      var dualChkbx;
      var containerA;
      var containerB;
@@ -246,16 +246,16 @@
       //画面の向きを検出
       function checkOrientation(mediaQ){
         if(mediaQ.matches){
-          orientation = "portrait";
+          orient = "portrait";
         }else{
-          orientation = "landscape";
+          orient = "landscape";
         }
         changeDisplay();
       }
 
       function changeDisplay(){
          if(dualChkbx.checked){  //二画面表示
-           switch (orientation) {
+           switch (orient) {
              case "portrait":
                containerA.style.width = "100%";
                mapA.style.height = "41vh";
@@ -267,7 +267,7 @@
            containerB.style.display = "block";
            maps[0]._onResize();
          }else{  //一画面表示
-           switch (orientation) {
+           switch (orient) {
              case "portrait":
                containerA.style.width = "100%";
                mapA.style.height = "82vh";
