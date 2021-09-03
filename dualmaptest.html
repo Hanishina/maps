@@ -13,6 +13,7 @@
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
    <script src="./L.Map.Sync.js"></script>
+   <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
 
    <script>
      var maps = [];
@@ -22,7 +23,7 @@
      var labelLayers = [];
      var labelLayerGroups = [];
 
-     var mediaQ = window.matchMedia("screen and (orientation: portrait)");
+     var mediaQ = matchMedia("screen and (orientation: portrait)");
      var orient;
      var dualChkbx;
      var containerA;
@@ -33,12 +34,23 @@
        maps[0] = L.map('mapA');
        maps[1] = L.map('mapB');
 
+       date[0] = new Date(2000, 0 ,1);
+       date[1] = new Date(2020, 0 ,1);
+
+       var form = document.forms.dateA;
+       form.year.value = date[0].getFullYear();
+       form.month.value = date[0].getMonth() + 1;
+
+       form = document.forms.dateB;
+       form.year.value = date[1].getFullYear();
+       form.month.value = date[1].getMonth() + 1;
+
        maps.forEach(function(map, n){
          map.setView([35.7, 139.5], 10);
+         map.setMinZoom(5);
          map.createPane("base").style.zIndex = 100;
-
-
          map.createPane("polygon").style.zIndex = 150;
+         //以下のpaneは現在不使用
          map.createPane("mura").style.zIndex = 200;
          map.createPane("ku").style.zIndex = 205;
          map.createPane("sp_ku").style.zIndex = 210;
@@ -49,13 +61,9 @@
          map.createPane("umi").style.zIndex = 235;
 
          labelLayerGroups[n] = new L.LayerGroup();
-         switch(n){
-            case 0 : date[0] = Date.parse('2000/01/01'); break;
-            case 1 : date[1] = Date.parse('2020/01/01'); break;
-         }
 
-         lineRedraw(n);
          polygonRedraw(n);
+         lineRedraw(n);
          labelRedraw(n);
 
          var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -83,7 +91,7 @@
          var blank = L.tileLayer('', {pane:"base"});
 
          map.addLayer(paleMap);
-         map.addLayer(labelLayerGroups[n]);
+         /*map.addLayer(labelLayerGroups[n]);*/
          var baseMaps = {
            "淡色地図(地理院地図)": paleMap,
            "標準地図(地理院地図)": standardMap,
@@ -109,6 +117,12 @@
            }
          });
 
+         map.on("click", function(){
+           if(clickedObj){
+             polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
+           }
+         });
+
        });
 
        maps[0].sync(maps[1], {syncCursor: true});
@@ -118,7 +132,7 @@
        containerA = document.getElementById("containerA");
        containerB = document.getElementById("containerB");
        dualChkbx.addEventListener("change", changeDisplay);
-       dualChkbx.checked = true;
+       dualChkbx.checked = false;
 
        checkOrientation(mediaQ);
        mediaQ.addListener(checkOrientation);
@@ -126,7 +140,7 @@
      }
 
      function lineRedraw(n){
-       $.getJSON("line.geojson", function (data) {
+       /*$.getJSON("line.geojson", function (data) {
          lineLayers[n] = L.geoJson(data, {
            filter: function(feature){
              if (Date.parse(feature.properties.START) <= date[n] & Date.parse(feature.properties.END) > date[n]) return true
@@ -144,12 +158,34 @@
              }
            }
          });
-         lineLayers[n].addTo(maps[n]);
-       });
+         lineLayers[n].addTo(maps[n]);*/
+
+
+         $.getJSON("line.geojson", function(data){
+           lineLayers[n] = L.vectorGrid.slicer(filter(data, n), {
+             vectorTileLayerStyles: {
+               sliced: function(properties){
+                   switch(properties.TYPE){
+                     case '村': return{color:"#639394", zorder:0}
+                     case '区': return{color:"#857944", zorder:1}
+                     case '特別区': return{color:"#326333", zorder:2}
+                     case '郡': return{color:"#326333", zorder:2}
+                     case '支庁': return{color:"#995514", zorder:3}
+                     case '県': return{color:"#8a2725", zorder:4}
+                     case '湖': return{color:"#5363b5", zorder:5}
+                     case '海': return{color:"#223c8a", zorder:5}
+                  }
+               }
+             },
+             maxZoom: 18
+           });
+           lineLayers[n].addTo(maps[n]);
+         });
+
      }
 
      function polygonRedraw(n){
-       $.getJSON("polygon.geojson", function (data) {
+       /*$.getJSON("polygon.geojson", function (data) {
          polygonLayers[n] = L.geoJson(data, {
            filter: function(feature){
              if (feature.properties.TYPE == '湖') return false
@@ -157,7 +193,7 @@
            },
            style: {"fillColor":"#ff0000" ,"fillOpacity":0, "opacity":0, "pane":"polygon"},
            onEachFeature: function (feature, layer) {
-             var popupCont = /*'<b>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</b>' + '<br>' + '都道府県：' + (feature.properties.KEN ?? '') + '<br>' + '支庁：' + (feature.properties.SHICHO ?? '') + '<br>' + '郡：' + (feature.properties.GUN ?? '') + '<br>' + '開始：' + feature.properties.START + '<br>' + '終了：' + feature.properties.END*/
+             var popupCont =
                '<div class="tableTitle">' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>' +
                '<table><tr><th>都道府県</th><td>' + (feature.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (feature.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (feature.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + feature.properties.START + '</td></tr><tr><th>終了</th><td>' + feature.properties.END + '</td></tr></table>';
              layer.bindPopup(popupCont);
@@ -165,7 +201,27 @@
                click: clickEvent
              });
            }
+         });*/
+
+       $.getJSON("polygon.geojson", function(data){
+
+         polygonLayers[n] = L.vectorGrid.slicer(filter(data, n), {
+           vectorTileLayerStyles: {
+             sliced:function(properties){
+                return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+             }
+           },
+           maxZoom: 18,
+           interactive: true,
+           getFeatureId: function(f){
+             return n + "_" + f.properties.uid;
+           }
+         }).bindPopup(function(e){
+           return '<div class="tableTitle">' + (e.properties.NAME ?? e.properties.TYPE) + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + e.properties.START + '</td></tr><tr><th>終了</th><td>' + e.properties.END + '</td></tr></table>';
+         }).on("click", function(e){
+           clickEvent(e, n);
          });
+         polygonLayers[n].pane = "polygon";
          polygonLayers[n].addTo(maps[n]);
        });
      }
@@ -174,7 +230,7 @@
        $.getJSON("name.geojson", function(data){
          labelLayers[n] = L.geoJson(data, {
            filter: function(feature){
-             if (Date.parse(feature.properties.START) <= date[n] & Date.parse(feature.properties.END) > date[n]) return true
+             if (new Date(feature.properties.START) <= (date[n]) & new Date(feature.properties.END) > (date[n])) return true
            },
            onEachFeature: function (feature, layer) {
              var nameLength = (feature.properties.NAME ?? feature.properties.TYPE).length;
@@ -200,6 +256,37 @@
        });
      }
 
+     //JSONの日付フィルター
+     function filter(json, n){
+       var features = json.features;
+       //並べ替え処理(暫定的)
+       if (json.name === "line"){
+         var mura = features.filter(function(f){return f.properties.TYPE === "村"});
+         var ku = features.filter(function(f){return f.properties.TYPE === "区"});
+         var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+         var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+         var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+         var ken = features.filter(function(f){return f.properties.TYPE === "県"});
+         var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+         var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+         features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
+       }
+
+       if (json.name === "polygon"){
+         //湖ポリゴンを削除
+         features = features.filter(function(f){return f.properties.TYPE !== "湖"});
+         //unique index追加
+         features.forEach(function(f, i){
+           f.properties.uid = i;
+         });
+       }
+       var filtered = features.filter(function(f){
+         return new Date(f.properties.START) <= (date[n]) & new Date(f.properties.END) > (date[n])
+       });
+       json.features = filtered;
+       return json;
+     }
+
 
      function buttonClick(n){
        var form
@@ -208,30 +295,36 @@
          case 1 : form = document.forms.dateB; break;
          default : break;
        }
-       date[n] = Date.parse(form.year.value + '/' + form.month.value + '/' + '1');
+       date[n] = new Date(form.year.value, form.month.value - 1, 1);
        maps[n].removeLayer(lineLayers[n]);
        maps[n].removeLayer(polygonLayers[n]);
        labelLayerGroups[n].removeLayer(labelLayers[n]);
-       lineRedraw(n);
        polygonRedraw(n);
+       lineRedraw(n);
        labelRedraw(n);
      }
 
      var clickedObj
 
-     function clickEvent(e){
+     function clickEvent(e, n){
        //前回クリックしたオブジェクトのハイライトを消去
-       if(clickedObj){
+       /*if(clickedObj){
          clickedObj.setStyle({
            fillOpacity: 0
          });
+       }*/
+       if(clickedObj){
+         //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
+         polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
        }
 
        //クリックしたオブジェクトをハイライト
-       e.target.setStyle({
+       /*e.sourceTarget.setStyle({
          fillOpacity: 0.3
        });
-       clickedObj = e.target
+       clickedObj = e.sourcetarget*/
+       polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0, pane:"polygon"});
+       clickedObj = n + "_" + e.layer.properties.uid;
      }
 
      //画面の向きを検出
@@ -341,7 +434,7 @@
           <option value="1997">1997年(平成9年)</option>
           <option value="1998">1998年(平成10年)</option>
           <option value="1999">1999年(平成11年)</option>
-          <option value="2000" selected>2000年(平成12年)</option>
+          <option value="2000">2000年(平成12年)</option>
           <option value="2001">2001年(平成13年)</option>
           <option value="2002">2002年(平成14年)</option>
           <option value="2003">2003年(平成15年)</option>
@@ -365,7 +458,7 @@
           <option value="2021">2021年(令和3年)</option>
         </select>
         <select name="month" autocomplete="off">
-          <option value="1" selected>1月</option>
+          <option value="1">1月</option>
           <option value="2">2月</option>
           <option value="3">3月</option>
           <option value="4">4月</option>
@@ -459,11 +552,11 @@
           <option value="2017">2017年(平成29年)</option>
           <option value="2018">2018年(平成30年)</option>
           <option value="2019">2019年(平成31年/令和元年)</option>
-          <option value="2020" selected>2020年(令和2年)</option>
+          <option value="2020">2020年(令和2年)</option>
           <option value="2021">2021年(令和3年)</option>
         </select>
         <select name="month" autocomplete="off">
-          <option value="1" selected>1月</option>
+          <option value="1">1月</option>
           <option value="2">2月</option>
           <option value="3">3月</option>
           <option value="4">4月</option>
