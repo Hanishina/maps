@@ -22,6 +22,7 @@
      var polygonLayers = [];
      var labelLayers = [];
      var labelLayerGroups = [];
+     var baseLayerNames = [];
 
      var mediaQ = matchMedia("screen and (orientation: portrait)");
      var orient;
@@ -29,13 +30,28 @@
      var containerA;
      var containerB;
 
+     var cookies;
+     var urlParams;
+
      function init(){
+
+       cookies = getCookieArray();
+       console.log(cookies);
+       urlParams = new URL(window.location.href).searchParams;
+       //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
 
        maps[0] = L.map('mapA');
        maps[1] = L.map('mapB');
 
-       date[0] = new Date(2000, 0 ,1);
-       date[1] = new Date(2020, 0 ,1);
+       date[0] = new Date(urlParams.get("date0") ?? cookies.date0 ?? "");
+       if(date[0].toString() === "Invalid Date"){
+         date[0] = new Date(2000, 0 ,1);
+       }
+
+       date[1] = new Date(urlParams.get("date1") ?? cookies.date1 ?? "")
+       if(date[1].toString() === "Invalid Date"){
+         date[1] = new Date(2020, 0 ,1);
+       }
 
        var form = document.forms.dateA;
        form.year.value = date[0].getFullYear();
@@ -46,7 +62,7 @@
        form.month.value = date[1].getMonth() + 1;
 
        maps.forEach(function(map, n){
-         map.setView([35.7, 139.5], 10);
+         map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
          map.setMinZoom(5);
          map.createPane("base").style.zIndex = 100;
          map.createPane("polygon").style.zIndex = 150;
@@ -90,8 +106,7 @@
 
          var blank = L.tileLayer('', {pane:"base"});
 
-         map.addLayer(paleMap);
-         /*map.addLayer(labelLayerGroups[n]);*/
+
          var baseMaps = {
            "淡色地図(地理院地図)": paleMap,
            "標準地図(地理院地図)": standardMap,
@@ -105,10 +120,37 @@
          };
          L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+         var baseMapNames = {
+           "淡色地図(地理院地図)": "paleMap",
+           "標準地図(地理院地図)": "standardMap",
+           "陰影起伏図": "shadeMap",
+           "航空写真": "photo",
+           "OpenStreetMap": "osm",
+           "背景非表示": "blank"
+         }
+
+         if(Object.values(baseMapNames).includes(urlParams.get("base" + n))){
+           map.addLayer(eval(urlParams.get("base" + n)));
+           baseLayerNames[n] = urlParams.get("base" + n);
+         }else if(Object.values(baseMapNames).includes(cookies["base" + n])){
+           map.addLayer(eval(cookies["base" + n]));
+           baseLayerNames[n] = cookies["base" + n];
+         }else{
+           map.addLayer(paleMap);
+           baseLayerNames[n] = "paleMap";
+         }
+
+         if(urlParams.get("label" + n) === "true"){
+           map.addLayer(labelLayerGroups[n]);
+         }else if(urlParams.get("label" + n) === null & cookies["label" + n] === "true"){
+           map.addLayer(labelLayerGroups[n]);
+         }
+
+
          L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
 
 
-         map.on("zoomend", function(e){
+         map.on("zoomend", function(){
            var currentZoom = map.getZoom();
            if(currentZoom <= 9){
              labelLayerGroups[n].removeLayer(labelLayers[n]);
@@ -123,6 +165,11 @@
            }
          });
 
+
+         map.on("baselayerchange", function(e){
+           baseLayerNames[n] = baseMapNames[e.name];
+         });
+
        });
 
        maps[0].sync(maps[1], {syncCursor: true});
@@ -132,7 +179,35 @@
        containerA = document.getElementById("containerA");
        containerB = document.getElementById("containerB");
        dualChkbx.addEventListener("change", changeDisplay);
-       dualChkbx.checked = false;
+       if(urlParams.get("dual") === "true"){
+         dualChkbx.checked = true;
+       }else if(urlParams.get("dual") === null & cookies.dual === "true"){
+         dualChkbx.checked = true;
+       }else{
+         dualChkbx.checked = false;
+       }
+
+       //urlパラメータ生成
+       maps[0].on("moveend", function(){
+         var statusParams = {
+           "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
+           "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
+           "z" : maps[0].getZoom(),
+           "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
+           "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
+           "base0" : baseLayerNames[0],
+           "base1" : baseLayerNames[1],
+           "label0" : maps[0].hasLayer(labelLayerGroups[0]),
+           "label1" : maps[1].hasLayer(labelLayerGroups[1]),
+           "dual" : dualChkbx.checked
+         }
+         for(var key in statusParams){
+           var val = statusParams[key];
+           document.cookie = key + "=" + val + ";max-age=31536000;samesite=strict";
+         }
+         history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&dual=" + statusParams.dual);
+       });
+
 
        checkOrientation(mediaQ);
        mediaQ.addListener(checkOrientation);
@@ -166,14 +241,14 @@
              vectorTileLayerStyles: {
                sliced: function(properties){
                    switch(properties.TYPE){
-                     case '村': return{color:"#639394", zorder:0}
-                     case '区': return{color:"#857944", zorder:1}
-                     case '特別区': return{color:"#326333", zorder:2}
-                     case '郡': return{color:"#326333", zorder:2}
-                     case '支庁': return{color:"#995514", zorder:3}
-                     case '県': return{color:"#8a2725", zorder:4}
-                     case '湖': return{color:"#5363b5", zorder:5}
-                     case '海': return{color:"#223c8a", zorder:5}
+                     case '村': return{color:"#639394"}
+                     case '区': return{color:"#857944"}
+                     case '特別区': return{color:"#326333"}
+                     case '郡': return{color:"#326333"}
+                     case '支庁': return{color:"#995514"}
+                     case '県': return{color:"#8a2725"}
+                     case '湖': return{color:"#5363b5"}
+                     case '海': return{color:"#223c8a"}
                   }
                }
              },
@@ -254,6 +329,28 @@
            labelLayerGroups[n].addLayer(labelLayers[n]);
          }
        });
+
+
+       //↓vectorGrid版ラベルレイヤ(動作せず)
+       /*labelLayers[n] = L.vectorGrid.slicer(filter(data, n), {
+         vectorTileLayerStyles: {
+           getFeatureId: function(f){
+             console.log(f);
+             var latlng = f.geometry.coordinates
+             var marker = L.marker(latlng, {
+               icon: L.divIcon({
+                 html: '<div>test</div>'
+               })
+             });
+
+             labelLayers[n].addLayer(marker);
+           }
+         }
+       });
+       if(maps[n].getZoom() >= 10){
+         labelLayerGroups[n].addLayer(labelLayers[n]);
+       }
+     });*/
      }
 
      //JSONの日付フィルター
@@ -323,7 +420,7 @@
          fillOpacity: 0.3
        });
        clickedObj = e.sourcetarget*/
-       polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0, pane:"polygon"});
+       polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
        clickedObj = n + "_" + e.layer.properties.uid;
      }
 
@@ -364,6 +461,18 @@
           containerB.style.display = "none";
           maps[0]._onResize();
         }
+     }
+
+     function getCookieArray(){
+      var arr = new Array();
+      if(document.cookie != ''){
+          var tmp = document.cookie.split('; ');
+          for(var i=0;i<tmp.length;i++){
+              var data = tmp[i].split('=');
+              arr[data[0]] = decodeURIComponent(data[1]);
+          }
+      }
+      return arr;
      }
 
    </script>
