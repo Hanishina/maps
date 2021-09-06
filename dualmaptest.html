@@ -24,6 +24,10 @@
      var labelLayerGroups = [];
      var baseLayerNames = [];
 
+     var polygonJson;
+     var lineJson;
+     var nameJson;
+
      var mediaQ = matchMedia("screen and (orientation: portrait)");
      var orient;
      var dualChkbx;
@@ -33,10 +37,42 @@
      var cookies;
      var urlParams;
 
-     function init(){
+     async function getResources(name){
+       return $.getJSON(name, function(json){
+         var features = json.features;
+         //並べ替え処理(暫定的)
+         if (json.name === "line"){
+           var mura = features.filter(function(f){return f.properties.TYPE === "村"});
+           var ku = features.filter(function(f){return f.properties.TYPE === "区"});
+           var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+           var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+           var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+           var ken = features.filter(function(f){return f.properties.TYPE === "県"});
+           var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+           var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+           features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
+         }
+
+         if (json.name === "polygon"){
+           //湖ポリゴンを削除
+           features = features.filter(function(f){return f.properties.TYPE !== "湖"});
+           //unique index追加
+           features.forEach(function(f, i){
+             f.properties.uid = i;
+           });
+         }
+
+         json.features = features;
+         return json;
+       });
+     }
+
+     async function init(){
+       polygonJson = await getResources("polygon.geojson");
+       lineJson = await getResources("line.geojson");
+       nameJson = await getResources("name.geojson");
 
        cookies = getCookieArray();
-       console.log(cookies);
        urlParams = new URL(window.location.href).searchParams;
        //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
 
@@ -77,6 +113,7 @@
          map.createPane("umi").style.zIndex = 235;
 
          labelLayerGroups[n] = new L.LayerGroup();
+         labelLayers[n] = new L.LayerGroup();
 
          polygonRedraw(n);
          lineRedraw(n);
@@ -151,12 +188,17 @@
 
 
          map.on("zoomend", function(){
-           var currentZoom = map.getZoom();
-           if(currentZoom <= 9){
+           /*if(map.getZoom() <= 9){
+             console.log(labelLayers[n]);
              labelLayerGroups[n].removeLayer(labelLayers[n]);
+             labelLayers[n].eachLayer(function(layer){
+               layer.setIcon(new L.icon({
+                 iconUrl: 'icon2.jpg'
+               }));
+             });
            }else{
              labelLayerGroups[n].addLayer(labelLayers[n]);
-           }
+           }*/
          });
 
          map.on("click", function(){
@@ -187,8 +229,14 @@
          dualChkbx.checked = false;
        }
 
-       //urlパラメータ生成
+
        maps[0].on("moveend", function(){
+         //if(maps[0].getZoom() >= 10){
+           labelRedraw(0);
+           labelRedraw(1);
+         //}
+
+         //urlパラメータ生成
          var statusParams = {
            "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
            "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
@@ -236,8 +284,8 @@
          lineLayers[n].addTo(maps[n]);*/
 
 
-         $.getJSON("line.geojson", function(data){
-           lineLayers[n] = L.vectorGrid.slicer(filter(data, n), {
+         //$.getJSON("line.geojson", function(data){
+           lineLayers[n] = L.vectorGrid.slicer(filter(lineJson, n), {
              vectorTileLayerStyles: {
                sliced: function(properties){
                    switch(properties.TYPE){
@@ -255,7 +303,7 @@
              maxZoom: 18
            });
            lineLayers[n].addTo(maps[n]);
-         });
+         //});
 
      }
 
@@ -278,9 +326,8 @@
            }
          });*/
 
-       $.getJSON("polygon.geojson", function(data){
-
-         polygonLayers[n] = L.vectorGrid.slicer(filter(data, n), {
+       //$.getJSON("polygon.geojson", function(data){
+         polygonLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
            vectorTileLayerStyles: {
              sliced:function(properties){
                 return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
@@ -298,15 +345,12 @@
          });
          polygonLayers[n].pane = "polygon";
          polygonLayers[n].addTo(maps[n]);
-       });
+       //});
      }
 
      function labelRedraw(n){
-       $.getJSON("name.geojson", function(data){
-         labelLayers[n] = L.geoJson(data, {
-           filter: function(feature){
-             if (new Date(feature.properties.START) <= (date[n]) & new Date(feature.properties.END) > (date[n])) return true
-           },
+       //$.getJSON("name.geojson", function(data){
+         /*labelLayers[n] = L.geoJson(filter(nameJson, n), {
            onEachFeature: function (feature, layer) {
              var nameLength = (feature.properties.NAME ?? feature.properties.TYPE).length;
              var className
@@ -317,18 +361,40 @@
                case '特別区': className = 'labelClassShi'; break;
                default: className = 'labelClass';
              }
-             layer.setIcon(new L.DivIcon({
+             feature.setIcon(new L.DivIcon({
                className: className,
                html: '<div>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>',
                iconSize: [nameLength*30, 30]
              }));
-             layer.options.interactive = false;
            }
-         });
+         });*/
+         labelLayers[n].clearLayers();
          if(maps[n].getZoom() >= 10){
-           labelLayerGroups[n].addLayer(labelLayers[n]);
+           filter(nameJson, n).features.forEach(function(f){
+             var nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
+             var className;
+             switch(f.properties.TYPE){
+               case '町': className = 'labelClassMachi'; break;
+               case '市': className = 'labelClassShi'; break;
+               case '区': className = 'labelClassKu'; break;
+               case '特別区': className = 'labelClassShi'; break;
+               default: className = 'labelClass';
+             }
+             var icon = new L.DivIcon({
+               className: className,
+               html: '<div>' + (f.properties.NAME ?? f.properties.TYPE) + '</div>',
+               iconSize: [nameLength*30, 30]
+             });
+             var marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+               icon: icon,
+               interactive: false
+             });
+             labelLayers[n].addLayer(marker);
+           });
+           labelLayers[n].addTo(labelLayerGroups[n]);
          }
-       });
+
+       //});
 
 
        //↓vectorGrid版ラベルレイヤ(動作せず)
@@ -351,38 +417,49 @@
          labelLayerGroups[n].addLayer(labelLayers[n]);
        }
      });*/
+
+
+     /*$.getJSON("name.geojson", function(data){
+       labelLayers[n] = L.canvasIconLayer({}).addTo(labelLayerGroups[n]);
+       var filtered = filter(data, n);
+       var markers = [];
+       filtered.features.forEach(function(f){
+         var icon = L.icon({
+           iconUrl: "icon.jpg",
+           iconSize: [20, 20],
+           iconAnchor: [10, 10]
+         });
+         var marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {icon: icon});
+         markers.push(marker);
+       });
+       labelLayers[n].addMarkers(markers);
+       if(maps[n].getZoom() >= 10){
+         labelLayerGroups[n].addLayer(labelLayers[n]);
+       }
+     });*/
+
      }
 
      //JSONの日付フィルター
      function filter(json, n){
        var features = json.features;
-       //並べ替え処理(暫定的)
-       if (json.name === "line"){
-         var mura = features.filter(function(f){return f.properties.TYPE === "村"});
-         var ku = features.filter(function(f){return f.properties.TYPE === "区"});
-         var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
-         var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
-         var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
-         var ken = features.filter(function(f){return f.properties.TYPE === "県"});
-         var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
-         var umi = features.filter(function(f){return f.properties.TYPE === "海"});
-         features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
-       }
-
-       if (json.name === "polygon"){
-         //湖ポリゴンを削除
-         features = features.filter(function(f){return f.properties.TYPE !== "湖"});
-         //unique index追加
-         features.forEach(function(f, i){
-           f.properties.uid = i;
-         });
-       }
-       var filtered = features.filter(function(f){
+       var newFeatures = features.filter(function(f){
          return new Date(f.properties.START) <= (date[n]) & new Date(f.properties.END) > (date[n])
        });
-       json.features = filtered;
-       return json;
+
+       //画面内にあるものを取得(暫定的)
+       if(json.name === "name"){
+         var view = maps[n].getBounds();
+         newFeatures = newFeatures.filter(function(f){
+           return f.geometry.coordinates[0] >= view.getWest() & f.geometry.coordinates[0] <= view.getEast() & f.geometry.coordinates[1] >= view.getSouth() & f.geometry.coordinates[1] <= view.getNorth()
+         });
+       }
+
+       var newJson = Object.assign({}, json);
+       newJson.features = newFeatures;
+       return newJson;
      }
+
 
 
      function buttonClick(n){
@@ -396,6 +473,7 @@
        maps[n].removeLayer(lineLayers[n]);
        maps[n].removeLayer(polygonLayers[n]);
        labelLayerGroups[n].removeLayer(labelLayers[n]);
+
        polygonRedraw(n);
        lineRedraw(n);
        labelRedraw(n);
