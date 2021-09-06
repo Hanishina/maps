@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>市区町村境界時系列マップ</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/historymap.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
   <script>
@@ -23,32 +24,98 @@
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
   <script src="./L.Map.Sync.js"></script>
-  <script>
+  <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
 
+  <script>
      var maps = [];
      var date = [];
      var lineLayers = [];
      var polygonLayers = [];
      var labelLayers = [];
      var labelLayerGroups = [];
+     var baseLayerNames = [];
 
-     var mediaQ = window.matchMedia("screen and (orientation: portrait)");
+     var polygonJson;
+     var lineJson;
+     var nameJson;
+
+     var mediaQ = matchMedia("screen and (orientation: portrait)");
      var orient;
      var dualChkbx;
      var containerA;
      var containerB;
 
-     function init(){
+     var cookies;
+     var urlParams;
+
+     async function getResources(name){
+       return $.getJSON(name, function(json){
+         var features = json.features;
+         //並べ替え処理(暫定的)
+         if (json.name === "line"){
+           var mura = features.filter(function(f){return f.properties.TYPE === "村"});
+           var ku = features.filter(function(f){return f.properties.TYPE === "区"});
+           var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+           var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+           var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+           var ken = features.filter(function(f){return f.properties.TYPE === "県"});
+           var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+           var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+           features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
+         }
+
+         if (json.name === "polygon"){
+           //湖ポリゴンを削除
+           features = features.filter(function(f){return f.properties.TYPE !== "湖"});
+           //unique index追加
+           features.forEach(function(f, i){
+             f.properties.uid = i;
+           });
+         }
+
+         json.features = features;
+         return json;
+       });
+     }
+
+     async function init(){
+       polygonJson = await getResources("polygon.geojson");
+       lineJson = await getResources("line.geojson");
+       nameJson = await getResources("name.geojson");
+
+       cookies = getCookieArray();
+       urlParams = new URL(window.location.href).searchParams;
+       //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
 
        maps[0] = L.map('mapA');
        maps[1] = L.map('mapB');
 
+       //URLパラメータ・cookie・デフォルト値の優先順位で日付を取得
+       date[0] = new Date(urlParams.get("date0") ?? cookies.date0 ?? "");
+       if(date[0].toString() === "Invalid Date"){
+         date[0] = new Date(2000, 0 ,1);
+       }
+
+       date[1] = new Date(urlParams.get("date1") ?? cookies.date1 ?? "")
+       if(date[1].toString() === "Invalid Date"){
+         date[1] = new Date(2020, 0 ,1);
+       }
+
+       //formに日付セット
+       var form = document.forms.dateA;
+       form.year.value = date[0].getFullYear();
+       form.month.value = date[0].getMonth() + 1;
+
+       form = document.forms.dateB;
+       form.year.value = date[1].getFullYear();
+       form.month.value = date[1].getMonth() + 1;
+
        maps.forEach(function(map, n){
-         map.setView([35.7, 139.5], 10);
+         map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
+         map.setMinZoom(5);
          map.createPane("base").style.zIndex = 100;
-
-
          map.createPane("polygon").style.zIndex = 150;
+         //以下のpaneは現在不使用
          map.createPane("mura").style.zIndex = 200;
          map.createPane("ku").style.zIndex = 205;
          map.createPane("sp_ku").style.zIndex = 210;
@@ -59,13 +126,11 @@
          map.createPane("umi").style.zIndex = 235;
 
          labelLayerGroups[n] = new L.LayerGroup();
-         switch(n){
-            case 0 : date[0] = Date.parse('2000/01/01'); break;
-            case 1 : date[1] = Date.parse('2020/01/01'); break;
-         }
+         labelLayers[n] = new L.LayerGroup();
 
-         lineRedraw(n);
+
          polygonRedraw(n);
+         lineRedraw(n);
          labelRedraw(n);
 
          var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -92,8 +157,6 @@
 
          var blank = L.tileLayer('', {pane:"base"});
 
-         map.addLayer(paleMap);
-         map.addLayer(labelLayerGroups[n]);
          var baseMaps = {
            "淡色地図(地理院地図)": paleMap,
            "標準地図(地理院地図)": standardMap,
@@ -107,16 +170,45 @@
          };
          L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+         //背景地図一覧(文字列)
+         var baseMapNames = {
+           "淡色地図(地理院地図)": "paleMap",
+           "標準地図(地理院地図)": "standardMap",
+           "陰影起伏図": "shadeMap",
+           "航空写真": "photo",
+           "OpenStreetMap": "osm",
+           "背景非表示": "blank"
+         }
+
+         //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
+         if(Object.values(baseMapNames).includes(urlParams.get("base" + n))){
+           map.addLayer(eval(urlParams.get("base" + n)));
+           baseLayerNames[n] = urlParams.get("base" + n);
+         }else if(Object.values(baseMapNames).includes(cookies["base" + n])){
+           map.addLayer(eval(cookies["base" + n]));
+           baseLayerNames[n] = cookies["base" + n];
+         }else{
+           map.addLayer(paleMap);
+           baseLayerNames[n] = "paleMap";
+         }
+
+         if(urlParams.get("label" + n) === "true"){
+           map.addLayer(labelLayerGroups[n]);
+         }else if(urlParams.get("label" + n) === null & cookies["label" + n] === "true"){
+           map.addLayer(labelLayerGroups[n]);
+         }
+
          L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
 
-
-         map.on("zoomend", function(e){
-           var currentZoom = map.getZoom();
-           if(currentZoom <= 9){
-             labelLayerGroups[n].removeLayer(labelLayers[n]);
-           }else{
-             labelLayerGroups[n].addLayer(labelLayers[n]);
+         //マップ(地物が存在しない部分)クリック時にハイライト消去
+         map.on("click", function(){
+           if(clickedObj){
+             polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
            }
+         });
+
+         map.on("baselayerchange", function(e){
+           baseLayerNames[n] = baseMapNames[e.name];
          });
 
        });
@@ -128,7 +220,37 @@
        containerA = document.getElementById("containerA");
        containerB = document.getElementById("containerB");
        dualChkbx.addEventListener("change", changeDisplay);
-       dualChkbx.checked = true;
+       if(urlParams.get("dual") === "true"){
+         dualChkbx.checked = true;
+       }else if(urlParams.get("dual") === null & cookies.dual === "true"){
+         dualChkbx.checked = true;
+       }else{
+         dualChkbx.checked = false;
+       }
+
+       maps[0].on("moveend", function(){
+         labelRedraw(0);
+         labelRedraw(1);
+
+         //urlパラメータ生成
+         var statusParams = {
+           "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
+           "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
+           "z" : maps[0].getZoom(),
+           "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
+           "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
+           "base0" : baseLayerNames[0],
+           "base1" : baseLayerNames[1],
+           "label0" : maps[0].hasLayer(labelLayerGroups[0]),
+           "label1" : maps[1].hasLayer(labelLayerGroups[1]),
+           "dual" : dualChkbx.checked
+         }
+         for(var key in statusParams){
+           var val = statusParams[key];
+           document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
+         }
+         history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&dual=" + statusParams.dual);
+       });
 
        checkOrientation(mediaQ);
        mediaQ.addListener(checkOrientation);
@@ -136,78 +258,95 @@
      }
 
      function lineRedraw(n){
-       $.getJSON("line.geojson", function (data) {
-         lineLayers[n] = L.geoJson(data, {
-           filter: function(feature){
-             if (Date.parse(feature.properties.START) <= date[n] & Date.parse(feature.properties.END) > date[n]) return true
-           },
-           style: function(feature){
-             switch(feature.properties.TYPE){
-               case '村': return{color:"#639394", pane:"mura"}
-               case '区': return{color:"#857944", pane:"ku"}
-               case '特別区': return{color:"#326333", pane:"sp_ku"}
-               case '郡': return{color:"#326333", pane:"gun"}
-               case '支庁': return{color:"#995514", pane:"shicho"}
-               case '県': return{color:"#8a2725", pane:"ken"}
-               case '湖': return{color:"#5363b5", pane:"mizu"}
-               case '海': return{color:"#223c8a", pane:"umi"}
-             }
+       lineLayers[n] = L.vectorGrid.slicer(filter(lineJson, n), {
+         vectorTileLayerStyles: {
+           sliced: function(properties){
+               switch(properties.TYPE){
+                 case '村': return{color:"#639394"}
+                 case '区': return{color:"#857944"}
+                 case '特別区': return{color:"#326333"}
+                 case '郡': return{color:"#326333"}
+                 case '支庁': return{color:"#995514"}
+                 case '県': return{color:"#8a2725"}
+                 case '湖': return{color:"#5363b5"}
+                 case '海': return{color:"#223c8a"}
+              }
            }
-         });
-         lineLayers[n].addTo(maps[n]);
+         },
+         maxZoom: 18
        });
+       lineLayers[n].addTo(maps[n]);
      }
 
      function polygonRedraw(n){
-       $.getJSON("polygon.geojson", function (data) {
-         polygonLayers[n] = L.geoJson(data, {
-           filter: function(feature){
-             if (feature.properties.TYPE == '湖') return false
-             if (Date.parse(feature.properties.START) <= date[n] & Date.parse(feature.properties.END) > date[n]) return true
-           },
-           style: {"fillColor":"#ff0000" ,"fillOpacity":0, "opacity":0, "pane":"polygon"},
-           onEachFeature: function (feature, layer) {
-             var popupCont = /*'<b>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</b>' + '<br>' + '都道府県：' + (feature.properties.KEN ?? '') + '<br>' + '支庁：' + (feature.properties.SHICHO ?? '') + '<br>' + '郡：' + (feature.properties.GUN ?? '') + '<br>' + '開始：' + feature.properties.START + '<br>' + '終了：' + feature.properties.END*/
-               '<div class="tableTitle">' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>' +
-               '<table><tr><th>都道府県</th><td>' + (feature.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (feature.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (feature.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + feature.properties.START + '</td></tr><tr><th>終了</th><td>' + feature.properties.END + '</td></tr></table>';
-             layer.bindPopup(popupCont);
-             layer.on({
-               click: clickEvent
-             });
+       polygonLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+         vectorTileLayerStyles: {
+           sliced:function(properties){
+              return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
            }
-         });
-         polygonLayers[n].addTo(maps[n]);
+         },
+         maxZoom: 18,
+         interactive: true,
+         getFeatureId: function(f){
+           return n + "_" + f.properties.uid;
+         }
+       }).bindPopup(function(e){
+         return '<div class="tableTitle">' + (e.properties.NAME ?? e.properties.TYPE) + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + e.properties.START + '</td></tr><tr><th>終了</th><td>' + e.properties.END + '</td></tr></table>';
+       }).on("click", function(e){
+         clickEvent(e, n);
        });
+       polygonLayers[n].pane = "polygon";
+       polygonLayers[n].addTo(maps[n]);
      }
 
      function labelRedraw(n){
-       $.getJSON("name.geojson", function(data){
-         labelLayers[n] = L.geoJson(data, {
-           filter: function(feature){
-             if (Date.parse(feature.properties.START) <= date[n] & Date.parse(feature.properties.END) > date[n]) return true
-           },
-           onEachFeature: function (feature, layer) {
-             var nameLength = (feature.properties.NAME ?? feature.properties.TYPE).length;
-             var className
-             switch(feature.properties.TYPE){
-               case '町': className = 'labelClassMachi'; break;
-               case '市': className = 'labelClassShi'; break;
-               case '区': className = 'labelClassKu'; break;
-               case '特別区': className = 'labelClassShi'; break;
-               default: className = 'labelClass';
-             }
-             layer.setIcon(new L.DivIcon({
-               className: className,
-               html: '<div>' + (feature.properties.NAME ?? feature.properties.TYPE) + '</div>',
-               iconSize: [nameLength*30, 30]
-             }));
-             layer.options.interactive = false;
+       //マーカーを全消去
+       labelLayers[n].clearLayers();
+       //レイヤ再描画はz>=10の時のみ
+       if(maps[n].getZoom() >= 10){
+         filter(nameJson, n).features.forEach(function(f){
+           var nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
+           var className;
+           switch(f.properties.TYPE){
+             case '町': className = 'labelClassMachi'; break;
+             case '市': className = 'labelClassShi'; break;
+             case '区': className = 'labelClassKu'; break;
+             case '特別区': className = 'labelClassShi'; break;
+             default: className = 'labelClass';
            }
+           var icon = new L.DivIcon({
+             className: className,
+             html: '<div>' + (f.properties.NAME ?? f.properties.TYPE) + '</div>',
+             iconSize: [nameLength*30, 30]
+           });
+           var marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+             icon: icon,
+             interactive: false
+           });
+           labelLayers[n].addLayer(marker);
          });
-         if(maps[n].getZoom() >= 10){
-           labelLayerGroups[n].addLayer(labelLayers[n]);
-         }
+         labelLayers[n].addTo(labelLayerGroups[n]);
+       }
+     }
+
+     //JSONの日付フィルター
+     function filter(json, n){
+       var features = json.features;
+       var newFeatures = features.filter(function(f){
+         return new Date(f.properties.START) <= (date[n]) & new Date(f.properties.END) > (date[n])
        });
+
+       //画面内にあるものを取得(暫定的)
+       if(json.name === "name"){
+         var view = maps[n].getBounds();
+         newFeatures = newFeatures.filter(function(f){
+           return f.geometry.coordinates[0] >= view.getWest() & f.geometry.coordinates[0] <= view.getEast() & f.geometry.coordinates[1] >= view.getSouth() & f.geometry.coordinates[1] <= view.getNorth()
+         });
+       }
+
+       var newJson = Object.assign({}, json);
+       newJson.features = newFeatures;
+       return newJson;
      }
 
      function buttonClick(n){
@@ -217,30 +356,28 @@
          case 1 : form = document.forms.dateB; break;
          default : break;
        }
-       date[n] = Date.parse(form.year.value + '/' + form.month.value + '/' + '1');
+       date[n] = new Date(form.year.value, form.month.value - 1, 1);
        maps[n].removeLayer(lineLayers[n]);
        maps[n].removeLayer(polygonLayers[n]);
        labelLayerGroups[n].removeLayer(labelLayers[n]);
-       lineRedraw(n);
+
        polygonRedraw(n);
+       lineRedraw(n);
        labelRedraw(n);
      }
 
       var clickedObj
 
-      function clickEvent(e){
+      function clickEvent(e, n){
         //前回クリックしたオブジェクトのハイライトを消去
         if(clickedObj){
-          clickedObj.setStyle({
-            fillOpacity: 0
-          });
+          //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
+          polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
         }
 
         //クリックしたオブジェクトをハイライト
-        e.target.setStyle({
-          fillOpacity: 0.3
-        });
-        clickedObj = e.target
+        polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
+        clickedObj = n + "_" + e.layer.properties.uid;
       }
 
       //画面の向きを検出
@@ -280,6 +417,18 @@
            containerB.style.display = "none";
            maps[0]._onResize();
          }
+      }
+
+      function getCookieArray(){
+       var arr = new Array();
+       if(document.cookie != ''){
+           var tmp = document.cookie.split('; ');
+           for(var i=0;i<tmp.length;i++){
+               var data = tmp[i].split('=');
+               arr[data[0]] = decodeURIComponent(data[1]);
+           }
+       }
+       return arr;
       }
 
   </script>
@@ -350,7 +499,7 @@
           <option value="1997">1997年(平成9年)</option>
           <option value="1998">1998年(平成10年)</option>
           <option value="1999">1999年(平成11年)</option>
-          <option value="2000" selected>2000年(平成12年)</option>
+          <option value="2000">2000年(平成12年)</option>
           <option value="2001">2001年(平成13年)</option>
           <option value="2002">2002年(平成14年)</option>
           <option value="2003">2003年(平成15年)</option>
@@ -374,7 +523,7 @@
           <option value="2021">2021年(令和3年)</option>
         </select>
         <select name="month" autocomplete="off">
-          <option value="1" selected>1月</option>
+          <option value="1">1月</option>
           <option value="2">2月</option>
           <option value="3">3月</option>
           <option value="4">4月</option>
@@ -468,11 +617,11 @@
           <option value="2017">2017年(平成29年)</option>
           <option value="2018">2018年(平成30年)</option>
           <option value="2019">2019年(平成31年/令和元年)</option>
-          <option value="2020" selected>2020年(令和2年)</option>
+          <option value="2020">2020年(令和2年)</option>
           <option value="2021">2021年(令和3年)</option>
         </select>
         <select name="month" autocomplete="off">
-          <option value="1" selected>1月</option>
+          <option value="1">1月</option>
           <option value="2">2月</option>
           <option value="3">3月</option>
           <option value="4">4月</option>
