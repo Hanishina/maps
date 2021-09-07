@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>人口計算機</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <link href="./leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  <!-- <script src="./L.Map.Sync.js"></script> -->
+  <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="./leaflet-sidebar.js"></script>
+
+  <script>
+    var polygon2020Json;
+    var map;
+    var polygonLayer;
+    var clickedObj;
+
+    var selectedFeatures = [];
+    selectedFeatures[0] = [];
+
+    async function getResources(name){
+      return $.getJSON(name, function(json){
+        var features = json.features;
+        features.forEach(function(f, i){
+          f.properties.uid = i;
+        });
+
+        return json;
+      });
+    }
+
+    async function init(){
+      polygon2020Json = await getResources("2020kokusei.geojson");
+
+      map = L.map("map");
+      map.setView([35.7, 139.5], 10);
+      map.setMinZoom(5);
+      map.createPane("base").style.zIndex = 100;
+
+      polygonLayer = L.vectorGrid.slicer(polygon2020Json, {
+        vectorTileLayerStyles: {
+          sliced:function(properties){
+             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0.5}
+          }
+        },
+        maxZoom: 18,
+        interactive: true,
+        getFeatureId: function(f){
+          return f.properties.uid;
+        }
+      }).on("click", clickEvent)
+      .on("mouseover", mouseOverEvent);
+
+
+      polygonLayer.addTo(map);
+
+
+      var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base",
+          opacity: 0.5
+      });
+      var photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+          pane: "base"
+      });
+
+      var blank = L.tileLayer('', {pane:"base"});
+
+      var baseMaps = {
+        "淡色地図(地理院地図)": paleMap,
+        "標準地図(地理院地図)": standardMap,
+        "陰影起伏図": shadeMap,
+        "航空写真": photo,
+        "OpenStreetMap": osm,
+        "背景非表示":blank
+      };
+
+      L.control.layers(baseMaps).addTo(map);
+
+      //背景地図一覧(文字列)
+      var baseMapNames = {
+        "淡色地図(地理院地図)": "paleMap",
+        "標準地図(地理院地図)": "standardMap",
+        "陰影起伏図": "shadeMap",
+        "航空写真": "photo",
+        "OpenStreetMap": "osm",
+        "背景非表示": "blank"
+      }
+
+      map.addLayer(paleMap);
+
+      L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
+
+      var sidebar = L.control.sidebar({container: "sidebar", closeButton: false}).addTo(map);
+      sidebar.open("home");
+
+    }
+
+    function clickEvent(obj){
+
+      if(selectedFeatures[0].some(f => f.uid === obj.layer.properties.uid)){
+        selectedFeatures[0] = selectedFeatures[0].filter(f => f.uid !== obj.layer.properties.uid);
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0.5});
+      }else{
+        selectedFeatures[0].push({uid: obj.layer.properties.uid, name: obj.layer.properties.NAME, pop: obj.layer.properties.POPULATION, area: obj.layer.properties.AREA, incr: obj.layer.properties.POP_INCREASE});
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0.5});
+      }
+
+      rewriteSumTable();
+
+    }
+
+    function mouseOverEvent(obj){
+      document.getElementById('mouse_name').innerHTML = obj.layer.properties.KEN + obj.layer.properties.NAME;
+      document.getElementById('mouse_pop').innerHTML = obj.layer.properties.POPULATION;
+      document.getElementById('mouse_area').innerHTML = obj.layer.properties.AREA;
+      document.getElementById('mouse_dens').innerHTML = (Math.round(obj.layer.properties.POPULATION / obj.layer.properties.AREA *10)/10) || 0;
+      document.getElementById('mouse_pop_i').innerHTML = obj.layer.properties.POP_INCREASE;
+    }
+
+    function sum(arr, key){
+      var popsum = arr.reduce(function(sum, e){
+        return sum + e[key];
+      },0);
+      return popsum
+    }
+
+    function reset(){
+      selectedFeatures[0].forEach(function(f){
+        polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0.5});
+      });
+      selectedFeatures[0].splice(0);
+
+      rewriteSumTable();
+
+    }
+
+    function rewriteSumTable(){
+      document.getElementById('sel_pop').innerHTML = sum(selectedFeatures[0], "pop");
+      document.getElementById('sel_area').innerHTML = Math.round(sum(selectedFeatures[0], "area") *100)/100;
+      document.getElementById('sel_dens').innerHTML = (Math.round(sum(selectedFeatures[0], "pop") / sum(selectedFeatures[0], "area") *10)/10) || 0;
+      document.getElementById('sel_pop_i').innerHTML = sum(selectedFeatures[0], "incr");
+      document.getElementById('sel_count').innerHTML = "選択地物数：" + selectedFeatures[0].length;
+
+      var table = document.getElementById('sel_table')
+      table.innerHTML = "<tr><th>地物名</th><th>人口</th></tr>";
+      selectedFeatures[0].forEach(function(f){
+        var row = document.createElement("tr");
+        row.innerHTML = "<td>" + f.name + "</td><td>" + f.pop + "</td>";
+        table.appendChild(row);
+      });
+    }
+
+
+  </script>
+</head>
+
+<body onload="init()">
+  <div class="header">
+    <div class="title">市区町村人口計算機</div>
+    <div><a href="./about.html">このページについて</a></div>
+  </div>
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <!-- Nav tabs -->
+    <div class="leaflet-sidebar-tabs">
+        <ul role="tablist"> <!-- top aligned tabs -->
+            <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+        </ul>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="leaflet-sidebar-content">
+        <div class="leaflet-sidebar-pane" id="home">
+            <h1 class="leaflet-sidebar-header">
+                人口計算機
+            </h1>
+            <h3>カーソル位置の地物情報</h3>
+            <div id="mouse_name">-</div>
+            <table class="current">
+              <tr><th>人口(人)</th><td id="mouse_pop"></td><th>面積(㎢)</th><td id="mouse_area"></td></tr>
+              <tr><th>人口増加数(人)</th><td id="mouse_pop_i"></td><th>人口密度(人/㎢)</th><td id="mouse_dens"></td></tr>
+            </table>
+            <h3>選択地物の合計 <input type="button" value="全選択をリセット" onclick="reset()"/></h3>
+            <table class="sum">
+              <tr><th>人口(人)</th><td id="sel_pop">0</td></tr>
+              <tr><th>面積(㎢)</th><td id="sel_area">0</td></tr>
+              <tr><th>人口増加数(人)</th><td id="sel_pop_i">0</td></tr>
+              <tr><th>人口密度(人/㎢)</th><td id="sel_dens">0</td></tr>
+            </table>
+            <details>
+              <summary id="sel_count">選択地物数：0</summary>
+                <table id="sel_table" class="selects">
+                  <tr><th>地物名</th><th>人口</th></tr>
+                </table>
+            </details>
+        </div>
+    </div>
+  </div>
+  <div id="map"></div>
+
+</body>
+</html>
