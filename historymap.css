@@ -40,6 +40,10 @@
   }
 }
 
+#map{
+  height: 82vh;
+}
+
 #mapA{
   height: 82vh;
 }
@@ -106,6 +110,47 @@ th,td {
 .tableTitle{
   font-weight: bold;
   font-size: 18px;
+}
+
+table.current{
+  width: 100%;
+}
+
+table.current th{
+  width: 30%;
+  padding: 5px 0px;
+}
+
+table.current td{
+  width: 20%;
+  text-align: right;
+}
+
+table.sum{
+  width: 100%;
+}
+
+table.sum th{
+  width: 40%;
+  padding: 5px 0px;
+}
+
+table.sum td{
+  width: 60%;
+  padding: 5px 15px;
+  text-align: right;
+}
+
+table.selects{
+  width: 100%;
+}
+
+table.selects th, table.selects td{
+  padding: 5px 15px;
+}
+
+table.selects th:first-child{
+  width: 60%
 }
 
 body{
