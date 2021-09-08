@@ -3,6 +3,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no">
   <title>人口計算機</title>
   <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -84,9 +85,10 @@
       var line2020Json = await getResources("line.geojson", 2020);
       var line2015Json = await getResources("line.geojson", 2015);
 
-      map = L.map("map");
+      map = L.map("map", {zoomControl: false});
       map.setView([35, 137], 8);
       map.setMinZoom(5);
+      L.control.zoom({position: "bottomright"}).addTo(map);
       map.createPane("base").style.zIndex = 100;
       map.createPane("polygon").style.zindex = 300;
 
@@ -320,7 +322,7 @@
                 人口計算機
             </h1>
             <h3>カーソル位置の地物情報</h3>
-            <div id="mouse_name">-</div>
+            <div id="mouse_name" class="current">-</div>
             <table class="current">
               <tr><th>人口(人)</th><td id="mouse_pop"></td><th>面積(㎢)</th><td id="mouse_area"></td></tr>
               <tr><th>人口増加数(人)</th><td id="mouse_pop_i"></td><th>人口密度(人/㎢)</th><td id="mouse_dens"></td></tr>

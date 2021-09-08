@@ -101,6 +101,7 @@ div.labelClassKu{
 
 table {
   border-collapse: collapse;
+  font-size: 14px;
 }
 
 th,td {
@@ -109,7 +110,11 @@ th,td {
 
 .tableTitle{
   font-weight: bold;
-  font-size: 18px;
+  font-size: 20px;
+}
+
+div.current{
+  font-size: 20px;
 }
 
 table.current{
@@ -141,6 +146,10 @@ table.sum td{
   text-align: right;
 }
 
+summary{
+  font-size: 18px;
+}
+
 table.selects{
   width: 100%;
 }
@@ -160,6 +169,7 @@ table.selects td:last-child{
 
 body{
   background: #ebfdff;
+  font-size: 18px;
 }
 
 .title{
@@ -183,8 +193,8 @@ a.title:visited{
 
 hr{
   border: none;
-  border-top: 3px double;
-  height: 1em;
+  border-bottom: 3px double;
+  height: 3em;
 }
 
 h2{
@@ -192,4 +202,8 @@ h2{
   border-bottom: 3px solid #000;
   background: #3c708f;
   color: #fff;
+}
+
+h3{
+  font-size: 20px;
 }
