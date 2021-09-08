@@ -149,8 +149,13 @@ table.selects th, table.selects td{
   padding: 5px 15px;
 }
 
-table.selects th:first-child{
-  width: 60%
+table.selects th:last-child{
+  width: 40%;
+}
+
+table.selects td:last-child{
+  width: 40%;
+  text-align: right;
 }
 
 body{
@@ -174,6 +179,12 @@ a.title:visited{
 .border{
   border: 2px solid #000;
   padding: 5px;
+}
+
+hr{
+  border: none;
+  border-top: 3px double;
+  height: 1em;
 }
 
 h2{
