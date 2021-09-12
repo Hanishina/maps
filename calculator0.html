@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no">
+  <title>人口計算機</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap0.css" rel="stylesheet" type="text/css">
+  <link href="loader.css" rel="stylesheet" type="text/css">
+  <link href="./leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
+  <link href="./eight-bit-color-picker.min.css" rel="stylesheet"  type="text/css"/>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  <!-- <script src="./L.Map.Sync.js"></script> -->
+  <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="./eight-bit-color-picker.min.js"></script>
+  <script src="./leaflet-sidebar.js"></script>
+
+  <script>
+    var map;
+    var polygonLayer;
+    var lineLayer;
+    var clickedObj;
+
+    var colorPicker = [];
+
+
+    var selectedFeatures = [];
+    selectedFeatures[0] = [];
+
+
+    var category;
+    var year;
+    var currentSelectedGroup = 0;
+
+    const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
+    var newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
+    var groupNames = ["グループ1"];
+    var groupColors = ["#cc0000"];
+
+    async function getResources(name, year){
+      return $.getJSON(name, function(json){
+        var features = json.features;
+        if (json.name === "line"){
+
+          var mura = features.filter(function(f){return f.properties.TYPE === "村"});
+          var ku = features.filter(function(f){return f.properties.TYPE === "区"});
+          var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+          var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+          var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+          var ken = features.filter(function(f){return f.properties.TYPE === "県"});
+          var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+          var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+          var features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
+
+          if(year === 2020){
+            var date = new Date("2020-10-01");
+          }else if(year === 2015){
+            var date = new Date("2015-10-01");
+          }else if(year === 2010){
+            var date = new Date("2010-10-01");
+          }else if(year === 2005){
+            var date = new Date("2005-10-01");
+          }else if(year === 2000){
+            var date = new Date("2000-10-01");
+          }
+
+          features = features.filter(function(f){
+            return new Date(f.properties.START) <= date & new Date(f.properties.END) > date
+          });
+
+
+        }
+
+
+        features.forEach(function(f, i){
+          f.properties.uid = i;
+        });
+        json.features = features
+      });
+    }
+
+    async function init(){
+
+      colorPicker[0] = new EightBitColorPicker({el: 'colorPicker0', color: 128});
+      colorPicker[0].addEventListener("colorChange", e=> selectColor(e));
+
+      map = L.map("map", {zoomControl: false});
+      map.setView([35, 137], 8);
+      map.setMinZoom(5);
+      L.control.zoom({position: "topright"}).addTo(map);
+      map.createPane("base").style.zIndex = 100;
+      map.createPane("polygon").style.zindex = 300;
+
+
+      year = 2020;
+      document.getElementById("year").value = 2020;
+
+      var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base",
+          opacity: 0.5
+      });
+      var photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+          pane: "base"
+      });
+
+      var blank = L.tileLayer('', {pane:"base"});
+
+      var baseMaps = {
+        "淡色地図(地理院地図)": paleMap,
+        "標準地図(地理院地図)": standardMap,
+        "陰影起伏図": shadeMap,
+        "航空写真": photo,
+        "OpenStreetMap": osm,
+        "背景非表示":blank
+      };
+
+      L.control.layers(baseMaps).addTo(map);
+
+      //背景地図一覧(文字列)
+      var baseMapNames = {
+        "淡色地図(地理院地図)": "paleMap",
+        "標準地図(地理院地図)": "standardMap",
+        "陰影起伏図": "shadeMap",
+        "航空写真": "photo",
+        "OpenStreetMap": "osm",
+        "背景非表示": "blank"
+      }
+
+      map.addLayer(paleMap);
+
+      L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
+
+      var sidebar = L.control.sidebar({container: "sidebar", closeButton: false}).addTo(map);
+      sidebar.open("home");
+
+      var selectCategory = document.getElementById("category0")
+      selectCategory.addEventListener("change", categoryChange);
+
+
+      category = "pop";
+      selectCategory.value = "pop";
+      groupSelect(0);
+
+      var selectYear = document.getElementById("year")
+      selectYear.addEventListener("change", function(e){
+        if(window.confirm("データを変更すると全ての選択がリセットされます。\nデータを変更しますか？")){
+          year = e.target.value;
+          //地図上の色をリセット
+          selectedFeatures.flat().forEach(function(f){
+            polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+          });
+          for(var i=1; i < selectedFeatures.length; i++){
+            document.getElementById("group" + i).remove();
+          }
+          colorPicker.splice(1);
+          selectedFeatures.splice(1);
+          selectedFeatures[0] = [];
+          rewriteSumTable(0);
+          document.getElementById("groupName0").textContent = "グループ1";
+          //group0を再選択
+          document.getElementById("group0").style.border = "4px solid #a00";
+          currentSelectedGroup = 0;
+          //値リセット
+          newGroupNo = 2;
+          groupNames = ["グループ1"];
+          groupColors = ["#cc0000"];
+          colorPicker[0].updateColor(112);
+
+          polygonLayer.remove();
+          lineLayer.remove();
+          switch(e.target.value){
+            case "2020":{
+              polygonRedraw(polygon2020Json);
+              lineRedraw(line2020Json);
+              break;
+            }
+            case "2015":{
+              polygonRedraw(polygon2015Json);
+              lineRedraw(line2015Json);
+              break;
+            }
+            case "2010":{
+              polygonRedraw(polygon2010Json);
+              lineRedraw(line2010Json);
+              break;
+            }
+            case "2005":{
+              polygonRedraw(polygon2005Json);
+              lineRedraw(line2005Json);
+              break;
+            }
+            case "2000":{
+              polygonRedraw(polygon2000Json);
+              lineRedraw(line2000Json);
+              break;
+            }
+          }
+        }else{
+          document.getElementById("year").value = year;
+        }
+      });
+
+      var polygon2015Json = await getResources("2015kokusei.geojson", 2015);
+      var polygon2010Json = await getResources("2010kokusei.geojson", 2010);
+      var polygon2005Json = await getResources("2005kokusei.geojson", 2005);
+      var polygon2000Json = await getResources("2000kokusei.geojson", 2000);
+
+      var line2015Json = await getResources("line.geojson", 2015);
+      var line2010Json = await getResources("line.geojson", 2010);
+      var line2005Json = await getResources("line.geojson", 2005);
+      var line2000Json = await getResources("line.geojson", 2000);
+
+      var polygon2020Json = await getResources("2020kokusei.geojson", 2020);
+      var line2020Json = await getResources("line.geojson", 2020);
+
+      polygonRedraw(polygon2020Json);
+      lineRedraw(line2020Json);
+
+      document.querySelector(".loader").style.display = "none";
+      document.querySelector(".loaderBG").style.display = "none";
+
+    }
+
+    function polygonRedraw(json){
+      polygonLayer = L.vectorGrid.slicer(json, {
+        vectorTileLayerStyles: {
+          sliced:function(properties){
+             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+          }
+        },
+        maxZoom: 18,
+        interactive: true,
+        getFeatureId: function(f){
+          return f.properties.uid;
+        },
+        pane: "polygon"
+      }).on("click", clickEvent)
+      .on("mouseover", mouseOverEvent);
+
+      polygonLayer.addTo(map);
+    }
+
+    function lineRedraw(json){
+      lineLayer = L.vectorGrid.slicer(json, {
+        vectorTileLayerStyles: {
+          sliced: function(properties){
+              switch(properties.TYPE){
+                case '村': return{color:"#639394"}
+                case '区': return{color:"#857944"}
+                case '特別区': return{color:"#326333"}
+                case '郡': return{color:"#326333"}
+                case '支庁': return{color:"#995514"}
+                case '県': return{color:"#8a2725"}
+                case '湖': return{color:"#5363b5"}
+                case '海': return{color:"#223c8a"}
+             }
+          }
+        },
+        maxZoom: 18
+      });
+      lineLayer.addTo(map);
+    }
+
+    //地物クリック時の処理
+    function clickEvent(obj){
+
+      if(selectedFeatures[currentSelectedGroup].some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が選択済みの場合(クリックした地物を削除)
+        selectedFeatures[currentSelectedGroup] = selectedFeatures[currentSelectedGroup].filter(f => f.uid !== obj.layer.properties.uid);
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+      }else if(selectedFeatures.flat().some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が他のグループで選択されている場合(クリックした地物のグループを変更)
+        var locA, locB;  //selectedFeatures[locA][locB]がクリックしたした地物の位置
+        selectedFeatures.some(function(group, groupNo){
+          if(group.findIndex(f => f.uid === obj.layer.properties.uid) !== -1){
+            locA = groupNo;
+            locB = group.findIndex(f => f.uid === obj.layer.properties.uid);
+            return true;
+          }else{
+            return false;
+          }
+        });
+        selectedFeatures[locA].splice(locB, 1);
+        rewriteSumTable(locA);
+
+        selectedFeatures[currentSelectedGroup].push({uid: obj.layer.properties.uid, name: obj.layer.properties.NAME, pop: obj.layer.properties.POPULATION, area: obj.layer.properties.AREA, incr: obj.layer.properties.POP_INCREASE});
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.3, opacity:0});
+
+      }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
+        selectedFeatures[currentSelectedGroup].push({uid: obj.layer.properties.uid, name: obj.layer.properties.NAME, pop: obj.layer.properties.POPULATION, area: obj.layer.properties.AREA, incr: obj.layer.properties.POP_INCREASE});
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.3, opacity:0});
+      }
+
+      rewriteSumTable(currentSelectedGroup);
+
+    }
+
+    //カーソル位置の地物情報表示
+    function mouseOverEvent(obj){
+      document.getElementById('mouse_name').innerHTML = obj.layer.properties.KEN + obj.layer.properties.NAME;
+      document.getElementById('mouse_pop').innerHTML = obj.layer.properties.POPULATION;
+      document.getElementById('mouse_area').innerHTML = obj.layer.properties.AREA;
+      document.getElementById('mouse_dens').innerHTML = (Math.round(obj.layer.properties.POPULATION / obj.layer.properties.AREA *10)/10) || 0;
+      document.getElementById('mouse_pop_i').innerHTML = obj.layer.properties.POP_INCREASE;
+    }
+
+    //リセットボタン処理
+    function resetGroup(n){
+      //グループ内に選択済みの地物が存在するときのみ発動
+      if(selectedFeatures[n].length > 0){
+        if(window.confirm("全ての選択を解除しますか？")){
+          selectedFeatures[n].forEach(function(f){
+            polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+          });
+          selectedFeatures[n].splice(0);
+
+          rewriteSumTable(n);
+        }
+      }
+    }
+
+    //デリートボタン処理
+    function deleteGroup(n){
+      if(window.confirm(groupNames[n] + "を削除しますか？")){
+        selectedFeatures[n].forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+        });
+        //グループ数が1の場合、そのグループのリセットのみ行う
+        if(selectedFeatures.length === 1){
+          selectedFeatures[n].splice(0);
+          rewriteSumTable(n);
+        }else{
+          document.getElementById("group" + currentSelectedGroup).style.border = "2px solid #777";
+          selectedFeatures.splice(n, 1);
+          groupNames.splice(n, 1);
+          groupColors.splice(n, 1);
+          colorPicker.splice(n, 1);
+          document.getElementById("group" + n).remove();
+          //後続のグループのidを変更
+          for(var i=(n+1); i<=selectedFeatures.length; i++){
+            var groupNode = document.getElementById("group" + i);
+            groupNode.setAttribute("onclick", "groupSelect(" + (i - 1) + ")");
+            groupNode.id = "group" + (i - 1);
+            groupNode.querySelector("#colorPicker" + i).id = "colorPicker" + (i - 1);
+            groupNode.querySelector("#groupName" + i).id = "groupName" + (i - 1);
+            groupNode.querySelector("#resetBtn" + i).setAttribute("onclick", "resetGroup(" + (i - 1) + ")");
+            groupNode.querySelector("#resetBtn" + i).id = "resetBtn" + (i - 1);
+            groupNode.querySelector("#deleteBtn" + i).setAttribute("onclick", "deleteGroup(" + (i - 1) + ")");
+            groupNode.querySelector("#deleteBtn" + i).id = "deleteBtn" + (i - 1);
+            groupNode.querySelector("#sel_data" + i).id = "sel_data" + (i - 1);
+            groupNode.querySelector("#sel_pop" + i).id = "sel_pop" + (i - 1);
+            groupNode.querySelector("#sel_area" + i).id = "sel_area" + (i - 1);
+            groupNode.querySelector("#sel_pop_i" + i).id = "sel_pop_i" + (i - 1);
+            groupNode.querySelector("#sel_dens" + i).id = "sel_dens" + (i - 1);
+            groupNode.querySelector("#sel_count" + i).id = "sel_count" + (i - 1);
+            groupNode.querySelector("#sel_table" + i).id = "sel_table" + (i - 1);
+            groupNode.querySelector("#category" + i).id = "category" + (i - 1);
+
+
+          }
+
+          if(currentSelectedGroup > n){
+            currentSelectedGroup--;
+          }
+        }
+      }
+      //この後にgroupSelectが呼ばれる
+    }
+
+    //グループの値合計用
+    function sum(arr, key){
+      var popsum = arr.reduce(function(sum, e){
+        return sum + e[key];
+      },0);
+      return popsum
+    }
+
+    //グループの合計値書き換え
+    function rewriteSumTable(n){
+      document.getElementById('sel_pop' + n).innerHTML = sum(selectedFeatures[n], "pop");
+      document.getElementById('sel_area' + n).innerHTML = Math.round(sum(selectedFeatures[n], "area") *100)/100;
+      document.getElementById('sel_dens' + n).innerHTML = (Math.round(sum(selectedFeatures[n], "pop") / sum(selectedFeatures[n], "area") *10)/10) || 0;
+      document.getElementById('sel_pop_i' + n).innerHTML = sum(selectedFeatures[n], "incr");
+      document.getElementById('sel_count' + n).innerHTML = selectedFeatures[n].length;
+
+      var table = document.getElementById('sel_table' + n)
+      //地物一覧表を削除
+      while (table.rows[1]) {
+        table.deleteRow(1);
+      }
+      //新しい地物一覧表を追加
+      selectedFeatures[n].forEach(function(f){
+        var row = document.createElement("tr");
+        var value;
+        switch(category){
+          case "pop": value = f.pop;break;
+          case "area": value = f.area;break;
+          case "pop_i": value = f.incr;break;
+          case "dens": value = (Math.round(f.pop / f.area *10)/10) || 0;break;
+        }
+        row.innerHTML = "<td>" + f.name + "</td><td>" + value + "</td>";
+        table.appendChild(row);
+      });
+    }
+
+    //グループの追加
+    function addGroup(){
+      var newId = selectedFeatures.length;
+      var gCont = document.getElementById('groupsContainer');
+      var newGroupNode = document.getElementById('group0').cloneNode(true); //複製元のdiv要素
+      newGroupNode.setAttribute("onclick", "groupSelect(" + newId + ")");
+      newGroupNode.id = "group" + newId;
+      newGroupNode.querySelector("#colorPicker0").id = "colorPicker" + newId;
+      newGroupNode.querySelector("#groupName0").textContent = "グループ" + (newGroupNo);
+      newGroupNode.querySelector("#groupName0").id = "groupName" + newId;
+      newGroupNode.querySelector("#resetBtn0").setAttribute("onclick", "resetGroup(" + newId + ")");
+      newGroupNode.querySelector("#resetBtn0").id = "resetBtn" + newId;
+      newGroupNode.querySelector("#deleteBtn0").setAttribute("onclick", "deleteGroup(" + newId + ")");
+      newGroupNode.querySelector("#deleteBtn0").id = "deleteBtn" + newId;
+      newGroupNode.querySelector("#sel_data0").id = "sel_data" + newId;
+      newGroupNode.querySelector("#sel_pop0").id = "sel_pop" + newId;
+      newGroupNode.querySelector("#sel_area0").id = "sel_area" + newId;
+      newGroupNode.querySelector("#sel_pop_i0").id = "sel_pop_i" + newId;
+      newGroupNode.querySelector("#sel_dens0").id = "sel_dens" + newId;
+      newGroupNode.querySelector("#sel_count0").id = "sel_count" + newId;
+      newGroupNode.querySelector("#sel_table0").id = "sel_table" + newId;
+      newGroupNode.querySelector("#category0").value = category;
+      newGroupNode.querySelector("#category0").id = "category" + newId;
+      gCont.appendChild(newGroupNode);
+      selectedFeatures.push([]);
+      groupNames.push("グループ" + (newGroupNo));
+      colorPicker[newId] = new EightBitColorPicker({el: 'colorPicker' + newId, color: (DefaultColorNo[newGroupNo - 1] || 238)});
+      newGroupNo++
+
+      document.getElementById("category" + newId).addEventListener("change", categoryChange);
+      colorPicker[newId].addEventListener("colorChange", e=> selectColor(e));
+      groupColors.push(colorPicker[newId].getHexColor());
+      rewriteSumTable(newId);
+      groupSelect(newId);
+    }
+
+    //グループをクリックしたときの処理
+    function groupSelect(n){
+      //元のグループの枠線を灰色に戻す
+      if(selectedFeatures[currentSelectedGroup] !== undefined){
+        document.getElementById("group" + currentSelectedGroup).style.border = "2px solid #777";
+      }  //最後のクループをdeleteした場合は実行されない
+
+      //クリックされたグループの枠線を赤くする
+      if(selectedFeatures[n] !== undefined){
+        document.getElementById("group" + n).style.border = "4px solid #a00";
+        currentSelectedGroup = n;
+      }else{ //最後のクループをdeleteした場合
+        document.getElementById("group" + (n-1)).style.border = "4px solid #a00";
+        currentSelectedGroup = (n-1);
+      }
+    }
+
+    //地物一覧テーブルのカテゴリ変更
+    function categoryChange(e){
+      category = e.target.value;
+      for(var i=0; i < selectedFeatures.length; i++){
+        rewriteSumTable(i);
+        document.getElementById("category" + i).value = category;
+      }
+    }
+
+    //色変更時
+    function selectColor(e){
+      var n = parseInt((e.target.id).substr(-1));
+      groupColors[n] = colorPicker[n].getHexColor();
+      if(selectedFeatures[n]){
+        selectedFeatures[n].forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:groupColors[n] ,fillOpacity:0.3, opacity:0});
+        });
+      }
+
+    }
+
+  </script>
+</head>
+
+<body onload="init()">
+  <div class="header">
+    <div class="title">市区町村人口計算機</div>
+  </div>
+  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。「人口増加数」は前回調査(5年前)からの人口増加です。</div>
+
+  <div>
+    <div class="loaderBG"></div>
+    <div class="loader"></div>
+    <div id="map"></div>
+  </div>
+  <div>使用データ：<select id="year"><option value="2020">2020年国勢調査速報値</option><option value="2015">2015年国勢調査</option><option value="2010">2010年国勢調査</option><option value="2005">2005年国勢調査</option><option value="2000">2000年国勢調査</option></select></div>
+
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <!-- Nav tabs -->
+    <div class="leaflet-sidebar-tabs">
+        <ul role="tablist"> <!-- top aligned tabs -->
+            <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+        </ul>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="leaflet-sidebar-content">
+        <div class="leaflet-sidebar-pane" id="home">
+            <h1 class="leaflet-sidebar-header">
+                人口計算機
+            </h1>
+            <details open class="current">
+              <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
+              <div id="mouse_name" class="current">-</div>
+              <table class="current">
+                <tr><th>人口(人)</th><td id="mouse_pop"></td><th>面積(㎢)</th><td id="mouse_area"></td></tr>
+                <tr><th>人口増加数(人)</th><td id="mouse_pop_i"></td><th>人口密度(人/㎢)</th><td id="mouse_dens"></td></tr>
+              </table>
+            </details>
+            <div id="groupsContainer">
+              <div id="group0" class="group" onclick="groupSelect(0)">
+                <div class="h3" style="display: flex;"><span id="colorPicker0"></span><span  id="groupName0" style="margin: 0px 2px;">グループ1</span><input id="resetBtn0" type="button" value="選択をリセット" onclick="resetGroup(0)" style="margin-left: auto;"/><input id="deleteBtn0" type="button" value="グループを削除" onclick="deleteGroup(0)"/></div>
+                <table class="sum" id="sel_data0">
+                  <tr><th>人口(人)</th><td id="sel_pop0">0</td></tr>
+                  <tr><th>面積(㎢)</th><td id="sel_area0">0</td></tr>
+                  <tr><th>人口増加数(人)</th><td id="sel_pop_i0">0</td></tr>
+                  <tr><th>人口密度(人/㎢)</th><td id="sel_dens0">0</td></tr>
+                </table>
+                <details>
+                  <summary>選択地物数：<span id="sel_count0">0</span></summary>
+                  <table id="sel_table0" class="selects">
+                    <tr><th>地物名</th><th><select id="category0"><option value="pop">人口(人)</option><option value="area">面積(㎢)</option><option value="pop_i">人口増加数(人)</option><option value="dens">人口密度(人/㎢)</option></select></th></tr>
+                  </table>
+                </details>
+              </div>
+            </div>
+            <div class="addGroup" onclick="addGroup()"><i class="far fa-plus-square"></i>新規グループ追加</div>
+        </div>
+    </div>
+  </div>
+
+</body>
+</html>
