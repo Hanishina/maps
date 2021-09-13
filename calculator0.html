@@ -339,7 +339,7 @@
     function resetGroup(n){
       //グループ内に選択済みの地物が存在するときのみ発動
       if(selectedFeatures[n].length > 0){
-        if(window.confirm("全ての選択を解除しますか？")){
+        if(window.confirm(groupNames[n] + "の選択を全て解除しますか？")){
           selectedFeatures[n].forEach(function(f){
             polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
           });
