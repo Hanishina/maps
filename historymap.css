@@ -113,6 +113,12 @@ th,td {
   font-size: 20px;
 }
 
+details.current{
+  border: solid 1px;
+  margin-top: 5px;
+  padding: 5px;
+}
+
 div.current{
   font-size: 20px;
 }
@@ -148,6 +154,18 @@ table.sum td{
 
 summary{
   font-size: 18px;
+}
+
+summary:after{
+  font-size: 14px;
+  color: #666;
+  content:'【クリックで展開】'
+}
+
+details[open] summary:after{
+  font-size: 14px;
+  color: #666;
+  content:''
 }
 
 table.selects{
@@ -204,6 +222,32 @@ h2{
   color: #fff;
 }
 
-h3{
+.h3{
   font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+
+.addGroup{
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+div.group{
+  border: 2px solid #555;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+summary {
+  cursor: pointer;
+}
+
+i {
+  margin: 5px;
 }
