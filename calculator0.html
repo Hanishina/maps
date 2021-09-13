@@ -3,7 +3,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,user-scalable=no">
+  <meta name="viewport" content="user-scalable=no">
   <title>人口計算機</title>
   <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -250,6 +250,7 @@
 
       document.querySelector(".loader").style.display = "none";
       document.querySelector(".loaderBG").style.display = "none";
+      document.querySelector(".loaderCover").style.display = "none";
 
     }
 
@@ -314,11 +315,11 @@
         rewriteSumTable(locA);
 
         selectedFeatures[currentSelectedGroup].push({uid: obj.layer.properties.uid, name: obj.layer.properties.NAME, pop: obj.layer.properties.POPULATION, area: obj.layer.properties.AREA, incr: obj.layer.properties.POP_INCREASE});
-        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.3, opacity:0});
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.4, opacity:0});
 
       }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
         selectedFeatures[currentSelectedGroup].push({uid: obj.layer.properties.uid, name: obj.layer.properties.NAME, pop: obj.layer.properties.POPULATION, area: obj.layer.properties.AREA, incr: obj.layer.properties.POP_INCREASE});
-        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.3, opacity:0});
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup] || "#ff78c7") ,fillOpacity:0.4, opacity:0});
       }
 
       rewriteSumTable(currentSelectedGroup);
@@ -501,7 +502,7 @@
       groupColors[n] = colorPicker[n].getHexColor();
       if(selectedFeatures[n]){
         selectedFeatures[n].forEach(function(f){
-          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:groupColors[n] ,fillOpacity:0.3, opacity:0});
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:groupColors[n] ,fillOpacity:0.4, opacity:0});
         });
       }
 
@@ -511,17 +512,19 @@
 </head>
 
 <body onload="init()">
+  <div class="loaderCover"></div>
   <div class="header">
     <div class="title">市区町村人口計算機</div>
   </div>
-  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。「人口増加数」は前回調査(5年前)からの人口増加です。</div>
+  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。「人口増加数」は前回調査(5年前)からの人口増加です。<br>
+  地図上の地物(市区町村)をクリックすると赤枠で表示されているグループに追加されます。同じ地物を複数のグループに追加することはできません。</div>
 
   <div>
     <div class="loaderBG"></div>
     <div class="loader"></div>
     <div id="map"></div>
   </div>
-  <div>使用データ：<select id="year"><option value="2020">2020年国勢調査速報値</option><option value="2015">2015年国勢調査</option><option value="2010">2010年国勢調査</option><option value="2005">2005年国勢調査</option><option value="2000">2000年国勢調査</option></select></div>
+  <div>使用データ(年次)の切り替え：<select id="year"><option value="2020">2020年国勢調査速報値</option><option value="2015">2015年国勢調査</option><option value="2010">2010年国勢調査</option><option value="2005">2005年国勢調査</option><option value="2000">2000年国勢調査</option></select></div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
     <!-- Nav tabs -->
@@ -547,7 +550,7 @@
             </details>
             <div id="groupsContainer">
               <div id="group0" class="group" onclick="groupSelect(0)">
-                <div class="h3" style="display: flex;"><span id="colorPicker0"></span><span  id="groupName0" style="margin: 0px 2px;">グループ1</span><input id="resetBtn0" type="button" value="選択をリセット" onclick="resetGroup(0)" style="margin-left: auto;"/><input id="deleteBtn0" type="button" value="グループを削除" onclick="deleteGroup(0)"/></div>
+                <div class="h3" style="display: flex;flex-wrap: wrap;"><span id="colorPicker0"></span><span  id="groupName0" style="margin: 0px 2px;">グループ1</span><span style="margin-left: auto;"><input id="resetBtn0" type="button" value="選択をリセット" onclick="resetGroup(0)"/><input id="deleteBtn0" type="button" value="グループを削除" onclick="deleteGroup(0)"/><span></div>
                 <table class="sum" id="sel_data0">
                   <tr><th>人口(人)</th><td id="sel_pop0">0</td></tr>
                   <tr><th>面積(㎢)</th><td id="sel_area0">0</td></tr>
