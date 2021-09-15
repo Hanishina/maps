@@ -1,3 +1,55 @@
+div.headerImg{
+  display: block;
+  width: 100%;
+  height: 500px;
+  background: url("./img/header.png");
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+div.historymapImg{
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: url("./img/historymap.png");
+  background-size: cover;
+  background-position: 50% 50%;
+  box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
+}
+
+div.calcImg{
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: url("./img/calc.png");
+  background-size: cover;
+  background-position: 50% 50%;
+  box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
+}
+
+a.imgLink{
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.imgTitle{
+  position: absolute;
+  font-weight: bold;
+  font-size: 30px;
+  color: #05c;
+  text-shadow:2px 2px 0 #FFF, -2px -2px 0 #FFF,
+              -2px 2px 0 #FFF, 2px -2px 0 #FFF,
+              0px 2px 0 #FFF,  0 -2px 0 #FFF,
+              -2px 0 0 #FFF, 2px 0 0 #FFF;
+  left: 10px;
+}
+
+img.headerImg{
+  width: 90%;
+}
+
 .header{
   display: flex;
   align-items: flex-end;
@@ -202,6 +254,14 @@ a.title:link{
 
 a.title:visited{
   color: #000;
+}
+
+a.twitterLink:link{
+  color: #1da1f2;
+}
+
+a.twitterLink:visited{
+  color: #1da1f2;
 }
 
 .border{
