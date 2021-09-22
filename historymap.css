@@ -165,6 +165,10 @@ th,td {
   font-size: 20px;
 }
 
+.colorPicker{
+  cursor: pointer;
+}
+
 details.current{
   border: solid 1px;
   margin-top: 5px;
