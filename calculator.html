@@ -498,7 +498,7 @@
 
     //色変更時
     function selectColor(e){
-      var n = parseInt((e.target.id).substr(-1));
+      var n = parseInt((e.target.id).substr(11));
       groupColors[n] = colorPicker[n].getHexColor();
       if(selectedFeatures[n]){
         selectedFeatures[n].forEach(function(f){
