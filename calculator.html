@@ -18,8 +18,8 @@
 
   <link href="historymap.css" rel="stylesheet" type="text/css">
   <link href="loader.css" rel="stylesheet" type="text/css">
-  <link href="./leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
-  <link href="./eight-bit-color-picker.min.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/eight-bit-color-picker.min.css" rel="stylesheet"  type="text/css"/>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -28,10 +28,9 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
    crossorigin=""></script>
-  <!-- <script src="./L.Map.Sync.js"></script> -->
-  <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
-  <script src="./eight-bit-color-picker.min.js"></script>
-  <script src="./leaflet-sidebar.js"></script>
+  <script src="./Plugins/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="./Plugins/eight-bit-color-picker.min.js"></script>
+  <script src="./Plugins/leaflet-sidebar.js"></script>
 
   <script>
     var map;
@@ -107,7 +106,8 @@
       map.setMinZoom(5);
       L.control.zoom({position: "topright"}).addTo(map);
       map.createPane("base").style.zIndex = 100;
-      map.createPane("polygon").style.zindex = 300;
+      map.createPane("polygon").style.zindex = 150;
+      map.createPane("line").style.zindex = 400;
 
 
       year = 2020;
@@ -237,13 +237,13 @@
       var polygon2005Json = await getResources("2005kokusei.geojson", 2005);
       var polygon2000Json = await getResources("2000kokusei.geojson", 2000);
 
-      var line2015Json = await getResources("line.geojson", 2015);
-      var line2010Json = await getResources("line.geojson", 2010);
-      var line2005Json = await getResources("line.geojson", 2005);
-      var line2000Json = await getResources("line.geojson", 2000);
+      var line2015Json = await getResources("line_calc.geojson", 2015);
+      var line2010Json = await getResources("line_calc.geojson", 2010);
+      var line2005Json = await getResources("line_calc.geojson", 2005);
+      var line2000Json = await getResources("line_calc.geojson", 2000);
 
       var polygon2020Json = await getResources("2020kokusei.geojson", 2020);
-      var line2020Json = await getResources("line.geojson", 2020);
+      var line2020Json = await getResources("line_calc.geojson", 2020);
 
       polygonRedraw(polygon2020Json);
       lineRedraw(line2020Json);
@@ -289,7 +289,8 @@
              }
           }
         },
-        maxZoom: 18
+        maxZoom: 18,
+        pane: "line"
       });
       lineLayer.addTo(map);
     }

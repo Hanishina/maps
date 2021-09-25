@@ -1,3 +1,98 @@
+/*グローバル*/
+.header{
+  display: flex;
+  align-items: flex-end;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,td {
+  border: solid 1px;
+}
+
+.tableTitle{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+summary{
+  font-size: 18px;
+  cursor: pointer;
+}
+
+summary:after{
+  font-size: 14px;
+  color: #666;
+  content:'【クリックで展開】'
+}
+
+details[open] summary:after{
+  font-size: 14px;
+  color: #666;
+  content:''
+}
+
+body{
+  background: #ebfdff;
+  font-size: 18px;
+}
+
+.title{
+  font-family: '游明朝';
+  font-weight: bold;
+  font-size: 30px;
+}
+
+a.title:link{
+  color: #000;
+}
+
+a.title:visited{
+  color: #000;
+}
+
+a.twitterLink:link{
+  color: #1da1f2;
+}
+
+a.twitterLink:visited{
+  color: #1da1f2;
+}
+
+.border{
+  border: 2px solid #000;
+  padding: 5px;
+}
+
+hr{
+  border: none;
+  border-bottom: 3px double;
+  height: 3em;
+}
+
+h2{
+  padding: 7px;
+  border-bottom: 3px solid #000;
+  background: #3c708f;
+  color: #fff;
+}
+
+.h3{
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+i {
+  margin: 5px;
+}
+
+/*トップページ*/
+
 div.headerImg{
   display: block;
   width: 100%;
@@ -50,10 +145,8 @@ img.headerImg{
   width: 90%;
 }
 
-.header{
-  display: flex;
-  align-items: flex-end;
-}
+
+/*境界時系列マップ*/
 
 .mapCont{
   display: flex;
@@ -90,10 +183,6 @@ img.headerImg{
     border: solid;
     border-color: #3c708f;
   }
-}
-
-#map{
-  height: 82vh;
 }
 
 #mapA{
@@ -151,19 +240,13 @@ div.labelClassKu{
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
-table {
-  border-collapse: collapse;
-  font-size: 14px;
+
+/*人口計算機*/
+
+#map{
+  height: 82vh;
 }
 
-th,td {
-  border: solid 1px;
-}
-
-.tableTitle{
-  font-weight: bold;
-  font-size: 20px;
-}
 
 .colorPicker{
   cursor: pointer;
@@ -208,22 +291,6 @@ table.sum td{
   text-align: right;
 }
 
-summary{
-  font-size: 18px;
-}
-
-summary:after{
-  font-size: 14px;
-  color: #666;
-  content:'【クリックで展開】'
-}
-
-details[open] summary:after{
-  font-size: 14px;
-  color: #666;
-  content:''
-}
-
 table.selects{
   width: 100%;
 }
@@ -241,59 +308,6 @@ table.selects td:last-child{
   text-align: right;
 }
 
-body{
-  background: #ebfdff;
-  font-size: 18px;
-}
-
-.title{
-  font-family: '游明朝';
-  font-weight: bold;
-  font-size: 30px;
-}
-
-a.title:link{
-  color: #000;
-}
-
-a.title:visited{
-  color: #000;
-}
-
-a.twitterLink:link{
-  color: #1da1f2;
-}
-
-a.twitterLink:visited{
-  color: #1da1f2;
-}
-
-.border{
-  border: 2px solid #000;
-  padding: 5px;
-}
-
-hr{
-  border: none;
-  border-bottom: 3px double;
-  height: 3em;
-}
-
-h2{
-  padding: 7px;
-  border-bottom: 3px solid #000;
-  background: #3c708f;
-  color: #fff;
-}
-
-.h3{
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-
 .addGroup{
   font-size: 20px;
   font-weight: bold;
@@ -306,12 +320,4 @@ div.group{
   border: 2px solid #555;
   margin-top: 10px;
   padding: 5px;
-}
-
-summary {
-  cursor: pointer;
-}
-
-i {
-  margin: 5px;
 }
