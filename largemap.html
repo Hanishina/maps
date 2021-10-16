@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,user-scalable=no">
-  <title>zoomtest</title>
+  <title>全国市区町村地図</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
   <link href="./Plugins/viewer.css" rel="stylesheet" type="text/css">
   <script src="./Plugins/viewer.js"></script>
   <link href="historymap.css" rel="stylesheet" type="text/css">
@@ -38,6 +47,7 @@
         navbar: false,
         title: false,
         toggleOnDblclick: false,
+        slideOnTouch: false,
         zoomRatio: 0.2,
         minZoomRatio: minZoom,
         maxZoomRatio: maxZoom,
