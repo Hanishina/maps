@@ -22,14 +22,25 @@
       form.grid.value = "grid";
       form.label.value = "label";
 
+      let minZoom;
+      let maxZoom;
+      if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
+        minZoom = 0.5;
+        maxZoom = 20;
+      } else {
+        minZoom = 0.05;
+        maxZoom = 2;
+      }
+
       viewer = new Viewer(document.getElementById('image'), {
         inline: true,
         toolbar: false,
         navbar: false,
         title: false,
+        toggleOnDblclick: false,
         zoomRatio: 0.2,
-        minZoomRatio: 0.05,
-        maxZoomRatio: 2,
+        minZoomRatio: minZoom,
+        maxZoomRatio: maxZoom,
       });
       /*document.getElementById("image").addEventListener("moved", function(e){
         x = e.detail.x;
