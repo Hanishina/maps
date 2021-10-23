@@ -301,12 +301,16 @@ table.selects th, table.selects td{
 }
 
 table.selects th:last-child{
-  width: 40%;
+  width: 60%;
 }
 
 table.selects td:last-child{
-  width: 40%;
+  width: 60%;
   text-align: right;
+}
+
+.columnSelect{
+  width: 95%;
 }
 
 .addGroup{
