@@ -344,20 +344,20 @@ div.group{
     background: #000;
     width: 100px;
 }
-.description:before {
+/*.description:before {
     content: "";
     position: absolute;
-    top: 0%;
-    right: 95%;
+    top: 100%;
+    right: 50%;
     border: 15px solid transparent;
     border-top: 15px solid #000;
     margin-left: -15px;
-    transform: rotateZ(90deg);
-}
+}*/
 .tooltip:hover .description{
     display: inline-block;
     top: 0px;
-    left: 80px;
+    left: 20px;
+    z-index: 100;
 }
 
 /*　拡大表示画像　*/
