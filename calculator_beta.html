@@ -21,6 +21,7 @@
   <link href="./Plugins/leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
   <link href="./Plugins/eight-bit-color-picker.min.css" rel="stylesheet"  type="text/css"/>
   <link href="./Plugins/modaal.min.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/toastr.min.css" rel="stylesheet"  type="text/css"/>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -33,6 +34,7 @@
   <script src="./Plugins/eight-bit-color-picker.min.js"></script>
   <script src="./Plugins/leaflet-sidebar.js"></script>
   <script src="./Plugins/modaal.min.js"></script>
+  <script src="./Plugins/toastr.min.js"></script>
 
   <script>
     var map;
@@ -307,6 +309,24 @@
         closeTable();
         openTable();
       });
+
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
 
       polygon2020Json = await getResources("2020kokusei.geojson");
       line2020Json = await getResources("line_calc.geojson", "2020-10-01");
@@ -867,7 +887,7 @@
 
     function downloadCsv(){
       //テーブルからcsv用文字列を作成
-      var csvData = "";
+      var csvData = "データ: " + currentSelectedDataset.label + "\n";
       var table = $("#csvTable")[0];
       for(i = 0;  i < table.rows.length; i++){
         for(j = 0; j < table.rows[i].cells.length; j++){
@@ -899,7 +919,12 @@
           else {clipBoardData += "\t";}
         }
       }
-      navigator.clipboard.writeText(clipBoardData);
+      try {navigator.clipboard.writeText(clipBoardData);
+        toastr["success"]("表をクリップボードにコピーしました。");
+      }catch(error){
+        console.log(error);
+      }
+
     }
 
   </script>
