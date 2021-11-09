@@ -919,11 +919,12 @@
           else {clipBoardData += "\t";}
         }
       }
-      try {navigator.clipboard.writeText(clipBoardData);
-        toastr["success"]("表をクリップボードにコピーしました。");
-      }catch(error){
-        console.log(error);
-      }
+
+      var promise = new Promise((resolve, reject) => {
+        navigator.clipboard.writeText(clipBoardData);
+        resolve();
+      });
+      promise.then(() => {toastr["success"]("表をクリップボードにコピーしました。");});
 
     }
 
