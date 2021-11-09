@@ -92,6 +92,10 @@ i {
   margin: 5px;
 }
 
+input{
+  margin: 0px 5px;
+}
+
 /*トップページ*/
 
 div.headerImg{
@@ -307,6 +311,15 @@ table.selects th:last-child{
 table.selects td:last-child{
   width: 60%;
   text-align: right;
+}
+
+table.csv th{
+  height: 50px;
+  white-space: nowrap;
+}
+
+table.csv td{
+  white-space: nowrap;
 }
 
 .columnSelect{
