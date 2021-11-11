@@ -60,11 +60,11 @@
     var groupColors = ["#cc0000"];
 
     var Dataset = [
-      {name: "kokusei2020", label: "2020年国勢調査速報値", date: "2020-10-01", polygonFile: "2020kokusei.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei1"},
-      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei2"},
-      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei1"},
-      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei1"},
-      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei1"}
+      {name: "kokusei2020", label: "2020年国勢調査速報値", date: "2020-10-01", polygonFile: "2020kokusei.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei1", attr: {label: "令和2年国勢調査(速報集計)", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001136464"}},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei2", attr: {label: "平成27年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001080615"}},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei1", attr: {label: "平成22年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001039448"}},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei1", attr: {label: "平成17年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001007251"}},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei1", attr: {label: "平成12年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000000030001"}}
     ];
 
     //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
@@ -231,11 +231,11 @@
 
 
       currentSelectedDataset = Dataset[0];
-      document.getElementById("dataset").value = "kokusei2020";
+      $("#dataset").val("kokusei2020");
 
       categories = window[currentSelectedDataset.category];
       currentSelectedCategory = categories[0].data;
-      document.getElementById("category").value = "population";
+      $("#category").val("population");
 
       var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
           attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
@@ -426,20 +426,6 @@
       }
       currentSelectedCategory.forEach(function(f, i){
         document.getElementById('mouseCol_data' + i).innerHTML = calc([obj], f.func, f.prec, f.args);
-        /*if(f.func === "div"){ //割り算の場合
-          var prec = f.prec || 0;
-          document.getElementById('mouseCol_data' + i).innerHTML = ((obj[f.args[0]] / obj[f.args[1]]) || 0).toFixed(prec);
-        }else if(f.func === "rate"){ //割合(%)の場合
-          var prec = f.prec || 0;
-          document.getElementById('mouseCol_data' + i).innerHTML = ((obj[f.args[0]] / obj[f.args[1]]) * 100 || 0).toFixed(prec);
-        }else if(f.func === "incr_rate"){
-          var prec = f.prec || 0;
-          document.getElementById('mouseCol_data' + i).innerHTML = ((obj[f.args[0]] / (obj[f.args[1]] - obj[f.args[0]])) * 100 || 0).toFixed(prec);
-        }else if(f.func === "sum"){ //足し算の場合
-          document.getElementById('mouseCol_data' + i).innerHTML = obj[f.args[0]];
-        }else{ //空白
-          document.getElementById('mouseCol_data' + i).innerHTML = "";
-        }*/
       });
     }
 
@@ -533,21 +519,6 @@
     function rewriteSumTable(n){
       currentSelectedCategory.forEach(function(f, i){
         document.getElementById("groupCol_data" + i + "_" + n).innerHTML = calc(selectedFeatures[n], f.func, f.prec, f.args);
-        /*if(f.func === "div"){ //割り算の場合
-          var prec = f.prec || 0;
-          document.getElementById("groupCol_data" + i + "_" + n).innerHTML = (sum(selectedFeatures[n], f.args[0]) / sum(selectedFeatures[n], f.args[1]) || 0).toFixed(prec);
-        }else if(f.func === "rate"){ //割合(%)の場合
-          var prec = f.prec || 0;
-          document.getElementById("groupCol_data" + i + "_" + n).innerHTML = (sum(selectedFeatures[n], f.args[0]) / sum(selectedFeatures[n], f.args[1]) * 100 || 0).toFixed(prec);
-        }else if(f.func === "incr_rate"){
-          var prec = f.prec || 0;
-          document.getElementById("groupCol_data" + i + "_" + n).innerHTML = (sum(selectedFeatures[n], f.args[0]) / (sum(selectedFeatures[n], f.args[1]) - sum(selectedFeatures[n], f.args[0])) * 100 || 0).toFixed(prec);
-        }else if(f.func === "sum"){ //足し算の場合
-          var prec = f.prec || 0;
-          document.getElementById("groupCol_data" + i + "_" + n).innerHTML = (sum(selectedFeatures[n], f.args[0])).toFixed(prec);
-        }else{
-
-        }*/
       });
       document.getElementById('sel_count' + n).innerHTML = selectedFeatures[n].length;
 
@@ -560,15 +531,6 @@
       selectedFeatures[n].forEach(function(f){
         var row = document.createElement("tr");
         var value = calc([f], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
-        /*if(currentSelectedColumn.func === "div"){
-          value = (f[currentSelectedColumn.args[0]] / f[currentSelectedColumn.args[1]] || 0).toFixed(currentSelectedColumn.prec || 0);
-        }else if(currentSelectedColumn.func === "rate"){
-          value = (f[currentSelectedColumn.args[0]] / f[currentSelectedColumn.args[1]] * 100 || 0).toFixed(currentSelectedColumn.prec || 0);
-        }else if(currentSelectedColumn.func === "incr_rate"){
-          value = (f[currentSelectedColumn.args[0]] / (f[currentSelectedColumn.args[1]] - f[currentSelectedColumn.args[0]]) * 100 || 0).toFixed(currentSelectedColumn.prec || 0);
-        }else if(currentSelectedColumn.func === "sum"){
-          value = (f[currentSelectedColumn.args[0]]).toFixed(currentSelectedColumn.prec || 0);
-        }*/
         row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td>";
         table.appendChild(row);
       });
@@ -784,6 +746,10 @@
         }
         categorySelector.value = categories[0].name;
 
+        //データ出典書き換え
+        $("#attribution").text(currentSelectedDataset.attr.label);
+        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+
         //グループの再描画
         var event = new Event("change");
         categorySelector.dispatchEvent(event);
@@ -945,8 +911,10 @@
     <div class="loader"></div>
     <div id="map"></div>
   </div>
-  <div>使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査速報値</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option></select></div>
-  <div><input type="button" value="表形式で表示" class="inline"/></div>
+  <div>
+    使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査速報値</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option></select>
+    <span class="attribution">データ出典:<a href="https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001136464" id="attribution" target="_blank">令和2年国勢調査(速報集計)</a></span>
+  </div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
     <!-- Nav tabs -->
@@ -967,7 +935,7 @@
               <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
               <div id="mouse_name" class="current">-</div>
               <table id="mouseTable" class="current">
-                <tr><th id="mouseCol_name0">人口(人)</div></th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
+                <tr><th id="mouseCol_name0">人口(人)</th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
                 <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口密度(人/㎢)</th><td id="mouseCol_data3"></td></tr>
               </table>
             </details>
@@ -977,7 +945,7 @@
                 <table class="sum" id="groupTable0">
                   <tr><th id="groupCol_name0_0">人口(人)</th><td id="groupCol_data0_0">0</td></tr>
                   <tr><th id="groupCol_name1_0">面積(㎢)</th><td id="groupCol_data1_0">0.00</td></tr>
-                  <tr><th id="groupCol_name2_0">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></th><td id="groupCol_data2_0">0</td></tr>
+                  <tr><th id="groupCol_name2_0">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></div></th><td id="groupCol_data2_0">0</td></tr>
                   <tr><th id="groupCol_name3_0">人口密度(人/㎢)</th><td id="groupCol_data3_0">0.0</td></tr>
                 </table>
                 <details>
@@ -989,8 +957,9 @@
               </div>
             </div>
             <div class="addGroup" onclick="addGroup()"><i class="far fa-plus-square"></i>新規グループ追加</div>
-        </div>
-    </div>
+            <div><input type="button" value="表形式で表示" class="inline"/></div>
+          </div>
+      </div>
   </div>
 
   <div id="inline" style="display:none;">

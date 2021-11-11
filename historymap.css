@@ -340,6 +340,10 @@ div.group{
   padding: 5px;
 }
 
+.attribution{
+  float: right;
+}
+
 /*ツールチップ(https://www.jungleocean.com/programming/190308tooltip-css)*/
 .tooltip{
     position: relative;

@@ -2,9 +2,9 @@
   background-color: #ffffff;
   opacity: 0;
   position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 998;
+  width: 99%;
+  height: 99%;
+  z-index: 1010;
 }
 
 .loaderBG{
@@ -19,7 +19,7 @@
   left: 0;
   right: 0;
   margin: auto;
-  z-index: 999;
+  z-index: 1011;
 }
 
 .loader {
@@ -34,7 +34,7 @@
   left: 0;
   right: 0;
   margin: auto;
-  z-index: 1000;
+  z-index: 1012;
   text-indent: -9999em;
   -webkit-animation: load4 1.3s infinite linear;
   animation: load4 1.3s infinite linear;
