@@ -14,12 +14,21 @@
     gtag('config', 'G-ZC2WPE0KKJ');
   </script>
   <link href="historymap.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="./Plugins/ZoomifyImageViewerFree-min.js"></script>
+  <script src="./Plugins/openseadragon.min.js"></script>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
 
   <script>
     function init(){
-       Z.showImage("zC", "./img/largemap/lambert_2020_color_nogrid_nolabel");
+      var viewer = OpenSeadragon({
+         id: "zC",
+         prefixUrl: "./Plugins/OSDimages/",
+         tileSources: [{
+          type:       "zoomifytileservice",
+          width:      19685,
+          height:     19685,
+          tilesUrl:   "./img/largemap/lambert_2020_color_nogrid_nolabel/"
+         }]
+      });
     }
   </script>
 </head>
