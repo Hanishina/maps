@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no">
+  <title>全国市区町村地図</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="./Plugins/ZoomifyImageViewerFree-min.js"></script>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+
+  <script>
+    function init(){
+       Z.showImage("zC", "./img/largemap/lambert_2020_color_nogrid_nolabel");
+    }
+  </script>
+</head>
+<body onload="init()">
+  <div class="header">
+    <div class="title">全国市区町村地図</div>
+    <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+  </div>
+  <div>大きな画像を読み込むため、表示に時間がかかる場合があります。</div>
+  <div><form name="select">
+    <div class="radiobutton"><span>年：<label><input type="radio" name="year" value="1970">1970年</label><label><input type="radio" name="year" value="2000">2000年</label><label><input type="radio" name="year" value="2020">2020年</label></span>
+    <span>経緯線：<label><input type="radio" name="grid" value="nogrid">なし</label><label><input type="radio" name="grid" value="grid">あり</label></span>
+    <span>市町村名ラベル：<label><input type="radio" name="label" value="nolabel">なし</label><label><input type="radio" name="label" value="label">あり</label></span></div>
+    <div><button type="button" onclick="button()">上記の設定で表示</button></div>
+  </form></div>
+  <div class="zoomContainer" id="zC">
+  </div>
+</body>
+</html>
