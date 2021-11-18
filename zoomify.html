@@ -14,37 +14,72 @@
     gtag('config', 'G-ZC2WPE0KKJ');
   </script>
   <link href="historymap.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="./Plugins/openseadragon.min.js"></script>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
 
   <script>
+    var viewer;
     function init(){
-      var viewer = OpenSeadragon({
+      $("#select [name=year]").val(["2020"]);
+      $("#select [name=year]").on("change", changeImage);
+      viewer = OpenSeadragon({
          id: "zC",
          prefixUrl: "./Plugins/OSDimages/",
+         index: 0,
+         preserveViewport: true,
+         minZoomImageRatio: 1,
+         maxZoomPixelRatio: 1.5,
          tileSources: [{
-          type:       "zoomifytileservice",
-          width:      19685,
-          height:     19685,
-          tilesUrl:   "./img/largemap/lambert_2020_color_nogrid_nolabel/"
+           type:       "zoomifytileservice",
+           width:      19685,
+           height:     19685,
+           tilesUrl:   "./img/largemap/lambert_2020_color_grid_label/"
          }]
       });
+    }
+
+    function changeImage(e){
+      let src = "./img/largemap/lambert_" + e.target.value + "_color_grid_label/";
+      viewer.addTiledImage({tileSource: {
+       type:       "zoomifytileservice",
+       width:      19685,
+       height:     19685,
+       tilesUrl:   src
+     }, index: 0, replace: true});
+    }
+
+    function download(y, c){
+      let fileName
+      if(c === "color"){
+        fileName = "lambert_" + y + "_color_grid_label.png";
+      }else{
+        fileName = "lambert_" + y + "_mono_nogrid_nolabel.png";
+      }
+      var download = document.createElement("a");
+      download.href = "./img/largemap/" + fileName;
+      download.download = fileName;
+      download.click();
     }
   </script>
 </head>
 <body onload="init()">
-  <div class="header">
-    <div class="title">全国市区町村地図</div>
-    <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
-  </div>
-  <div>大きな画像を読み込むため、表示に時間がかかる場合があります。</div>
-  <div><form name="select">
-    <div class="radiobutton"><span>年：<label><input type="radio" name="year" value="1970">1970年</label><label><input type="radio" name="year" value="2000">2000年</label><label><input type="radio" name="year" value="2020">2020年</label></span>
-    <span>経緯線：<label><input type="radio" name="grid" value="nogrid">なし</label><label><input type="radio" name="grid" value="grid">あり</label></span>
-    <span>市町村名ラベル：<label><input type="radio" name="label" value="nolabel">なし</label><label><input type="radio" name="label" value="label">あり</label></span></div>
-    <div><button type="button" onclick="button()">上記の設定で表示</button></div>
-  </form></div>
-  <div class="zoomContainer" id="zC">
+  <div class="bodyContainer">
+    <div class="header">
+      <div class="title">全国市区町村地図</div>
+      <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+    </div>
+    <div><form id="select">
+      <div class="radiobutton"><span>年：<label><input type="radio" name="year" value="1970">1970年</label><label><input type="radio" name="year" value="2000">2000年</label><label><input type="radio" name="year" value="2020">2020年</label></span></div>
+    </form></div>
+    <div class="zoomContainer" id="zC">
+    </div>
+    <div>
+      <div>元画像ダウンロード(非常にファイルサイズの大きい画像をダウンロードします。)</div>
+      <div>1970年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('1970', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('1970', 'mono')"></input>
+      <div>2000年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('2000', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('2000', 'mono')"></input>
+      <div>2020年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('2020', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('2020', 'mono')"></input>
+    </div>
   </div>
 </body>
 </html>
