@@ -12,6 +12,7 @@ window.onload = function(){
     for(let i=0; i<tmp.length; i++){
       dataArr[i] = tmp[i].split(",");
     }
+    console.log(dataArr);
 
     for(let count = 0; count <=3; count++){
       let svg;
