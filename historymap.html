@@ -52,7 +52,8 @@
      var urlParams;
 
      async function getResources(name){
-       return $.getJSON(name, function(json){
+       var path = "./json/" + name;
+       return $.getJSON(path, function(json){
          var features = json.features;
          //並べ替え処理(暫定的)
          if (json.name === "line"){

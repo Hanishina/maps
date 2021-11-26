@@ -60,11 +60,12 @@
     var groupColors = ["#cc0000"];
 
     var Dataset = [
-      {name: "kokusei2020", label: "2020年国勢調査速報値", date: "2020-10-01", polygonFile: "2020kokusei.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei1", attr: {label: "令和2年国勢調査(速報集計)", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001136464"}},
-      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei2", attr: {label: "平成27年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001080615"}},
-      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei1", attr: {label: "平成22年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001039448"}},
-      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei1", attr: {label: "平成17年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001007251"}},
-      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei1", attr: {label: "平成12年国勢調査", link: "https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000000030001"}}
+      {name: "kokusei2020", label: "2020年国勢調査速報値", date: "2020-10-01", polygonFile: "2020kokusei.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei1", attr: {label: "令和2年国勢調査(速報集計)", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei2", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei1", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei1", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei1", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
+      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
     ];
 
     //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
@@ -174,20 +175,142 @@
       {name: "ind_mediR", label:"医療・福祉(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1}
     ]}];
 
+    var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
+      {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
+      {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"平成27年国勢調査による面積。"},
+      {name: "OFFICE", label: "民営事業所数(所)", func: "sum", args: ["OFFICE"], desc:"事業所の数(公務を除く)。"},
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"]}
+    ]}, {name: "ind_office", label: "産業別事業所数", data:[
+      {name: "OFFICE", label: "民営事業所数(所)", func: "sum", args: ["OFFICE"], desc:"事業所の数(公務を除く・事業内容不詳を含む)。"},
+      {},
+      {name: "O_1ST", label: "第一次産業(所)", func: "sum", args: ["O_1ST"], desc:"事業所のうち、農林業・漁業に分類されるものの数。"},
+      {name: "o_1stR", label: "第一次産業割合(%)", func: "rate", args: ["O_1ST", "OFFICE"], prec: 1, desc:"第一次産業事業所数を民営事業所数で割ったもの。"},
+      {name: "O_2ND", label: "第二次産業(所)", func: "sum", args: ["O_2ND"], desc:"事業所のうち、鉱業・建設業・製造業等に分類されるものの数。"},
+      {name: "o_2ndR", label: "第二次産業割合(%)", func: "rate", args: ["O_2ND", "OFFICE"], prec: 1, desc:"第二次産業事業所数を民営事業所数で割ったもの。"},
+      {name: "O_3RD", label: "第三次産業(所)", func: "sum", args: ["O_3RD"], desc:"事業所のうち、第三次産業(産業大分類のうちF～R)に分類されるものの数。"},
+      {name: "o_3rdR", label: "第三次産業割合(%)", func: "rate", args: ["O_3RD", "OFFICE"], prec: 1, desc:"第三次産業事業所数を民営事業所数で割ったもの。"}
+    ]}, {name: "ind_worker", label: "産業別従業者数", data:[
+      {name: "WORKER", label: "民営事業所従業者数(人)", func: "sum", args: ["WORKER"], desc:"民営事業所(事業内容不詳を含む)の従業者の数。"},
+      {},
+      {name: "W_1ST", label: "第一次産業(人)", func: "sum", args: ["W_1ST"], desc:"事業所のうち、農林業・漁業に分類されるものに従事している従業者の数。"},
+      {name: "w_1stR", label: "第一次産業割合(%)", func: "rate", args: ["W_1ST", "WORKER"], prec: 1, desc:"第一次産業従業者数を民営事業所従業者数で割ったもの。"},
+      {name: "W_2ND", label: "第二次産業(人)", func: "sum", args: ["W_2ND"], desc:"事業所のうち、鉱業・建設業・製造業等に分類されるものに従事している従業者の数。"},
+      {name: "w_2ndR", label: "第二次産業割合(%)", func: "rate", args: ["W_2ND", "WORKER"], prec: 1, desc:"第二次産業従業者数を民営事業所従業者数で割ったもの。"},
+      {name: "W_3RD", label: "第三次産業(人)", func: "sum", args: ["W_3RD"], desc:"事業所のうち、第三次産業(産業大分類のうちF～R)に分類されるものに従事している従業者の数。"},
+      {name: "w_3rdR", label: "第三次産業割合(%)", func: "rate", args: ["W_3RD", "WORKER"], prec: 1, desc:"第三次産業従業者数を民営事業所従業者数で割ったもの。"}
+    ]}, {name: "sales_all", label: "売上・付加価値額(全産業)", data:[
+      {name: "SALES_EST", label: "売上金額試算値(百万円)", func: "sum", args: ["SALES_EST"], desc: "1年間(調査年前年)の売上利益。一部の産業は事業所別の売上高を算出することが困難であるため、推計値を用いる。"},
+      {name: "ADD_VALUE", label: "付加価値額(百万円)", func: "sum", args: ["ADD_VALUE"], desc: "生産活動によって新たに生み出された価値。売上高から費用等を引いたもの。"},
+      {name: "productivity", label: "労働生産性(百万円/人)", func: "div", args: ["ADD_VALUE", "WORKER"], prec: 2, desc: "付加価値額を民営事業所従業者数で割ったもの。"},
+      {}
+    ]}, {name: "sales_ind", label: "主要産業売上高", data:[
+      {name: "SALES_AGRI", label: "農林漁業(百万円)", func: "sum", args: ["SALES_AGRI"]},
+      {name: "SALES_MANU", label: "製造業(百万円)", func: "sum", args: ["SALES_MANU"]},
+      {name: "SALES_SALE", label: "卸・小売業(百万円)", func: "sum", args: ["SALES_SALE"]},
+      {name: "SALES_ACCO", label: "宿泊・飲食サービス業(百万円)", func: "sum", args: ["SALES_ACCO"]},
+      {name: "SALES_MEDI", label: "医療・福祉(百万円)", func: "sum", args: ["SALES_MEDI"]},
+      {}
+    ]}, {name: "manufacture", label: "製造業に関する指標", data:[
+      {name: "MANU_OFFICE", label: "事業所数(所)", func: "sum", args: ["MANU_OFFICE"], desc:"従業員数4人以上の製造業事業所の数。"},
+      {name: "MANU_WORKER", label: "従業者数(人)", func: "sum", args: ["MANU_WORKER"]},
+      {name: "MANU_SHIP", label: "製造品出荷額等(万円)", func: "sum", args: ["MANU_SHIP"], desc:"1年間(調査年前年)に製造された製品の出荷額。"},
+      {name: "MANU_ADD", label: "粗付加価値額(万円)", func: "sum", args: ["MANU_ADD"], desc:"製造品出荷額等から原材料費・燃料費・諸税等を差し引いたもの。"},
+      {name: "manu_shipPW", label: "従業員あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "MANU_WORKER"], prec: 1},
+      {name: "manu_shipPO", label: "事業所あたり出荷額(万円/所)", func: "div", args: ["MANU_SHIP", "MANU_OFFICE"], prec: 1},
+      {name: "manu_shipPC", label: "人口あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "POPULATION"], prec: 1},
+      {}
+    ]}, {name: "sales", label: "卸・小売業に関する指標", data:[
+      {name: "SL_OFFICE", label: "事業所数(所)", func: "sum", args: ["SL_OFFICE"], desc:"卸売業・小売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "SL_WORKER", label: "従業者数(人)", func: "sum", args: ["SL_WORKER"]},
+      {name: "SL_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["SL_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "sl_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["SL_SALES", "SL_OFFICE"], prec: 1},
+      {name: "sl_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "SL_WORKER"], prec: 1},
+      {name: "sl_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "POPULATION"], prec: 2}
+    ]}, {name: "wholesale", label: "卸売業に関する指標", data:[
+      {name: "WH_OFFICE", label: "事業所数(所)", func: "sum", args: ["WH_OFFICE"], desc:"卸売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "WH_WORKER", label: "従業者数(人)", func: "sum", args: ["WH_WORKER"]},
+      {name: "WH_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["WH_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "wh_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["WH_SALES", "WH_OFFICE"], prec: 1},
+      {name: "wh_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "WH_WORKER"], prec: 1},
+      {name: "wh_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "POPULATION"], prec: 2}
+    ]}, {name: "retail", label: "小売業に関する指標", data:[
+      {name: "RE_OFFICE", label: "事業所数(所)", func: "sum", args: ["RE_OFFICE"], desc:"小売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "RE_WORKER", label: "従業者数(人)", func: "sum", args: ["RE_WORKER"]},
+      {name: "RE_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["RE_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "re_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["RE_SALES", "RE_OFFICE"], prec: 1},
+      {name: "re_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "RE_WORKER"], prec: 1},
+      {name: "re_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "POPULATION"], prec: 2},
+      {name: "RE_AREA", label: "売場面積(㎡)", func: "sum", args: ["RE_AREA"]},
+      {}
+    ]}, {name: "csv", data: [
+      {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"]},
+      {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2},
+      {name: "OFFICE", label: "事業所数(所)", func: "sum", args: ["OFFICE"]},
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"]},
+      {name: "O_1ST", label: "【事】第一次産業(所)", func: "sum", args: ["O_1ST"]},
+      {name: "o_1stR", label: "【事】第一次産業割合(%)", func: "rate", args: ["O_1ST", "OFFICE"], prec: 1},
+      {name: "O_2ND", label: "【事】第二次産業(所)", func: "sum", args: ["O_2ND"]},
+      {name: "o_2ndR", label: "【事】第二次産業割合(%)", func: "rate", args: ["O_2ND", "OFFICE"], prec: 1},
+      {name: "O_3RD", label: "【事】第三次産業(所)", func: "sum", args: ["O_3RD"]},
+      {name: "o_3rdR", label: "【事】第三次産業割合(%)", func: "rate", args: ["O_3RD", "OFFICE"], prec: 1},
+      {name: "W_1ST", label: "【従】第一次産業(人)", func: "sum", args: ["W_1ST"]},
+      {name: "w_1stR", label: "【従】第一次産業割合(%)", func: "rate", args: ["W_1ST", "WORKER"], prec: 1},
+      {name: "W_2ND", label: "【従】第二次産業(人)", func: "sum", args: ["W_2ND"]},
+      {name: "w_2ndR", label: "【従】第二次産業割合(%)", func: "rate", args: ["W_2ND", "WORKER"], prec: 1},
+      {name: "W_3RD", label: "【従】第三次産業(人)", func: "sum", args: ["W_3RD"]},
+      {name: "w_3rdR", label: "【従】第三次産業割合(%)", func: "rate", args: ["W_3RD", "WORKER"], prec: 1},
+      {name: "SALES_EST", label: "売上金額試算値(百万円)", func: "sum", args: ["SALES_EST"]},
+      {name: "ADD_VALUE", label: "付加価値額(百万円)", func: "sum", args: ["ADD_VALUE"]},
+      {name: "productivity", label: "労働生産性(百万円/人)", func: "div", args: ["ADD_VALUE", "W_PRIVATE"], prec: 2},
+      {name: "SALES_AGRI", label: "農林漁業売上高(百万円)", func: "sum", args: ["SALES_AGRI"]},
+      {name: "SALES_MANU", label: "製造業売上高(百万円)", func: "sum", args: ["SALES_MANU"]},
+      {name: "SALES_SALE", label: "卸・小売業売上高(百万円)", func: "sum", args: ["SALES_SALE"]},
+      {name: "SALES_ACCO", label: "宿泊・飲食サービス業売上高(百万円)", func: "sum", args: ["SALES_ACCO"]},
+      {name: "SALES_MEDI", label: "医療・福祉売上高(百万円)", func: "sum", args: ["SALES_MEDI"]},
+      {name: "MANU_OFFICE", label: "【製】事業所数(所)", func: "sum", args: ["MANU_OFFICE"]},
+      {name: "MANU_WORKER", label: "【製】従業者数(人)", func: "sum", args: ["MANU_WORKER"]},
+      {name: "MANU_SHIP", label: "【製】製造品出荷額等(万円)", func: "sum", args: ["MANU_SHIP"]},
+      {name: "MANU_ADD", label: "【製】粗付加価値額(万円)", func: "sum", args: ["MANU_ADD"]},
+      {name: "manu_shipPW", label: "【製】従業員あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "MANU_WORKER"], prec: 1},
+      {name: "manu_shipPO", label: "【製】事業所あたり出荷額(万円/所)", func: "div", args: ["MANU_SHIP", "MANU_OFFICE"], prec: 1},
+      {name: "manu_shipPC", label: "【製】人口あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "POPULATION"], prec: 1},
+      {name: "SL_OFFICE", label: "【卸・小】事業所数(所)", func: "sum", args: ["SL_OFFICE"]},
+      {name: "SL_WORKER", label: "【卸・小】従業者数(人)", func: "sum", args: ["SL_WORKER"]},
+      {name: "SL_SALES", label: "【卸・小】年間商品販売額(百万円)", func: "sum", args: ["SL_SALES"]},
+      {name: "sl_salesPO", label: "【卸・小】事業所あたり商品販売額(百万円/所)", func: "div", args: ["SL_SALES", "SL_OFFICE"], prec: 1},
+      {name: "sl_salesPW", label: "【卸・小】従業員あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "SL_WORKER"], prec: 1},
+      {name: "sl_salesPC", label: "【卸・小】人口あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "POPULATION"], prec: 2},
+      {name: "WH_OFFICE", label: "【卸】事業所数(所)", func: "sum", args: ["WH_OFFICE"]},
+      {name: "WH_WORKER", label: "【卸】従業者数(人)", func: "sum", args: ["WH_WORKER"]},
+      {name: "WH_SALES", label: "【卸】年間商品販売額(百万円)", func: "sum", args: ["WH_SALES"]},
+      {name: "wh_salesPO", label: "【卸】事業所あたり商品販売額(百万円/所)", func: "div", args: ["WH_SALES", "WH_OFFICE"], prec: 1},
+      {name: "wh_salesPW", label: "【卸】従業員あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "WH_WORKER"], prec: 1},
+      {name: "wh_salesPC", label: "【卸】人口あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "POPULATION"], prec: 2},
+      {name: "RE_OFFICE", label: "【小】事業所数(所)", func: "sum", args: ["RE_OFFICE"]},
+      {name: "RE_WORKER", label: "【小】従業者数(人)", func: "sum", args: ["RE_WORKER"]},
+      {name: "RE_SALES", label: "【小】年間商品販売額(百万円)", func: "sum", args: ["RE_SALES"]},
+      {name: "re_salesPO", label: "【小】事業所あたり商品販売額(百万円/所)", func: "div", args: ["RE_SALES", "RE_OFFICE"], prec: 1},
+      {name: "re_salesPW", label: "【小】従業員あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "RE_WORKER"], prec: 1},
+      {name: "re_salesPC", label: "【小】人口あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "POPULATION"], prec: 2},
+      {name: "RE_AREA", label: "【小】売場面積(㎡)", func: "sum", args: ["RE_AREA"]}
+    ]}];
+
     var polygon2015Json;
     var polygon2010Json;
     var polygon2005Json;
     var polygon2000Json;
+    var keizai2016Json;
     var line2015Json;
     var line2010Json;
     var line2005Json;
     var line2000Json;
+    var line2016Json;
     var polygon2020Json;
     var line2020Json;
 
     async function getResources(name, date){
-
-      return $.getJSON(name, function(json){
+      var path = "./json/" + name;
+      return $.getJSON(path, function(json){
         var features = json.features;
         if (json.name === "line"){
 
@@ -418,14 +541,14 @@
 
     //カーソル位置の地物情報表示
     function rewriteCursorTable(obj){
-      //暫定処理(2015年のみ郡名を表示)
-      if(currentSelectedDataset.name === "kokusei2015"){
+      //暫定処理(2015年・経済センサスのみ郡名を表示)
+      if(currentSelectedDataset.name === "kokusei2015" || currentSelectedDataset.name === "keizaicensus2016"){
         document.getElementById('mouse_name').innerHTML = obj.KEN + (obj.GUN || "") + obj.NAME;
       }else{
         document.getElementById('mouse_name').innerHTML = obj.KEN + obj.NAME;
       }
       currentSelectedCategory.forEach(function(f, i){
-        document.getElementById('mouseCol_data' + i).innerHTML = calc([obj], f.func, f.prec, f.args);
+        document.getElementById('mouseCol_data' + i).innerHTML = calc(obj, f.func, f.prec, f.args);
       });
     }
 
@@ -494,22 +617,52 @@
 
     //グループの値合計用
     function sum(arr, key){
-      return arr.reduce((sum, e) => {
-        return sum + e[key];
-      },0);
+      if(Array.isArray(arr)){ //arrが配列である場合、配列の合計を返す(非数値は0とみなす)
+        return arr.reduce((sum, e) => {
+          return sum + (Number(e[key]) || 0);
+        },0);
+      }else{ //arrが配列でない場合(=カーソル位置テーブル・個別地物テーブル)
+        if(isNaN(Number(arr[key]))){ //値が非数値(秘匿値)
+          return arr[key];
+        }else{ //値が数値(0を含む)
+          return Number(arr[key]);
+        }
+      }
+
     }
 
     //各種計算用関数
     //features: 計算に使用するオブジェクトの配列;  func: 計算式の種類;  prec: 小数点以下の桁数;  args: 計算に用いるkeyの名称の配列(要求される数はfuncによる)
     function calc(features, func, prec = 0, args){
+      var result;
       if(func === "div"){ //割り算　args[0]/args[1]
-        return (sum(features, args[0]) / sum(features, args[1]) || 0).toFixed(prec);
+        result = sum(features, args[0]) / sum(features, args[1]);
+        if(isNaN(result)){
+          return "-";
+        }else{
+          return result.toFixed(prec);
+        }
       }else if(func === "rate"){ //割合(百分率) args[0]/args[1]*100
-        return (sum(features, args[0]) / sum(features, args[1]) * 100 || 0).toFixed(prec);
+        result = sum(features, args[0]) / sum(features, args[1]);
+        if(isNaN(result)){
+          return "-";
+        }else{
+          return (result * 100).toFixed(prec);
+        }
       }else if(func === "incr_rate"){ //増加率(百分率) args[0]/(args[1]-args[0])*100
-        return (sum(features, args[0]) / (sum(features, args[1]) - sum(features, args[0])) * 100 || 0).toFixed(prec);
+        result = sum(features, args[0]) / (sum(features, args[1]) - sum(features, args[0]));
+        if(isNaN(result)){
+          return "-";
+        }else{
+          return (result * 100).toFixed(prec);
+        }
       }else if(func === "sum"){ //足し算 args[0]
-        return (sum(features, args[0])).toFixed(prec);
+        result = sum(features, args[0]);
+        if(isNaN(result)){
+          return result;
+        }else{
+          return result.toFixed(prec);
+        }
       }else{ //空白
         return "";
       }
@@ -530,7 +683,7 @@
       //新しい地物一覧表を追加
       selectedFeatures[n].forEach(function(f){
         var row = document.createElement("tr");
-        var value = calc([f], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
+        var value = calc(f, currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
         row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td>";
         table.appendChild(row);
       });
@@ -808,7 +961,7 @@
             $("<td>", {text: "G" + groupNames[i].substr(4)}).appendTo(tr2);
             csvCate.forEach(cate => {
               if(cate.func){
-                var tableData = calc([fts], cate.func, cate.prec, cate.args);
+                var tableData = calc(fts, cate.func, cate.prec, cate.args);
                 $("<td>", {text: tableData, css:{textAlign: "right"}}).appendTo(tr2);
               }
             });
@@ -912,8 +1065,8 @@
     <div id="map"></div>
   </div>
   <div>
-    使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査速報値</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option></select>
-    <span class="attribution">データ出典:<a href="https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001136464" id="attribution" target="_blank">令和2年国勢調査(速報集計)</a></span>
+    使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査速報値</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
+    <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査(速報集計)</a></span>
   </div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
