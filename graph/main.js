@@ -8,7 +8,7 @@ window.onload = function(){
   req.send(null);
 
   req.onload = function(){
-    const tmp = req.responseText.split("\r\n");
+    const tmp = req.responseText.split("\n");
     for(let i=0; i<tmp.length; i++){
       dataArr[i] = tmp[i].split(",");
     }
