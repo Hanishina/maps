@@ -1,0 +1,281 @@
+<svg version="1.1"
+  width="1400" height="700" viewBox="-100 -600 1400 700"
+  xmlns="http://www.w3.org/2000/svg">
+
+  <rect x="-100" y="-600" width="1400" height="700" fill="#f0f0f0"/>
+
+  <g stroke="#595959">
+    <path d="M 0 0 V -700"/>
+    <path d="M 100 0 V -700"/>
+    <path d="M 200 0 V -700"/>
+    <path d="M 300 0 V -700"/>
+    <path d="M 400 0 V -700"/>
+    <path d="M 500 0 V -700"/>
+    <path d="M 600 0 V -700"/>
+    <path d="M 700 0 V -700"/>
+    <path d="M 800 0 V -700"/>
+    <path d="M 900 0 V -700"/>
+    <path d="M 1000 0 V -700"/>
+    <path d="M 1100 0 V -700"/>
+
+    <!-- 80万(倍率　-1600) -->
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -62.5 H 1100"/>
+    <path d="M 0 -125 H 1100"/>
+    <path d="M 0 -187.5 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -312.5 H 1100"/>
+    <path d="M 0 -375 H 1100"/>
+    <path d="M 0 -437.5 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+    <!-- -->
+
+    <!-- 120万(倍率　-2400)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -41.67 H 1100"/>
+    <path d="M 0 -83.33 H 1100"/>
+    <path d="M 0 -125 H 1100"/>
+    <path d="M 0 -166.67 H 1100"/>
+    <path d="M 0 -208.33 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -291.67 H 1100"/>
+    <path d="M 0 -333.33 H 1100"/>
+    <path d="M 0 -375 H 1100"/>
+    <path d="M 0 -416.67 H 1100"/>
+    <path d="M 0 -458.33 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 160万(倍率　-3200)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -62.5 H 1100"/>
+    <path d="M 0 -125 H 1100"/>
+    <path d="M 0 -187.5 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -312.5 H 1100"/>
+    <path d="M 0 -375 H 1100"/>
+    <path d="M 0 -437.5 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 200万(倍率　-4000)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -50 H 1100"/>
+    <path d="M 0 -100 H 1100"/>
+    <path d="M 0 -150 H 1100"/>
+    <path d="M 0 -200 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -300 H 1100"/>
+    <path d="M 0 -350 H 1100"/>
+    <path d="M 0 -400 H 1100"/>
+    <path d="M 0 -450 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 240万(倍率　-4800)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -41.67 H 1100"/>
+    <path d="M 0 -83.33 H 1100"/>
+    <path d="M 0 -125 H 1100"/>
+    <path d="M 0 -166.67 H 1100"/>
+    <path d="M 0 -208.33 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -291.67 H 1100"/>
+    <path d="M 0 -333.33 H 1100"/>
+    <path d="M 0 -375 H 1100"/>
+    <path d="M 0 -416.67 H 1100"/>
+    <path d="M 0 -458.33 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 300万(倍率　-6000)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -50 H 1100"/>
+    <path d="M 0 -100 H 1100"/>
+    <path d="M 0 -150 H 1100"/>
+    <path d="M 0 -200 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -300 H 1100"/>
+    <path d="M 0 -350 H 1100"/>
+    <path d="M 0 -400 H 1100"/>
+    <path d="M 0 -450 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 400万(倍率　-8000)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -62.5 H 1100"/>
+    <path d="M 0 -125 H 1100"/>
+    <path d="M 0 -187.5 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -312.5 H 1100"/>
+    <path d="M 0 -375 H 1100"/>
+    <path d="M 0 -437.5 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+
+    <!-- 1000万(倍率　-20000)
+    <path d="M 0 0 H 1100"/>
+    <path d="M 0 -50 H 1100"/>
+    <path d="M 0 -100 H 1100"/>
+    <path d="M 0 -150 H 1100"/>
+    <path d="M 0 -200 H 1100"/>
+    <path d="M 0 -250 H 1100"/>
+    <path d="M 0 -300 H 1100"/>
+    <path d="M 0 -350 H 1100"/>
+    <path d="M 0 -400 H 1100"/>
+    <path d="M 0 -450 H 1100"/>
+    <path d="M 0 -500 H 1100"/>
+     -->
+  </g>
+
+  <g id="lineArea">
+    <!--ライン描画位置-->
+  </g>
+
+  <g id="dotArea">
+    <!--ドット描画位置-->
+  </g>
+
+  <g style = "font-family: Century Gothic; font-size: 16px">
+    <!-- 80万(倍率　-1600) -->
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-62.5" text-anchor="end">100000</text>
+    <text x="-5" y="-125" text-anchor="end">200000</text>
+    <text x="-5" y="-187.5" text-anchor="end">300000</text>
+    <text x="-5" y="-250" text-anchor="end">400000</text>
+    <text x="-5" y="-312.5" text-anchor="end">500000</text>
+    <text x="-5" y="-375" text-anchor="end">600000</text>
+    <text x="-5" y="-437.5" text-anchor="end">700000</text>
+    <text x="-5" y="-500" text-anchor="end">800000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+    <!-- -->
+
+    <!-- 120万(倍率　-2400)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-41.67" text-anchor="end">100000</text>
+    <text x="-5" y="-83.33" text-anchor="end">200000</text>
+    <text x="-5" y="-125" text-anchor="end">300000</text>
+    <text x="-5" y="-166.67" text-anchor="end">400000</text>
+    <text x="-5" y="-208.33" text-anchor="end">500000</text>
+    <text x="-5" y="-250" text-anchor="end">600000</text>
+    <text x="-5" y="-291.67" text-anchor="end">700000</text>
+    <text x="-5" y="-333.33" text-anchor="end">800000</text>
+    <text x="-5" y="-375" text-anchor="end">900000</text>
+    <text x="-5" y="-416.67" text-anchor="end">1000000</text>
+    <text x="-5" y="-458.33" text-anchor="end">1100000</text>
+    <text x="-5" y="-500" text-anchor="end">1200000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 160万(倍率　-3200)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-62.5" text-anchor="end">200000</text>
+    <text x="-5" y="-125" text-anchor="end">400000</text>
+    <text x="-5" y="-187.5" text-anchor="end">600000</text>
+    <text x="-5" y="-250" text-anchor="end">800000</text>
+    <text x="-5" y="-312.5" text-anchor="end">1000000</text>
+    <text x="-5" y="-375" text-anchor="end">1200000</text>
+    <text x="-5" y="-437.5" text-anchor="end">1400000</text>
+    <text x="-5" y="-500" text-anchor="end">1600000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 200万(倍率　-4000)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-50" text-anchor="end">200000</text>
+    <text x="-5" y="-100" text-anchor="end">400000</text>
+    <text x="-5" y="-150" text-anchor="end">600000</text>
+    <text x="-5" y="-200" text-anchor="end">800000</text>
+    <text x="-5" y="-250" text-anchor="end">1000000</text>
+    <text x="-5" y="-300" text-anchor="end">1200000</text>
+    <text x="-5" y="-350" text-anchor="end">1400000</text>
+    <text x="-5" y="-400" text-anchor="end">1600000</text>
+    <text x="-5" y="-450" text-anchor="end">1800000</text>
+    <text x="-5" y="-500" text-anchor="end">2000000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 240万(倍率　-4800)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-41.67" text-anchor="end">200000</text>
+    <text x="-5" y="-83.33" text-anchor="end">400000</text>
+    <text x="-5" y="-125" text-anchor="end">600000</text>
+    <text x="-5" y="-166.67" text-anchor="end">800000</text>
+    <text x="-5" y="-208.33" text-anchor="end">1000000</text>
+    <text x="-5" y="-250" text-anchor="end">1200000</text>
+    <text x="-5" y="-291.67" text-anchor="end">1400000</text>
+    <text x="-5" y="-333.33" text-anchor="end">1600000</text>
+    <text x="-5" y="-375" text-anchor="end">1800000</text>
+    <text x="-5" y="-416.67" text-anchor="end">2000000</text>
+    <text x="-5" y="-458.33" text-anchor="end">2200000</text>
+    <text x="-5" y="-500" text-anchor="end">2400000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 300万(倍率　-6000)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-50" text-anchor="end">300000</text>
+    <text x="-5" y="-100" text-anchor="end">600000</text>
+    <text x="-5" y="-150" text-anchor="end">900000</text>
+    <text x="-5" y="-200" text-anchor="end">1200000</text>
+    <text x="-5" y="-250" text-anchor="end">1500000</text>
+    <text x="-5" y="-300" text-anchor="end">1800000</text>
+    <text x="-5" y="-350" text-anchor="end">2100000</text>
+    <text x="-5" y="-400" text-anchor="end">2400000</text>
+    <text x="-5" y="-450" text-anchor="end">2700000</text>
+    <text x="-5" y="-500" text-anchor="end">3000000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 400万(倍率　-8000)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-62.5" text-anchor="end">500000</text>
+    <text x="-5" y="-125" text-anchor="end">1000000</text>
+    <text x="-5" y="-187.5" text-anchor="end">1500000</text>
+    <text x="-5" y="-250" text-anchor="end">2000000</text>
+    <text x="-5" y="-312.5" text-anchor="end">2500000</text>
+    <text x="-5" y="-375" text-anchor="end">3000000</text>
+    <text x="-5" y="-437.5" text-anchor="end">3500000</text>
+    <text x="-5" y="-500" text-anchor="end">4000000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <!-- 1000万(倍率　-20000)
+    <text x="-5" y="0" text-anchor="end">0</text>
+    <text x="-5" y="-50" text-anchor="end">1000000</text>
+    <text x="-5" y="-100" text-anchor="end">2000000</text>
+    <text x="-5" y="-150" text-anchor="end">3000000</text>
+    <text x="-5" y="-200" text-anchor="end">4000000</text>
+    <text x="-5" y="-250" text-anchor="end">5000000</text>
+    <text x="-5" y="-300" text-anchor="end">6000000</text>
+    <text x="-5" y="-350" text-anchor="end">7000000</text>
+    <text x="-5" y="-400" text-anchor="end">8000000</text>
+    <text x="-5" y="-450" text-anchor="end">9000000</text>
+    <text x="-5" y="-500" text-anchor="end">10000000</text>
+    <text x="-5" y="-520" text-anchor="end">(人)</text>
+     -->
+
+    <text x="0" y="15" text-anchor="middle">1960</text>
+    <text x="100" y="15" text-anchor="middle">1965</text>
+    <text x="200" y="15" text-anchor="middle">1970</text>
+    <text x="300" y="15" text-anchor="middle">1975</text>
+    <text x="400" y="15" text-anchor="middle">1980</text>
+    <text x="500" y="15" text-anchor="middle">1985</text>
+    <text x="600" y="15" text-anchor="middle">1990</text>
+    <text x="700" y="15" text-anchor="middle">1995</text>
+    <text x="800" y="15" text-anchor="middle">2000</text>
+    <text x="900" y="15" text-anchor="middle">2005</text>
+    <text x="1000" y="15" text-anchor="middle">2010</text>
+    <text x="1100" y="15" text-anchor="middle">2015 (年)</text>
+  </g>
+
+  <g id="labelArea" style = "font-family: Source Han Sans; font-size: 16px">
+    <!--ラベル描画位置-->
+  </g>
+
+  <g>
+    <text id="graphTitle" x="550" y="60" text-anchor="middle" font-family="Yu Gothic" font-size="28px">---の市の人口推移(D)</text>
+  </g>
+
+</svg>
