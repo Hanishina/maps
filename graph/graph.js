@@ -32,14 +32,15 @@ window.onload = function(){
   highlightArea = svgDoc.getElementById("highlightArea");
   mouseoverArea = svgDoc.getElementById("mouseoverArea");
 
+
   $(svgDoc).find(".zoomBtn").on({"mouseenter": (e)=>{
     $(e.currentTarget.children[0]).attr("fill", "#aaa");
   }, "mouseleave": (e)=>{
     $(e.currentTarget.children[0]).attr("fill", "#fff");
   }});
 
-  $(svgDoc).find("#plus").on("click", plus);
-  $(svgDoc).find("#minus").on("click", minus);
+  $(svgDoc).find("#plus").on("click", ()=>{plus()});
+  $(svgDoc).find("#minus").on("click", ()=>{minus()});
 
   svgDoc.addEventListener("wheel", (e)=>{
     e.preventDefault();
@@ -49,6 +50,16 @@ window.onload = function(){
       plus();
     }
   }, {passive: false});
+
+  let gesture = new Hammer(svgDoc);
+  gesture.get("pinch").set({enable: true});
+  gesture.on("pinch", (e)=>{
+    if(e.additionalEvent === "pinchin"){
+      minus(e.scale);
+    }else if(e.additionalEvent === "pinchout"){
+      plus(e.scale);
+    }
+  });
 
   kenArr.forEach((e)=>{
     $("#select").append($("<option>").html(e.name + (e.cond || "")).val(e.code));
@@ -156,17 +167,19 @@ window.onload = function(){
       labelArea.appendChild(label);
 
       for(let i = 0; i <= 11; i++){
-        const line = svgDoc.createElementNS("http://www.w3.org/2000/svg", "path");
-        line.setAttribute("class", "line");
-        line.setAttribute("name", row[0]);
-        line.setAttribute("d", "M " + 100*i + " " + ysA[i] +  "L " + 100*(i+1) + " " + ysA[i+1]);
-        line.setAttribute("stroke",row[2]);
-        line.setAttribute("stroke-width", "2px");
-        if(mergeArr[i+1] > 0){
-          line.setAttribute("stroke-dasharray", "5,5");
+        if(ysA[i] != null && ysA[i+1] != null){
+          const line = svgDoc.createElementNS("http://www.w3.org/2000/svg", "path");
+          line.setAttribute("class", "line");
+          line.setAttribute("name", row[0]);
+          line.setAttribute("d", "M " + 100*i + " " + ysA[i] +  "L " + 100*(i+1) + " " + ysA[i+1]);
+          line.setAttribute("stroke",row[2]);
+          line.setAttribute("stroke-width", "2px");
+          if(mergeArr[i+1] > 0){
+            line.setAttribute("stroke-dasharray", "5,5");
+          }
+          lineArea.appendChild(line);
         }
-        lineArea.appendChild(line);
-      };
+      }
     });
 
     const graphTitle = svgDoc.getElementById("graphTitle");
@@ -203,6 +216,10 @@ window.onload = function(){
       removeChildren(highlightArea);
     });
 
+    $(svgDoc).find("text").each((i, elem)=>{
+      $(elem).css("user-select", "none");
+    });
+
     /*const serializer = new XMLSerializer();
     exportData.push(serializer.serializeToString(svgDoc));*/
 
@@ -214,7 +231,7 @@ window.onload = function(){
     }
   }
 
-  function plus(){
+  function plus(delta = 1.2){
     removeChildren(baselineArea);
     removeChildren(lineArea);
     removeChildren(dotArea);
@@ -225,14 +242,14 @@ window.onload = function(){
     $(svgDoc).find(".popup").each((i, elem)=>{
       elem.setAttribute("display", "none");
     });
-    zoomRate = zoomRate / 1.2;
+    zoomRate = zoomRate / delta;
     if(zoomRate > -50){
       zoomRate = -50;
     }
     write();
   }
 
-  function minus(){
+  function minus(delta = 0.83){
     removeChildren(baselineArea);
     removeChildren(lineArea);
     removeChildren(dotArea);
@@ -243,7 +260,7 @@ window.onload = function(){
     $(svgDoc).find(".popup").each((i, elem)=>{
       elem.setAttribute("display", "none");
     });
-    zoomRate = zoomRate * 1.2;
+    zoomRate = zoomRate / delta;
     if(zoomRate < -16000){
       zoomRate = -16000;
     }
