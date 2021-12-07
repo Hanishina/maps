@@ -9,7 +9,6 @@ let kenArr = [{code: "01", name: "北海道"}, {code: "02", name: "青森県"}, 
 window.onload = function(){
   let zoomRate = -50 * 1.2 ** 5;
   let sliderTrans = 50;
-  let dragging = false;
   let svgDoc;
   let lineArea;
   let dotArea;
@@ -48,7 +47,6 @@ window.onload = function(){
 
   $(svgDoc).find("#slideKnob").on("mousedown touchstart", (e)=>{
     e.preventDefault();
-    dragging = true;
     $(svgDoc).on("mousemove touchmove", (e)=>{
       let YOnDoc = e.clientY || e.touches[0].clientY;
       if((200 - YOnDoc) <= 0 && (200 - YOnDoc) >= -320){
@@ -65,7 +63,6 @@ window.onload = function(){
   });
 
   $(svgDoc).on("mouseup touchend", (e)=>{
-    dragging = false;
     $(svgDoc).off("mousemove touchmove");
   });
 
@@ -262,7 +259,7 @@ window.onload = function(){
   }
 
   function plus(){
-    deleteGraph()
+    deleteGraph();
     zoomRate = zoomRate / 1.2;
     sliderTrans = sliderTrans - 10;
     if(sliderTrans < 0){
@@ -274,7 +271,7 @@ window.onload = function(){
   }
 
   function minus(){
-    deleteGraph()
+    deleteGraph();
     zoomRate = zoomRate * 1.2;
     sliderTrans = sliderTrans + 10;
     if(sliderTrans > 320){
@@ -286,13 +283,8 @@ window.onload = function(){
   }
 
   function selectKen(){
-    removeChildren(baselineArea);
-    removeChildren(lineArea);
-    removeChildren(dotArea);
-    removeChildren(labelArea);
-    removeChildren(axisLabelArea);
-    removeChildren(highlightArea);
-    removeChildren(mouseoverArea);
+    deleteGraph();
+    $(svgDoc).find("#graphTitle").text("読み込み中...");
     dataArr = [];
     if($("select option:selected").val() == 50){
       sliderTrans = 200;
