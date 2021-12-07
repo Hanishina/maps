@@ -7,7 +7,9 @@ let kenArr = [{code: "01", name: "北海道"}, {code: "02", name: "青森県"}, 
 , {code: "50", name: "全国", cond:"(50万以上)"}, {code: "52", name: "東北地方", cond:"(10万以上)"}, {code: "53", name: "関東地方", cond:"(30万以上)"}, {code: "54", name: "北陸甲信越地方", cond:"(10万以上)"}, {code: "55", name: "東海地方", cond:"(15万以上)"}, {code: "56", name: "近畿地方", cond:"(20万以上)"}, {code: "57", name: "中国地方", cond:"(10万以上)"}, {code: "58", name: "四国地方", cond:"(10万以上)"}, {code: "59", name: "九州地方", cond:"(15万以上)"}];
 
 window.onload = function(){
-  let zoomRate = -160;
+  let zoomRate = -50 * 1.2 ** 5;
+  let sliderTrans = 50;
+  let dragging = false;
   let svgDoc;
   let lineArea;
   let dotArea;
@@ -42,6 +44,31 @@ window.onload = function(){
   $(svgDoc).find("#plus").on("click", ()=>{plus()});
   $(svgDoc).find("#minus").on("click", ()=>{minus()});
 
+  $(svgDoc).find("#slideKnob").attr("transform", "translate(0, 50)");
+
+  $(svgDoc).find("#slideKnob").on("mousedown touchstart", (e)=>{
+    e.preventDefault();
+    dragging = true;
+    $(svgDoc).on("mousemove touchmove", (e)=>{
+      let YOnDoc = e.clientY || e.touches[0].clientY;
+      if((200 - YOnDoc) <= 0 && (200 - YOnDoc) >= -320){
+        let newSliderTrans = ((200 - YOnDoc)/10).toFixed() * -10;
+        if(sliderTrans !== newSliderTrans){
+          sliderTrans = newSliderTrans;
+          deleteGraph();
+          $(svgDoc).find("#slideKnob").attr("transform", "translate(0, " + sliderTrans + ")");
+          zoomRate = -50 * 1.2 ** (sliderTrans/10);
+          write();
+        }
+      }
+    });
+  });
+
+  $(svgDoc).on("mouseup touchend", (e)=>{
+    dragging = false;
+    $(svgDoc).off("mousemove touchmove");
+  });
+
   svgDoc.addEventListener("wheel", (e)=>{
     e.preventDefault();
     if(e.deltaY >= 0){
@@ -50,16 +77,6 @@ window.onload = function(){
       plus();
     }
   }, {passive: false});
-
-  let gesture = new Hammer(svgDoc);
-  gesture.get("pinch").set({enable: true});
-  gesture.on("pinch", (e)=>{
-    if(e.additionalEvent === "pinchin"){
-      minus(e.scale);
-    }else if(e.additionalEvent === "pinchout"){
-      plus(e.scale);
-    }
-  });
 
   kenArr.forEach((e)=>{
     $("#select").append($("<option>").html(e.name + (e.cond || "")).val(e.code));
@@ -225,46 +242,47 @@ window.onload = function(){
 
   }
 
+  function deleteGraph(){
+    removeChildren(baselineArea);
+    removeChildren(lineArea);
+    removeChildren(dotArea);
+    removeChildren(labelArea);
+    removeChildren(axisLabelArea);
+    removeChildren(highlightArea);
+    removeChildren(mouseoverArea);
+    $(svgDoc).find(".popup").each((i, elem)=>{
+      elem.setAttribute("display", "none");
+    });
+  }
+
   function removeChildren(elem){
     while(elem.firstChild){
       elem.removeChild(elem.firstChild);
     }
   }
 
-  function plus(delta = 1.2){
-    removeChildren(baselineArea);
-    removeChildren(lineArea);
-    removeChildren(dotArea);
-    removeChildren(labelArea);
-    removeChildren(axisLabelArea);
-    removeChildren(highlightArea);
-    removeChildren(mouseoverArea);
-    $(svgDoc).find(".popup").each((i, elem)=>{
-      elem.setAttribute("display", "none");
-    });
-    zoomRate = zoomRate / delta;
-    if(zoomRate > -50){
+  function plus(){
+    deleteGraph()
+    zoomRate = zoomRate / 1.2;
+    sliderTrans = sliderTrans - 10;
+    if(sliderTrans < 0){
       zoomRate = -50;
+      sliderTrans = 0;
     }
     write();
+    $(svgDoc).find("#slideKnob").attr("transform", "translate(0, " + sliderTrans + ")");
   }
 
-  function minus(delta = 0.83){
-    removeChildren(baselineArea);
-    removeChildren(lineArea);
-    removeChildren(dotArea);
-    removeChildren(labelArea);
-    removeChildren(axisLabelArea);
-    removeChildren(highlightArea);
-    removeChildren(mouseoverArea);
-    $(svgDoc).find(".popup").each((i, elem)=>{
-      elem.setAttribute("display", "none");
-    });
-    zoomRate = zoomRate / delta;
-    if(zoomRate < -16000){
-      zoomRate = -16000;
+  function minus(){
+    deleteGraph()
+    zoomRate = zoomRate * 1.2;
+    sliderTrans = sliderTrans + 10;
+    if(sliderTrans > 320){
+      zoomRate = -50 * 1.2 ** 32;
+      sliderTrans = 320;
     }
     write();
+    $(svgDoc).find("#slideKnob").attr("transform", "translate(0, " + sliderTrans + ")");
   }
 
   function selectKen(){
@@ -277,12 +295,16 @@ window.onload = function(){
     removeChildren(mouseoverArea);
     dataArr = [];
     if($("select option:selected").val() == 50){
-      zoomRate = -1280;
+      sliderTrans = 200;
+      zoomRate = -50 * 1.2 ** 20;
     }else if($("select option:selected").val() > 50){
-      zoomRate = -640;
+      sliderTrans = 100;
+      zoomRate = -50 * 1.2 ** 10;
     }else{
-      zoomRate = -160;
+      sliderTrans = 50;
+      zoomRate = -50 * 1.2 ** 5;
     }
+    $(svgDoc).find("#slideKnob").attr("transform", "translate(0, " + sliderTrans + ")");
     req = new XMLHttpRequest();
     req.open("get", "./graph/data/" + $("select").val() + ".csv");
     req.send(null);

@@ -50,6 +50,8 @@
     <text x="1000" y="15" text-anchor="middle">2010</text>
     <text x="1100" y="15" text-anchor="middle">2015</text>
     <text x="1200" y="15" text-anchor="middle">2020 (年)</text>
+
+    <text x="-80" y="-670" text-anchor="middle">(人)</text>
   </g>
 
   <g id="labelArea" style = "font-family: Source Han Sans; font-size: 16px">
@@ -59,12 +61,16 @@
   <g>
     <text id="graphTitle" x="600" y="60" text-anchor="middle" font-family="Yu Gothic" font-size="28px">---の市の人口推移(A)</text>
     <g class="zoomBtn" id="plus">
-      <path d="M 1320 -650 l 40 0 l 0 40 l -40 0 l 0 -40" stroke="#000" fill="#fff"></path>
-      <path d="M 1325 -630 l 30 0 m -15 -15 l 0 30" stroke="#05a" stroke-width="7" fill-opacity="0"></path>
+      <path d="M 1320 -650 l 40 0 l 0 40 l -40 0 l 0 -40" stroke="#000" fill="#fff" style="cursor: pointer;"></path>
+      <path d="M 1325 -630 l 30 0 m -15 -15 l 0 30" stroke="#05a" stroke-width="7" fill-opacity="0" style="cursor: pointer;"></path>
     </g>
     <g class="zoomBtn" id="minus">
-      <path d="M 1320 -580 l 40 0 l 0 40 l -40 0 l 0 -40" stroke="#000" fill="#fff"></path>
-      <path d="M 1325 -560 l 30 0" stroke="#05a" stroke-width="7" fill-opacity="0"></path>
+      <path d="M 1320 -580 l 40 0 l 0 40 l -40 0 l 0 -40" stroke="#000" fill="#fff" style="cursor: pointer;"></path>
+      <path d="M 1325 -560 l 30 0" stroke="#05a" stroke-width="7" fill-opacity="0" style="cursor: pointer;"></path>
+    </g>
+    <g id="slider">
+      <path d="M 1340 -500 V -180" stroke="#aaa" stroke-width="10" stroke-linecap="round"></path>
+      <path id="slideKnob" d="M 1325 -510 l 30 0 l 0 20 l -30 0 l 0 -20" fill="#05a" style="cursor: pointer;"></path>
     </g>
   </g>
 
