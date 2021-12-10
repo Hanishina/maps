@@ -26,6 +26,10 @@
       width: 460px;
       max-width: 460px; } }
 
+  .leaflet-sidebar {
+    width: 700px;
+    max-width: 60%; }
+
 .leaflet-sidebar-left {
   left: 0; }
   @media (min-width: 768px) {
