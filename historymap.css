@@ -42,7 +42,7 @@ body{
 }
 
 .title{
-  font-family: '游明朝';
+  font-family: '游明朝', 'serif';
   font-weight: bold;
   font-size: 30px;
 }
@@ -88,12 +88,30 @@ h2{
   margin-bottom: 5px;
 }
 
+h4{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 i {
   margin: 5px;
 }
 
 input{
   margin: 0px 5px;
+}
+
+.listTitle{
+  font-weight: bold;
+  color: #555;
+}
+
+ul.mylist{
+  list-style-type: none;
+}
+
+ul.mylist li:before{
+  content: "◆"
 }
 
 /*トップページ*/

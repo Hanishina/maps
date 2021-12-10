@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>人口計算機について</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+  <div><a  class="title" href="./calculator.html">市区町村人口計算機</a></div>
+  <h2>人口計算機について</h2>
+  <div>
+    日本の市区町村の人口・面積など様々なデータを、複数の市区町村間で合計して表示できるツールです。<br>
+    地図上の市区町村をクリックすると、左の計算機パネルにクリックした市区町村のデータの合計が表示されます。<br>
+  </div>
+
+  <h2>操作説明</h2>
+  <div>
+    <img src="./img/calculator_window_e.png" width="800px"><br>
+    １．ページ下部の「使用データの切り替え」から、表示したい統計を選ぶ。<br>
+    ２．地図上から市区町村を選び、クリックする。人口計算機パネルの「グループ」にその市区町村のデータが追加される。<br>
+    <br>
+    選択した市区町村をもう一度クリックすると選択が解除されます。<br>
+    グループが複数ある場合、クリックした市区町村は赤枠で表示されているグループに追加されます。<br>
+    グループを切り替えるには、人口計算機パネルの該当グループの枠内をクリックしてください。<br>
+    クリックした市区町村が既に別のグループに存在する場合、元のグループからはその市区町村が削除され、新しいグループに追加されます。
+  </div>
+
+  <h2>パネル各部の機能</h2>
+  <div>
+    <img src="./img/calculator_panel_e.png">
+    <h4>１．パネル展開・格納ボタン</h4>
+    <h4>２．データセット選択</h4>
+    画面上に表示するデータの種類を選ぶ。
+    <h4>３．カーソル位置の地物情報</h4>
+    地図上でカーソルの位置にある市区町村のデータが表示される。
+    <h4>４．グループ</h4>
+    グループごとの集計データが表示される。<br>
+    データ名に<i class="fas fa-question-circle" style="color:#0f5f91;"></i>マークがついている場合、マークにカーソルを乗せるとデータの説明が表示される。
+    <h4>５．グループ表示色</h4>
+    地図上でグループに追加された市区町村に着色する色。クリックで色を変更できる。
+    <h4>６．選択リセットボタン</h4>
+    そのグループの選択をリセットする。
+    <h4>７．グループ削除ボタン</h4>
+    そのグループを削除する。
+    <h4>８．選択地物数表示・個別地物テーブル</h4>
+    選択した市区町村の数が表示される。<br>
+    クリックすると選択した各市区町村のデータを表示するテーブルが展開される。
+    <h4>９．新規グループ追加</h4>
+    クリックすると新しいグループを追加する。
+    <h4>１０．表形式で表示</h4>
+    全グループ・選択地物のデータを表示するテーブルを表示する。
+  </div>
+
+  <h2>データ・集計について</h2>
+  <div>
+    四捨五入による誤差や、帰属未定地の扱い等によって、都道府県内全地域の合計値と各調査で公表されている都道府県の値は異なる場合があります。<br>
+    データに秘匿処理がなされている場合、テーブル上には「X」が表示されます。<br>
+    秘匿値はグループの合計値には含まれません。
+  </div>
+
+  <h2>データの表形式表示</h2>
+  <div>
+    <img src="./img/calculator_modal.png" width="800px"><br>
+    人口計算機パネルの最下部にある「表形式で表示」ボタンをクリックすると、選択した地物の全データが表形式で表示されます。<br>
+    表は「全ての選択地物を表示」、「グループの合計値のみ表示」の2種類のモードがあります。<br>
+    「csvファイルとして保存」ボタンをクリックすると、表をcsv形式でダウンロードできます。<br>
+    「クリップボードにコピー」ボタンをクリックすると、表をコピーできます。ダウンロード・コピーした表は表計算ソフト等に貼り付けることができます。
+  </div>
+
+  <h2>収録データの一覧</h2>
+  <div>
+    <h4>国勢調査</h4>
+    5年に一度行われる、人口・世帯等に関する基礎調査。<br>
+    リンク：<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" target="_blank">総務省統計局</a>、<a href="https://www.e-stat.go.jp/stat-search?page=1&toukei=00200521" target="_blank">e-Stat</a><br>
+    [収録年:2000年、2005年、2010年、2015年、2020年]<br>
+    ※2020年は、現在データが公表されている分のみ。
+    <details>
+      <summary>データ一覧</summary>
+      <ul class="mylist">
+        <span class="listTitle">人口・面積・人口密度</span>
+        <li>人口</li>
+        <li>面積</li>
+        <li>人口増加数:前回調査(5年前)からの人口増加数。</li>
+        <li>人口増加率:【人口増加数 ÷ (人口 - 人口増加数) × 100】</li>
+        <span class="listTitle">世帯数</span>
+        <li>人口</li>
+        <li>世帯数</li>
+        <li>人口増加数:前回調査(5年前)からの人口増加数。</li>
+        <li>人口増加率:【人口増加数 ÷ (人口 - 人口増加数) × 100】</li>
+        <li>世帯増加数:前回調査(5年前)からの世帯増加数。</li>
+        <li>世帯増加率:【世帯増加数 ÷ (世帯数 - 世帯増加数) × 100】</li>
+        <li>一世帯当たりの人員数:【人口÷世帯数】</li>
+        <span class="listTitle">人口集中地区(DID)</span>
+        <li>人口</li>
+        <li>DID人口:人口集中地区(DID)内に居住している人の数。</li>
+        <li>DID人口割合:【DID人口 ÷ 人口 × 100】</li>
+        <span class="listTitle">年齢別人口</span>
+        <li>人口</li>
+        <li>15歳未満人口</li>
+        <li>15歳未満人口割合:【15歳未満人口 ÷ 人口 × 100】</li>
+        <li>15歳～64歳人口</li>
+        <li>15歳～64歳人口割合:【15歳～64歳人口 ÷ 人口 × 100】</li>
+        <li>65歳以上人口</li>
+        <li>65歳以上人口割合:【65歳以上人口 ÷ 人口 × 100】</li>
+        <span class="listTitle">外国人人口</span>
+        <li>人口</li>
+        <li>外国人人口</li>
+        <li>外国人人口割合:【外国人人口 ÷ 人口 × 100】</li>
+        <span class="listTitle">昼夜間人口</span>
+        <li>夜間人口</li>
+        <li>昼間人口</li>
+        <li>昼夜間人口比率:【昼間人口 ÷ 夜間人口】</li>
+        <span class="listTitle">産業別従業者数(三分類)</span>
+        <li>人口</li>
+        <li>15歳以上の従業者数:当該市区町村で従業している15歳以上の者の数。</li>
+        <li>第一次産業従業者数:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、A:農業・林業、B:漁業に分類される産業の従業者数。</li>
+        <li>第一次産業従業者数割合:【第一次産業従業者数 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>第二次産業従業者数:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、C:鉱業・採石業・砂利採取業、D:建設業、E:製造業に分類される産業の従業者数。</li>
+        <li>第二次産業従業者数割合:【第二次産業従業者数 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>第三次産業従業者数:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、上記以外(T:分類不能の産業を除く)に分類される産業の従業者数。</li>
+        <li>第三次産業従業者数割合:【第三次産業従業者数 ÷ 15歳以上の従業者数 × 100】</li>
+        <span class="listTitle">産業別従業者数(大分類抜粋)</span>
+        <li>農林業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、A:農業・林業に分類される産業の従業者数。</li>
+        <li>農林業割合:【農林業 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>製造業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、E:製造業に分類される産業の従業者数。</li>
+        <li>製造業割合:【製造業 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>[2005年～2015年]卸・小売業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、I:卸売業・小売業に分類される産業の従業者数。</li>
+        <li>[2005年～2015年]卸・小売業割合:【卸・小売業 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>[2005年～2015年]宿泊・飲食業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、I:宿泊業・飲食サービス業に分類される産業の従業者数。</li>
+        <li>[2005年～2015年]宿泊・飲食業割合:【宿泊・飲食業 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>[2005年～2015年]医療・福祉:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、P:医療・福祉に分類される産業の従業者数。</li>
+        <li>[2005年～2015年]医療・福祉割合:【医療・福祉 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>[2000年]卸・小売・飲食業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/5index.htm" target="_blank">産業大分類</a>のうち、I:卸売・小売業・飲食店に分類される産業の従業者数。</li>
+        <li>[2000年]卸・小売・飲食業割合:【卸・小売・飲食業 ÷ 15歳以上の従業者数 × 100】</li>
+        <li>[2000年]サービス業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/5index.htm" target="_blank">産業大分類</a>のうち、L:サービス業に分類される産業の従業者数。</li>
+        <li>[2000年]サービス業割合:【サービス業 ÷ 15歳以上の従業者数 × 100】</li>
+      </ul>
+    </details>
+    <h4>経済センサス-活動調査</h4>
+    国内すべての企業・事業所を対象として5年に一度行われる、経済活動に関する調査。<br>
+    リンク：<a href="http://www.stat.go.jp/data/e-census/2021/index.html" target="_blank">総務省統計局</a>、<a href="https://www.e-stat.go.jp/stat-search?page=1&toukei=00200553" target="_blank">e-Stat</a><br>
+    [収録年:2016年]<br>
+    <details>
+      <summary>データ一覧</summary>
+      <ul class="mylist">
+        <span class="listTitle">事業所・従業者数</span>
+        <li>人口</li>
+        <li>面積</li>
+        <li>民営事業所数</li>
+        <li>従業者数</li>
+        <span class="listTitle">産業別事業所数</span>
+        <li>民営事業所数</li>
+        <li>第一次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、A:農業・林業、B:漁業に分類される事業所の数。</li>
+        <li>第一次産業割合:【第一次産業 ÷ 民営事業所数 × 100】</li>
+        <li>第二次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、C:鉱業・採石業・砂利採取業、D:建設業、E:製造業に分類される事業所の数。</li>
+        <li>第二次産業割合:【第二次産業 ÷ 民営事業所数 × 100】</li>
+        <li>第三次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、上記以外(S:公務、T:分類不能の産業を除く)に分類される事業所の数。</li>
+        <li>第三次産業割合:【第三次産業 ÷ 民営事業所数 × 100】</li>
+        <span class="listTitle">産業別従業者数</span>
+        <li>従業者数</li>
+        <li>第一次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、A:農業・林業、B:漁業に分類される事業所の従業者数。</li>
+        <li>第一次産業割合:【第一次産業 ÷ 従業者数 × 100】</li>
+        <li>第二次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、C:鉱業・採石業・砂利採取業、D:建設業、E:製造業に分類される事業所の従業者数。</li>
+        <li>第二次産業割合:【第二次産業 ÷ 従業者数 × 100】</li>
+        <li>第三次産業:<a href="https://www.soumu.go.jp/toukei_toukatsu/index/seido/sangyo/02toukatsu01_03000023.html" target="_blank">産業大分類</a>のうち、上記以外(S:公務、T:分類不能の産業を除く)に分類される事業所の従業者数。</li>
+        <li>第三次産業割合:【第三次産業 ÷ 従業者数 × 100】</li>
+        <span class="listTitle">売上・付加価値額(全産業)</span>
+        <li>売上金額試算値:1年間の売上利益。売上高の算出が難しい産業を含むため、推計値を用いる。(<a href="http://www.stat.go.jp/data/e-census/2016/kekka/sanko3.html" target="_blank">参考</a>)</li>
+        <li>付加価値額:生産活動によって新たに生み出された価値。</li>
+        <li>労働生産性:【付加価値額 ÷ 従業者数】</li>
+        <span class="listTitle">主要産業売上高</span>
+        <li>農林漁業</li>
+        <li>製造業</li>
+        <li>卸・小売業</li>
+        <li>宿泊・飲食サービス業</li>
+        <li>医療・福祉</li>
+        <span class="listTitle">製造業に関する指標</span>
+        <li>事業所数</li>
+        <li>従業者数</li>
+        <li>製造品出荷額等:1年間に製造された製品の出荷額。</li>
+        <li>粗付加価値額:製造品出荷額等から原材料費・燃料費・諸税等を差し引いたもの。</li>
+        <li>従業員あたり出荷額:【製造品出荷額等 ÷ 従業者数】</li>
+        <li>事業所あたり出荷額:【製造品出荷額等 ÷ 事業所数】</li>
+        <li>人口あたり出荷額:【製造品出荷額等 ÷ 人口】</li>
+        <span class="listTitle">卸・小売業に関する指標</span>
+        <li>事業所数</li>
+        <li>従業者数</li>
+        <li>年間商品販売額:1年間に販売された商品の売上高。</li>
+        <li>事業所あたり出荷額:【年間商品販売額 ÷ 事業所数】</li>
+        <li>従業員あたり出荷額:【年間商品販売額 ÷ 従業者数】</li>
+        <li>人口あたり出荷額:【年間商品販売額 ÷ 人口】</li>
+        <span class="listTitle">卸売業に関する指標</span>
+        <li>事業所数</li>
+        <li>従業者数</li>
+        <li>年間商品販売額:1年間に販売された商品の売上高。</li>
+        <li>事業所あたり出荷額:【年間商品販売額 ÷ 事業所数】</li>
+        <li>従業員あたり出荷額:【年間商品販売額 ÷ 従業者数】</li>
+        <li>人口あたり出荷額:【年間商品販売額 ÷ 人口】</li>
+        <span class="listTitle">小売業に関する指標</span>
+        <li>事業所数</li>
+        <li>従業者数</li>
+        <li>年間商品販売額:1年間に販売された商品の売上高。</li>
+        <li>事業所あたり出荷額:【年間商品販売額 ÷ 事業所数】</li>
+        <li>従業員あたり出荷額:【年間商品販売額 ÷ 従業者数】</li>
+        <li>人口あたり出荷額:【年間商品販売額 ÷ 人口】</li>
+        <li>売場面積</li>
+      </ul>
+    </details>
+  </div>
+
+  <h2>免責等</h2>
+  <div>
+    このツールは、はにしなが個人で作成しているものです。<br>
+    内容の正確性については保証できません。<br>
+    このツールを使用したことによって生じた不利益に関して、当方は一切の責任を負いかねます。<br>
+    <br>
+    はにしな　<a href="https://twitter.com/hanishina?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @hanishina</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> <br>
+  </div>
+</body>
+</html>
