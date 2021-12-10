@@ -237,10 +237,6 @@
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
-      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], desc:"前回調査(5年前)からの世帯増加数。"},
-      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
       {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
       {}
     ]}, {name: "did", label: "人口集中地区(DID)", data:[
@@ -1209,7 +1205,7 @@
   </div>
   <div>
     使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
-    <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査(速報集計)</a></span>
+    <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査</a></span>
   </div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
