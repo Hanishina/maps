@@ -16,6 +16,7 @@
   </script>
 
   <link href="historymap.css" rel="stylesheet" type="text/css">
+  <link href="loader.css" rel="stylesheet" type="text/css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -223,7 +224,11 @@
          polygonRedraw(n);
          lineRedraw(n);
          labelRedraw(n);
-
+         if(n === 0){
+           $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+         }else{
+           $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+         }
        });
 
        maps[0].sync(maps[1], {syncCursor: true});
@@ -277,14 +282,14 @@
          vectorTileLayerStyles: {
            sliced: function(properties){
                switch(properties.TYPE){
-                 case '村': return{color:"#639394"}
-                 case '区': return{color:"#857944"}
-                 case '特別区': return{color:"#326333"}
-                 case '郡': return{color:"#326333"}
-                 case '支庁': return{color:"#995514"}
-                 case '県': return{color:"#8a2725"}
-                 case '湖': return{color:"#5363b5"}
-                 case '海': return{color:"#223c8a"}
+                 case '村': return{color:"#639394", weight:2}
+                 case '区': return{color:"#857944", weight:2}
+                 case '特別区': return{color:"#326333", weight:2.5}
+                 case '郡': return{color:"#326333", weight:2.5}
+                 case '支庁': return{color:"#995514", weight:2.5}
+                 case '県': return{color:"#8a2725", weight:2.5}
+                 case '湖': return{color:"#5363b5", weight:2.5}
+                 case '海': return{color:"#223c8a", weight:2.5}
               }
            }
          },
@@ -300,7 +305,7 @@
            sliced:function(properties){
              //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
              if(date[n].getFullYear() < 1970){
-               if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県"].some(e => e === properties.KEN)){
+               if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県"].some(e => e === properties.KEN)){
                  return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
                }else{
                  return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
@@ -317,7 +322,11 @@
          },
          pane: "polygon"
        }).bindPopup(function(e){
-         return '<div class="tableTitle">' + (e.properties.NAME ?? e.properties.TYPE) + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + e.properties.START + '</td></tr><tr><th>終了</th><td>' + e.properties.END + '</td></tr></table>';
+         var start = e.properties.START;
+         if(start == "1889/04/01"){start = "-";}
+         var end = e.properties.END;
+         if(end == "2999/12/31"){end = "-";}
+         return '<div class="tableTitle">' + (e.properties.NAME ?? e.properties.TYPE) + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
        }).on("click", function(e){
          clickEvent(e, n);
        });
@@ -395,7 +404,13 @@
      }
 
      function buttonClick(n){
-       var form
+       if(n === 0){
+         $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+       }else{
+         $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
+       }
+
+       var form;
        switch(n){
          case 0 : form = document.forms.dateA; break;
          case 1 : form = document.forms.dateB; break;
@@ -411,6 +426,11 @@
        polygonRedraw(n);
        lineRedraw(n);
        labelRedraw(n);
+       if(n === 0){
+         $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+       }else{
+         $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+       }
      }
 
       var clickedObj
@@ -476,7 +496,7 @@
            }
        }
        return arr;
-      }
+     }
 
   </script>
 
@@ -485,11 +505,14 @@
 <body onload="init()">
   <div class="header">
     <div class="title">市区町村境界時系列マップ(仮)</div>
-    <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./about.html">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+    <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./about.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
   </div>
 
   <div class="mapCont">
-    <div id="containerA">
+    <div id="containerA" style="position: relative;">
+      <div id="loaderCoverA" class="loaderCover"></div>
+      <div id="loaderBGA" class="loaderBG"></div>
+      <div id="loaderA" class="loader"></div>
       <div id="mapA"></div>
       <form name="dateA">
         <select name="year" autocomplete="off">
@@ -568,6 +591,7 @@
           <option value="2019">2019年(平成31年/令和元年)</option>
           <option value="2020">2020年(令和2年)</option>
           <option value="2021">2021年(令和3年)</option>
+          <option value="2022">2022年(令和4年)</option>
         </select>
         <select name="month" autocomplete="off">
           <option value="1">1月</option>
@@ -587,7 +611,10 @@
         <input type="button" value="表示更新" onclick="buttonClick(0)"/>
       </form>
     </div>
-    <div id="containerB">
+    <div id="containerB" style="position: relative;">
+      <div id="loaderCoverB" class="loaderCover"></div>
+      <div id="loaderBGB" class="loaderBG"></div>
+      <div id="loaderB" class="loader"></div>
       <div id="mapB"></div>
       <form name="dateB">
         <select name="year" autocomplete="off">
@@ -666,6 +693,7 @@
           <option value="2019">2019年(平成31年/令和元年)</option>
           <option value="2020">2020年(令和2年)</option>
           <option value="2021">2021年(令和3年)</option>
+          <option value="2022">2022年(令和4年)</option>
         </select>
         <select name="month" autocomplete="off">
           <option value="1">1月</option>
@@ -687,7 +715,7 @@
     </div>
   </div>
   <div><input type="checkbox" id="dual" name="dual"/><label for="dual">2画面表示</label></div>
-  <div>[1947/5/3以降のデータを表示可能]関東地方、山梨県、長野県、岐阜県、静岡県、愛知県<br>
+  <div>[1947/5/3以降のデータを表示可能]関東地方、山梨県、長野県、岐阜県、静岡県、愛知県、三重県、滋賀県<br>
   [1970/4/1以降のデータを表示可能]上記以外の地域</div>
 </body>
 </html>

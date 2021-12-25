@@ -60,12 +60,12 @@
     var groupColors = ["#cc0000"];
 
     var Dataset = [
-      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: {label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
-      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
-      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
-      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
-      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
-      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
+      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: {label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line_calc.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
+      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line_calc.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
     ];
 
     //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
@@ -597,7 +597,7 @@
       }
 
       polygon2020Json = await getResources("2020kokusei_add.geojson");
-      line2020Json = await getResources("line.geojson", "2020-10-01");
+      line2020Json = await getResources("line_calc.geojson", "2020-10-01");
 
       polygonRedraw(polygon2020Json);
       lineRedraw(line2020Json);
@@ -1191,14 +1191,14 @@
 </head>
 
 <body onload="init()">
-  <div class="loaderCover"></div>
   <div class="header">
     <div class="title">市区町村人口計算機</div>
     <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./calculator_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
   </div>
   <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。</div>
 
-  <div>
+  <div style="position: relative;">
+    <div class="loaderCover"></div>
     <div class="loaderBG"></div>
     <div class="loader"></div>
     <div id="map"></div>
