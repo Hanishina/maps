@@ -60,40 +60,28 @@
     var groupColors = ["#cc0000"];
 
     var Dataset = [
-      {name: "kokusei2020", label: "2020年国勢調査速報値", date: "2020-10-01", polygonFile: "2020kokusei.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei1", attr: {label: "令和2年国勢調査(速報集計)", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
-      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line.geojson", lineObj: "line2015Json", category: "Categories_kokusei2", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
-      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei1", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
-      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei1", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
-      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei1", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
-      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
+      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: {label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line_calc.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
+      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line_calc.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
     ];
 
     //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
-    var Categories_kokusei1 = [{name: "population", label: "人口・人口増減・面積", data:[
+    var Categories_kokusei_2020 = [{name: "population", label: "人口・人口増減・面積", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
-      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1}
-    ]},{name: "csv", data:[
-      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
-      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
-      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1}
-    ]}];
-
-    var Categories_kokusei2 = [{name: "population", label: "人口・人口増減・面積", data:[
-      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
-      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
       {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
       {}
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
       {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
       {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
       {}
@@ -111,31 +99,11 @@
       {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
       {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
       {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
-    ]}, {name: "daytime", label: "昼夜間人口", data:[
-      {name: "POPULATION", label:"夜間人口(人)", func:"sum", args:["POPULATION"], desc:"当該市区町村に居住している人の数。すなわち人口と同値。"},
-      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"], desc:"当該市区町村に通勤・通学しているものと当該市区町村に居住し通勤も通学もしていないものの合計。"},
-      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1, desc:"昼間人口を夜間人口で割ったもの。"},
-      {}
-    ]}, {name: "industry", label:"産業別従業者数(三分類)", data:[
+    ]}, {name: "foreigner", label: "外国人人口", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
-      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"], desc:"当該市区町村で従業している、15歳以上の従業者の数。"},
-      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第一次産業(産業大分類のうちA, B)に分類される産業の従業者数。"},
-      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1, desc:"第一次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第二次産業(産業大分類のうちC～E)に分類される産業の従業者数。"},
-      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1, desc:"第二次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第三次産業(産業大分類のうちF～S)に分類される産業の従業者数。"},
-      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1, desc:"第三次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
-    ]}, {name: "industry2", label:"産業別従業者数(大分類抜粋)", data:[
-      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「A:農業・林業」に分類される産業の従業者数。"},
-      {name: "ind_agriR", label:"農林業(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1, desc:"農林業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「E:製造業」に分類される産業の従業者数。"},
-      {name: "ind_manuR", label:"製造業(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1, desc:"製造業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "IND_SALE", label:"卸・小売業(人)", func:"sum", args:["IND_SALE"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「I:卸売業・小売業」に分類される産業の従業者数。"},
-      {name: "ind_saleR", label:"卸・小売業(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1, desc:"卸・小売業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "IND_ACCO", label:"宿泊・飲食業(人)", func:"sum", args:["IND_ACCO"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「M:宿泊業・飲食サービス業」に分類される産業の従業者数。"},
-      {name: "ind_accoR", label:"宿泊・飲食業(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1, desc:"宿泊・飲食業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
-      {name: "IND_MEDI", label:"医療・福祉(人)", func:"sum", args:["IND_MEDI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「P:医療・福祉」に分類される産業の従業者数。"},
-      {name: "ind_mediR", label:"医療・福祉(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1, desc:"医療・福祉従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
     ]}, {name: "csv", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
@@ -154,6 +122,90 @@
       {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
       {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
       {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1}
+    ]}];
+
+    var Categories_kokusei_2015 = [{name: "population", label: "人口・人口増減・面積", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {}
+    ]}, {name: "house", label: "世帯数", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+      {}
+    ]}, {name: "did", label: "人口集中地区(DID)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"], desc:"人口集中地区(DID)内に居住している人の数。"},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1, desc:"DID人口を総人口で割ったもの。"}
+    ]}, {name: "age", label: "年齢別人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
+    ]}, {name: "foreigner", label: "外国人人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
+    ]}, {name: "daytime", label: "昼夜間人口", data:[
+      {name: "POPULATION", label:"夜間人口(人)", func:"sum", args:["POPULATION"], desc:"当該市区町村に居住している人の数。すなわち人口と同値。"},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"], desc:"当該市区町村に通勤・通学しているものと当該市区町村に居住し通勤も通学もしていないものの合計。"},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1, desc:"昼間人口を夜間人口で割ったもの。"},
+      {}
+    ]}, {name: "industry", label:"産業別従業者数(三分類)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"], desc:"当該市区町村で従業している、15歳以上の従業者の数。"},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第一次産業(産業大分類のうちA, B)に分類される産業の従業者数。"},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1, desc:"第一次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第二次産業(産業大分類のうちC～E)に分類される産業の従業者数。"},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1, desc:"第二次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第三次産業(産業大分類のうちF～S)に分類される産業の従業者数。"},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1, desc:"第三次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "industry2", label:"産業別従業者数(大分類抜粋)", data:[
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「A:農業・林業」に分類される産業の従業者数。"},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1, desc:"農林業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「E:製造業」に分類される産業の従業者数。"},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1, desc:"製造業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SALE", label:"卸・小売業(人)", func:"sum", args:["IND_SALE"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「I:卸売業・小売業」に分類される産業の従業者数。"},
+      {name: "ind_saleR", label:"卸・小売業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1, desc:"卸・小売業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_ACCO", label:"宿泊・飲食業(人)", func:"sum", args:["IND_ACCO"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「M:宿泊業・飲食サービス業」に分類される産業の従業者数。"},
+      {name: "ind_accoR", label:"宿泊・飲食業割合(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1, desc:"宿泊・飲食業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MEDI", label:"医療・福祉(人)", func:"sum", args:["IND_MEDI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「P:医療・福祉」に分類される産業の従業者数。"},
+      {name: "ind_mediR", label:"医療・福祉割合(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1, desc:"医療・福祉従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "csv", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"]},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"]},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1},
       {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"]},
       {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1},
       {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"]},
@@ -164,15 +216,108 @@
       {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"]},
       {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1},
       {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"]},
-      {name: "ind_agriR", label:"農林業(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1},
       {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"]},
-      {name: "ind_manuR", label:"製造業(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1},
       {name: "IND_SALE", label:"卸・小売業(人)", func:"sum", args:["IND_SALE"]},
-      {name: "ind_saleR", label:"卸・小売業(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1},
+      {name: "ind_saleR", label:"卸・小売業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1},
       {name: "IND_ACCO", label:"宿泊・飲食業(人)", func:"sum", args:["IND_ACCO"]},
-      {name: "ind_accoR", label:"宿泊・飲食業(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1},
+      {name: "ind_accoR", label:"宿泊・飲食業割合(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1},
       {name: "IND_MEDI", label:"医療・福祉(人)", func:"sum", args:["IND_MEDI"]},
-      {name: "ind_mediR", label:"医療・福祉(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1}
+      {name: "ind_mediR", label:"医療・福祉割合(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1}
+    ]}];
+
+    var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増減・面積", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {}
+    ]}, {name: "house", label: "世帯数", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+      {}
+    ]}, {name: "did", label: "人口集中地区(DID)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"], desc:"人口集中地区(DID)内に居住している人の数。"},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1, desc:"DID人口を総人口で割ったもの。"}
+    ]}, {name: "age", label: "年齢別人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
+    ]}, {name: "foreigner", label: "外国人人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
+    ]}, {name: "daytime", label: "昼夜間人口", data:[
+      {name: "POPULATION", label:"夜間人口(人)", func:"sum", args:["POPULATION"], desc:"当該市区町村に居住している人の数。すなわち人口と同値。"},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"], desc:"当該市区町村に通勤・通学しているものと当該市区町村に居住し通勤も通学もしていないものの合計。"},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1, desc:"昼間人口を夜間人口で割ったもの。"},
+      {}
+    ]}, {name: "industry", label:"産業別従業者数(三分類)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"], desc:"当該市区町村で従業している、15歳以上の従業者の数。"},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第一次産業(産業大分類のうちA, B)に分類される産業の従業者数。"},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1, desc:"第一次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第二次産業(産業大分類のうちC～E)に分類される産業の従業者数。"},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1, desc:"第二次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第三次産業(産業大分類のうちF～S)に分類される産業の従業者数。"},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1, desc:"第三次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "industry2", label:"産業別従業者数(大分類抜粋)", data:[
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「A:農業・B:林業」に分類される産業の従業者数。"},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1, desc:"農林業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「F:製造業」に分類される産業の従業者数。"},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1, desc:"製造業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SALE", label:"卸・小売・飲食業(人)", func:"sum", args:["IND_SALE"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「I:卸売・小売業、飲食店」に分類される産業の従業者数。"},
+      {name: "ind_saleR", label:"卸・小売・飲食業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1, desc:"卸・小売・飲食業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SERV", label:"サービス業(人)", func:"sum", args:["IND_SERV"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「L:サービス業」に分類される産業の従業者数。"},
+      {name: "ind_servR", label:"サービス業割合(%)", func:"rate", args:["IND_SERV", "WORKER"], prec:1, desc:"サービス業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "csv", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"]},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"]},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:1},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"]},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"]},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"]},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"]},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"]},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1},
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"]},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"]},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1},
+      {name: "IND_SALE", label:"卸・小売・飲食業(人)", func:"sum", args:["IND_SALE"]},
+      {name: "ind_saleR", label:"卸・小売・飲食業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1},
+      {name: "IND_SERV", label:"サービス業(人)", func:"sum", args:["IND_SERV"]},
+      {name: "ind_servR", label:"サービス業割合(%)", func:"rate", args:["IND_SERV", "WORKER"], prec:1}
     ]}];
 
     var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
@@ -190,7 +335,7 @@
       {name: "O_3RD", label: "第三次産業(所)", func: "sum", args: ["O_3RD"], desc:"事業所のうち、第三次産業(産業大分類のうちF～R)に分類されるものの数。"},
       {name: "o_3rdR", label: "第三次産業割合(%)", func: "rate", args: ["O_3RD", "OFFICE"], prec: 1, desc:"第三次産業事業所数を民営事業所数で割ったもの。"}
     ]}, {name: "ind_worker", label: "産業別従業者数", data:[
-      {name: "WORKER", label: "民営事業所従業者数(人)", func: "sum", args: ["WORKER"], desc:"民営事業所(事業内容不詳を含む)の従業者の数。"},
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"], desc:"民営事業所(事業内容不詳を含む)の従業者の数。"},
       {},
       {name: "W_1ST", label: "第一次産業(人)", func: "sum", args: ["W_1ST"], desc:"事業所のうち、農林業・漁業に分類されるものに従事している従業者の数。"},
       {name: "w_1stR", label: "第一次産業割合(%)", func: "rate", args: ["W_1ST", "WORKER"], prec: 1, desc:"第一次産業従業者数を民営事業所従業者数で割ったもの。"},
@@ -407,7 +552,7 @@
 
       map.addLayer(paleMap);
 
-      L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
+      L.control.scale({imperial: false, maxWidth: 300, position: "bottomright"}).addTo(map);
 
       var sidebar = L.control.sidebar({container: "sidebar", closeButton: false}).addTo(map);
       sidebar.open("home");
@@ -451,7 +596,7 @@
         "hideMethod": "fadeOut"
       }
 
-      polygon2020Json = await getResources("2020kokusei.geojson");
+      polygon2020Json = await getResources("2020kokusei_add.geojson");
       line2020Json = await getResources("line_calc.geojson", "2020-10-01");
 
       polygonRedraw(polygon2020Json);
@@ -476,7 +621,7 @@
           return f.properties.uid;
         },
         pane: "polygon"
-      }).on("click", clickEvent)
+      }).on("mouseup", clickEvent)
       .on("mouseover", obj => {
         cursorObj = obj.layer.properties;
         rewriteCursorTable(cursorObj);
@@ -541,12 +686,7 @@
 
     //カーソル位置の地物情報表示
     function rewriteCursorTable(obj){
-      //暫定処理(2015年・経済センサスのみ郡名を表示)
-      if(currentSelectedDataset.name === "kokusei2015" || currentSelectedDataset.name === "keizaicensus2016"){
-        document.getElementById('mouse_name').innerHTML = obj.KEN + (obj.GUN || "") + obj.NAME;
-      }else{
-        document.getElementById('mouse_name').innerHTML = obj.KEN + obj.NAME;
-      }
+      document.getElementById('mouse_name').innerHTML = obj.KEN + (obj.GUN || "") + obj.NAME;
       currentSelectedCategory.forEach(function(f, i){
         document.getElementById('mouseCol_data' + i).innerHTML = calc(obj, f.func, f.prec, f.args);
       });
@@ -637,21 +777,21 @@
       var result;
       if(func === "div"){ //割り算　args[0]/args[1]
         result = sum(features, args[0]) / sum(features, args[1]);
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) == 0){
           return "-";
         }else{
           return result.toFixed(prec);
         }
       }else if(func === "rate"){ //割合(百分率) args[0]/args[1]*100
         result = sum(features, args[0]) / sum(features, args[1]);
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) == 0){
           return "-";
         }else{
           return (result * 100).toFixed(prec);
         }
       }else if(func === "incr_rate"){ //増加率(百分率) args[0]/(args[1]-args[0])*100
         result = sum(features, args[0]) / (sum(features, args[1]) - sum(features, args[0]));
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) - sum(features, args[0]) == 0){
           return "-";
         }else{
           return (result * 100).toFixed(prec);
@@ -684,7 +824,16 @@
       selectedFeatures[n].forEach(function(f){
         var row = document.createElement("tr");
         var value = calc(f, currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
-        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td>";
+        var sumVal = parseInt(calc(selectedFeatures[n], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args));
+        var propotion = "-";
+        if(currentSelectedColumn.func == "sum" && !currentSelectedColumn.noprop && sumVal){
+          if(isNaN(value)){
+            propotion = "0.00";
+          }else{
+            propotion = (value / sumVal * 100).toFixed(2);
+          }
+        }
+        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td><td>" + propotion + "</td>";
         table.appendChild(row);
       });
     }
@@ -929,7 +1078,7 @@
         document.querySelector(".loaderCover").style.display = "none";
 
       }else{
-        document.getElementById("dataset").value = currentSelectedDataset;
+        document.getElementById("dataset").value = currentSelectedDataset.name;
       }
     }
 
@@ -1051,22 +1200,21 @@
 </head>
 
 <body onload="init()">
-  <div class="loaderCover"></div>
   <div class="header">
     <div class="title">市区町村人口計算機</div>
-    <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+    <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./calculator_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
   </div>
-  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。<br>
-  地図上の地物(市区町村)をクリックすると赤枠で囲まれているグループに追加されます。同じ地物を複数のグループに追加することはできません。</div>
+  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。</div>
 
-  <div>
+  <div style="position: relative;">
+    <div class="loaderCover"></div>
     <div class="loaderBG"></div>
     <div class="loader"></div>
     <div id="map"></div>
   </div>
   <div>
-    使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査速報値</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
-    <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査(速報集計)</a></span>
+    使用データ(年次)の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
+    <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査</a></span>
   </div>
 
   <div id="sidebar" class="leaflet-sidebar collapsed">
@@ -1083,13 +1231,14 @@
             <h1 class="leaflet-sidebar-header">
                 人口計算機
             </h1>
-            <div>表示するデータセット:<select id="category" disabled><option value="population">人口・人口増減・面積</option></select></div>
+            <div>表示するデータセット:<select id="category"><option value="population">人口・人口増減・面積</option><option value="house">世帯数</option><option value="did">人口集中地区(DID)</option><option value="age">年齢別人口</option><option value="foreigner">外国人人口</option></select></div>
             <details id="mouseContainer" open class="current">
               <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
               <div id="mouse_name" class="current">-</div>
               <table id="mouseTable" class="current">
                 <tr><th id="mouseCol_name0">人口(人)</th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
-                <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口密度(人/㎢)</th><td id="mouseCol_data3"></td></tr>
+                <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口増加率(%)</th><td id="mouseCol_data3"></td></tr>
+                <tr><th id="mouseCol_name4">人口密度(人/㎢)</th><td id="mouseCol_data4"></td><th id="mouseCol_name5"></th><td id="mouseCol_data5"></td></tr>
               </table>
             </details>
             <div id="groupsContainer" ontouchstart="">
@@ -1099,12 +1248,14 @@
                   <tr><th id="groupCol_name0_0">人口(人)</th><td id="groupCol_data0_0">0</td></tr>
                   <tr><th id="groupCol_name1_0">面積(㎢)</th><td id="groupCol_data1_0">0.00</td></tr>
                   <tr><th id="groupCol_name2_0">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></div></th><td id="groupCol_data2_0">0</td></tr>
-                  <tr><th id="groupCol_name3_0">人口密度(人/㎢)</th><td id="groupCol_data3_0">0.0</td></tr>
+                  <tr><th id="groupCol_name3_0">人口増加率(%)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">人口増加数を前回調査時人口で割ったもの。</div></div></th><td id="groupCol_data3_0">-</td></tr>
+                  <tr><th id="groupCol_name4_0">人口密度(人/㎢)</th><td id="groupCol_data4_0">-</td></tr>
+                  <tr><th id="groupCol_name5_0" style="display: none;"></th><td id="groupCol_data5_0" style="display: none;">-</td></tr>
                 </table>
                 <details>
                   <summary>選択地物数：<span id="sel_count0">0</span></summary>
                   <table id="sel_table0" class="selects">
-                    <tr><th>地物名</th><th><select id="columnName0" class="columnSelect"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="density">人口密度(人/㎢)</option></select></th></tr>
+                    <tr><th>地物名</th><th><select id="columnName0" class="columnSelect"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="pop_increaseR">人口増加率(%)</option><option value="density">人口密度(人/㎢)</option></select></th><th>構成比(%)</th></tr>
                   </table>
                 </details>
               </div>
