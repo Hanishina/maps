@@ -54,6 +54,7 @@
 
     var cursorObj;
     var dragging = false;
+    var dragStart = {x:0, y:0};
 
     const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
     var newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
@@ -499,10 +500,23 @@
       map.createPane("line").style.zindex = 400;
 
       //ドラッグ時にクリックイベントを呼び出さないようにする(iOS用)
-      map.on("movestart", function(){
-        dragging = true;
+      map.on("mousedown", function(e){
+        dragging = false;
+        dragStart.x = e.originalEvent.clientX;
+        dragStart.y = e.originalEvent.clientY;
+        $(document).on("mousemove", (e)=>{
+          var deltaX = e.originalEvent.clientX - dragStart.x;
+          var deltaY = e.originalEvent.clientY - dragStart.y;
+          var distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+          if(distance > 3){
+            dragging = true;
+          }
+        });
+        $(document).on("mouseup", (e)=>{
+          dragging = false;
+          $(document).off("mousemove");
+        });
       });
-
 
       currentSelectedDataset = Dataset[0];
       $("#dataset").val("kokusei2020");
@@ -628,16 +642,10 @@
         },
         pane: "polygon"
       }).on("mouseup", obj => {
-        if(dragging){
-          dragging = false;
-        }else{
+        if(!dragging){
           clickEvent(obj);
-          dragging = false;
         }
-      }).on("mouseover", obj => {
-        cursorObj = obj.layer.properties;
-        rewriteCursorTable(cursorObj);
-      }).on("mousedown", obj => {
+      }).on("mouseover mousedown", obj => {
         cursorObj = obj.layer.properties;
         rewriteCursorTable(cursorObj);
       });
