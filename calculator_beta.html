@@ -53,6 +53,7 @@
     var currentSelectedColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
 
     var cursorObj;
+    var dragging = false;
 
     const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
     var newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
@@ -497,6 +498,11 @@
       map.createPane("polygon").style.zindex = 150;
       map.createPane("line").style.zindex = 400;
 
+      //ドラッグ時にクリックイベントを呼び出さないようにする(iOS用)
+      map.on("movestart", function(){
+        dragging = true;
+      });
+
 
       currentSelectedDataset = Dataset[0];
       $("#dataset").val("kokusei2020");
@@ -621,8 +627,17 @@
           return f.properties.uid;
         },
         pane: "polygon"
-      }).on("mouseup", clickEvent)
-      .on("mouseover", obj => {
+      }).on("mouseup", obj => {
+        if(dragging){
+          dragging = false;
+        }else{
+          clickEvent(obj);
+          dragging = false;
+        }
+      }).on("mouseover", obj => {
+        cursorObj = obj.layer.properties;
+        rewriteCursorTable(cursorObj);
+      }).on("mousedown", obj => {
         cursorObj = obj.layer.properties;
         rewriteCursorTable(cursorObj);
       });
