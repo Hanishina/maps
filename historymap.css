@@ -1,4 +1,10 @@
 /*グローバル*/
+body{
+  font-family: sans-serif;
+  background: #ebfdff;
+  font-size: 18px;
+}
+
 .header{
   display: flex;
   align-items: flex-end;
@@ -34,11 +40,6 @@ details[open] summary:after{
   font-size: 14px;
   color: #666;
   content:''
-}
-
-body{
-  background: #ebfdff;
-  font-size: 18px;
 }
 
 .title{
@@ -322,12 +323,23 @@ table.selects th, table.selects td{
   padding: 5px 15px;
 }
 
-table.selects th:last-child{
-  width: 60%;
+table.selects th:nth-child(1){
+  width: 40%;
 }
 
-table.selects td:last-child{
-  width: 60%;
+table.selects th:nth-child(2){
+  width: 40%;
+}
+
+table.selects th:nth-child(3){
+  width: 20%;
+}
+
+table.selects td:nth-child(2){
+  text-align: right;
+}
+
+table.selects td:nth-child(3){
   text-align: right;
 }
 

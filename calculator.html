@@ -53,6 +53,8 @@
     var currentSelectedColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
 
     var cursorObj;
+    var dragging = false;
+    var dragStart = {x:0, y:0};
 
     const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
     var newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
@@ -72,16 +74,16 @@
     var Categories_kokusei_2020 = [{name: "population", label: "人口・人口増減・面積", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
       {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
       {}
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
       {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
       {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
       {}
@@ -129,16 +131,16 @@
     var Categories_kokusei_2015 = [{name: "population", label: "人口・人口増減・面積", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
       {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
       {}
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
       {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
       {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
       {}
@@ -230,7 +232,7 @@
     var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増減・面積", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
-      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
       {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
       {}
@@ -497,6 +499,24 @@
       map.createPane("polygon").style.zindex = 150;
       map.createPane("line").style.zindex = 400;
 
+      //ドラッグ時にクリックイベントを呼び出さないようにする(iOS用)
+      map.on("mousedown", function(e){
+        dragging = false;
+        dragStart.x = e.originalEvent.clientX;
+        dragStart.y = e.originalEvent.clientY;
+        $(document).on("mousemove", (e)=>{
+          var deltaX = e.originalEvent.clientX - dragStart.x;
+          var deltaY = e.originalEvent.clientY - dragStart.y;
+          var distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+          if(distance > 5){
+            dragging = true;
+          }
+        });
+        $(document).on("mouseup", (e)=>{
+          dragging = false;
+          $(document).off("mousemove");
+        });
+      });
 
       currentSelectedDataset = Dataset[0];
       $("#dataset").val("kokusei2020");
@@ -621,8 +641,11 @@
           return f.properties.uid;
         },
         pane: "polygon"
-      }).on("click", clickEvent)
-      .on("mouseover", obj => {
+      }).on("mouseup", obj => {
+        if(!dragging){
+          clickEvent(obj);
+        }
+      }).on("mouseover mousedown", obj => {
         cursorObj = obj.layer.properties;
         rewriteCursorTable(cursorObj);
       });
@@ -777,21 +800,21 @@
       var result;
       if(func === "div"){ //割り算　args[0]/args[1]
         result = sum(features, args[0]) / sum(features, args[1]);
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) == 0){
           return "-";
         }else{
           return result.toFixed(prec);
         }
       }else if(func === "rate"){ //割合(百分率) args[0]/args[1]*100
         result = sum(features, args[0]) / sum(features, args[1]);
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) == 0){
           return "-";
         }else{
           return (result * 100).toFixed(prec);
         }
       }else if(func === "incr_rate"){ //増加率(百分率) args[0]/(args[1]-args[0])*100
         result = sum(features, args[0]) / (sum(features, args[1]) - sum(features, args[0]));
-        if(isNaN(result)){
+        if(isNaN(result) || sum(features, args[1]) - sum(features, args[0]) == 0){
           return "-";
         }else{
           return (result * 100).toFixed(prec);
@@ -824,7 +847,16 @@
       selectedFeatures[n].forEach(function(f){
         var row = document.createElement("tr");
         var value = calc(f, currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
-        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td>";
+        var sumVal = parseInt(calc(selectedFeatures[n], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args));
+        var propotion = "-";
+        if(currentSelectedColumn.func == "sum" && !currentSelectedColumn.noprop && sumVal){
+          if(isNaN(value)){
+            propotion = "0.00";
+          }else{
+            propotion = (value / sumVal * 100).toFixed(2);
+          }
+        }
+        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td><td>" + propotion + "</td>";
         table.appendChild(row);
       });
     }
@@ -979,10 +1011,12 @@
           if(Object.keys(e).length){
             option.value = e.name;
             option.innerText = e.label;
+            columnSelector.appendChild(option);
           }else{
+            //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
             option.style = "display:none";
+            $(columnSelector).append($("<span>", {style: "display: none;"}).append(option));
           }
-          columnSelector.appendChild(option);
         });
         currentSelectedColumn = currentSelectedCategory[0];
         rewriteSumTable(groupIdx);
@@ -1246,7 +1280,7 @@
                 <details>
                   <summary>選択地物数：<span id="sel_count0">0</span></summary>
                   <table id="sel_table0" class="selects">
-                    <tr><th>地物名</th><th><select id="columnName0" class="columnSelect"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="density">人口密度(人/㎢)</option></select></th></tr>
+                    <tr><th>地物名</th><th><select id="columnName0" class="columnSelect"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="pop_increaseR">人口増加率(%)</option><option value="density">人口密度(人/㎢)</option></select></th><th>構成比(%)</th></tr>
                   </table>
                 </details>
               </div>
