@@ -508,7 +508,7 @@
           var deltaX = e.originalEvent.clientX - dragStart.x;
           var deltaY = e.originalEvent.clientY - dragStart.y;
           var distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
-          if(distance > 3){
+          if(distance > 5){
             dragging = true;
           }
         });
@@ -1011,10 +1011,12 @@
           if(Object.keys(e).length){
             option.value = e.name;
             option.innerText = e.label;
+            columnSelector.appendChild(option);
           }else{
+            //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
             option.style = "display:none";
+            $(columnSelector).append($("<span>", {style: "display: none;"}).append(option));
           }
-          columnSelector.appendChild(option);
         });
         currentSelectedColumn = currentSelectedCategory[0];
         rewriteSumTable(groupIdx);
