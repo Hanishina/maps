@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=no">
+  <title>人口計算機</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <link href="loader.css" rel="stylesheet" type="text/css">
+  <link href="./Plugins/leaflet-sidebar.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/eight-bit-color-picker.min.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/modaal.min.css" rel="stylesheet"  type="text/css"/>
+  <link href="./Plugins/toastr.min.css" rel="stylesheet"  type="text/css"/>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  <script src="./Plugins/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="./Plugins/eight-bit-color-picker.min.js"></script>
+  <script src="./Plugins/leaflet-sidebar.js"></script>
+  <script src="./Plugins/modaal.min.js"></script>
+  <script src="./Plugins/toastr.min.js"></script>
+  <script src="./dialog.js"></script>
+
+  <script>
+    var map;
+    var polygonLayer;
+    var lineLayer;
+
+    var colorPicker = [];
+    var dialog_reset;
+    var dialog_delete;
+    var dialog_changeDataset;
+
+    var selectedFeatures = [];
+    selectedFeatures[0] = [];
+
+    var currentSelectedDataset; //選択中のデータセット(国勢調査2015など)[obj]
+    var categories; //データセットに対応するサブデータセット(Categories_xxx)][obj]
+    var currentSelectedCategory; //選択中のサブデータセット(DID人口など)[obj]
+    var currentSelectedGroup = 0; //選択中のグループ
+    var currentSelectedColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
+
+    var cursorObj;
+    var dragging = false;
+    var dragStart = {x:0, y:0};
+
+    const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
+    var newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
+    var groupNames = ["グループ1"];
+    var groupColors = ["#cc0000"];
+
+    var Dataset = [
+      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: {label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line_calc.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
+      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line_calc.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
+    ];
+
+    //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
+    var Categories_kokusei_2020 = [{name: "population", label: "人口・人口増減・面積", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {}
+    ]}, {name: "house", label: "世帯数", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+      {}
+    ]}, {name: "did", label: "人口集中地区(DID)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"], desc:"人口集中地区(DID)内に居住している人の数。"},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1, desc:"DID人口を総人口で割ったもの。"}
+    ]}, {name: "age", label: "年齢別人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
+    ]}, {name: "foreigner", label: "外国人人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
+    ]}, {name: "csv", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"]},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"]},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2}
+    ]}];
+
+    var Categories_kokusei_2015 = [{name: "population", label: "人口・人口増減・面積", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {}
+    ]}, {name: "house", label: "世帯数", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+      {}
+    ]}, {name: "did", label: "人口集中地区(DID)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"], desc:"人口集中地区(DID)内に居住している人の数。"},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1, desc:"DID人口を総人口で割ったもの。"}
+    ]}, {name: "age", label: "年齢別人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
+    ]}, {name: "foreigner", label: "外国人人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
+    ]}, {name: "daytime", label: "昼夜間人口", data:[
+      {name: "POPULATION", label:"夜間人口(人)", func:"sum", args:["POPULATION"], desc:"当該市区町村に居住している人の数。すなわち人口と同値。"},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"], desc:"当該市区町村に通勤・通学しているものと当該市区町村に居住し通勤も通学もしていないものの合計。"},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1, desc:"昼間人口を夜間人口で割ったもの。"},
+      {}
+    ]}, {name: "industry", label:"産業別従業者数(三分類)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"], desc:"当該市区町村で従業している、15歳以上の従業者の数。"},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第一次産業(産業大分類のうちA, B)に分類される産業の従業者数。"},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1, desc:"第一次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第二次産業(産業大分類のうちC～E)に分類される産業の従業者数。"},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1, desc:"第二次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第三次産業(産業大分類のうちF～S)に分類される産業の従業者数。"},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1, desc:"第三次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "industry2", label:"産業別従業者数(大分類抜粋)", data:[
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「A:農業・林業」に分類される産業の従業者数。"},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1, desc:"農林業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「E:製造業」に分類される産業の従業者数。"},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1, desc:"製造業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SALE", label:"卸・小売業(人)", func:"sum", args:["IND_SALE"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「I:卸売業・小売業」に分類される産業の従業者数。"},
+      {name: "ind_saleR", label:"卸・小売業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1, desc:"卸・小売業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_ACCO", label:"宿泊・飲食業(人)", func:"sum", args:["IND_ACCO"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「M:宿泊業・飲食サービス業」に分類される産業の従業者数。"},
+      {name: "ind_accoR", label:"宿泊・飲食業割合(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1, desc:"宿泊・飲食業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MEDI", label:"医療・福祉(人)", func:"sum", args:["IND_MEDI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「P:医療・福祉」に分類される産業の従業者数。"},
+      {name: "ind_mediR", label:"医療・福祉割合(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1, desc:"医療・福祉従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "csv", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"]},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"]},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"]},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"]},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"]},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"]},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"]},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1},
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"]},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"]},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1},
+      {name: "IND_SALE", label:"卸・小売業(人)", func:"sum", args:["IND_SALE"]},
+      {name: "ind_saleR", label:"卸・小売業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1},
+      {name: "IND_ACCO", label:"宿泊・飲食業(人)", func:"sum", args:["IND_ACCO"]},
+      {name: "ind_accoR", label:"宿泊・飲食業割合(%)", func:"rate", args:["IND_ACCO", "WORKER"], prec:1},
+      {name: "IND_MEDI", label:"医療・福祉(人)", func:"sum", args:["IND_MEDI"]},
+      {name: "ind_mediR", label:"医療・福祉割合(%)", func:"rate", args:["IND_MEDI", "WORKER"], prec:1}
+    ]}];
+
+    var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増減・面積", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {}
+    ]}, {name: "house", label: "世帯数", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+      {}
+    ]}, {name: "did", label: "人口集中地区(DID)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"], desc:"人口集中地区(DID)内に居住している人の数。"},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1, desc:"DID人口を総人口で割ったもの。"}
+    ]}, {name: "age", label: "年齢別人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。総人口には年齢不詳を含む。"},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。総人口には年齢不詳を含む。"}
+    ]}, {name: "foreigner", label: "外国人人口", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2, desc:"総人口に占める外国人人口の割合。総人口には国籍不詳を含む。"},
+      {}
+    ]}, {name: "daytime", label: "昼夜間人口", data:[
+      {name: "POPULATION", label:"夜間人口(人)", func:"sum", args:["POPULATION"], desc:"当該市区町村に居住している人の数。すなわち人口と同値。"},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"], desc:"当該市区町村に通勤・通学しているものと当該市区町村に居住し通勤も通学もしていないものの合計。"},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1, desc:"昼間人口を夜間人口で割ったもの。"},
+      {}
+    ]}, {name: "industry", label:"産業別従業者数(三分類)", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"], desc:"当該市区町村で従業している、15歳以上の従業者の数。"},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第一次産業(産業大分類のうちA, B)に分類される産業の従業者数。"},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1, desc:"第一次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第二次産業(産業大分類のうちC～E)に分類される産業の従業者数。"},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1, desc:"第二次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"], desc:"当該市区町村で従業している15歳以上の従業者のうち、第三次産業(産業大分類のうちF～S)に分類される産業の従業者数。"},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1, desc:"第三次産業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "industry2", label:"産業別従業者数(大分類抜粋)", data:[
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「A:農業・B:林業」に分類される産業の従業者数。"},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1, desc:"農林業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「F:製造業」に分類される産業の従業者数。"},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1, desc:"製造業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SALE", label:"卸・小売・飲食業(人)", func:"sum", args:["IND_SALE"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「I:卸売・小売業、飲食店」に分類される産業の従業者数。"},
+      {name: "ind_saleR", label:"卸・小売・飲食業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1, desc:"卸・小売・飲食業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"},
+      {name: "IND_SERV", label:"サービス業(人)", func:"sum", args:["IND_SERV"], desc:"当該市区町村で従業している15歳以上の従業者のうち、産業大分類の「L:サービス業」に分類される産業の従業者数。"},
+      {name: "ind_servR", label:"サービス業割合(%)", func:"rate", args:["IND_SERV", "WORKER"], prec:1, desc:"サービス業従業者数を15歳以上の総従業者数で割ったもの。総従業者数には「分類不能の産業」を含む。"}
+    ]}, {name: "csv", data:[
+      {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+      {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
+      {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"]},
+      {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+      {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"]},
+      {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1},
+      {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+      {name: "DID_POPULATION", label:"DID人口(人)", func:"sum", args:["DID_POPULATION"]},
+      {name: "did_popR", label: "DID人口割合(%)", func:"rate", args:["DID_POPULATION", "POPULATION"], prec:1},
+      {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+      {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+      {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+      {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+      {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+      {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+      {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+      {name: "foreignerR", label:"外国人人口比率(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2},
+      {name: "DAYTIME", label:"昼間人口(人)", func:"sum", args:["DAYTIME"]},
+      {name: "daytimeR", label:"昼夜間人口比率(%)", func:"rate", args:["DAYTIME", "POPULATION"], prec:1},
+      {name: "WORKER", label:"15歳以上の従業者数(人)", func:"sum", args:["WORKER"]},
+      {name: "1ST_IND", label:"第一次産業従業者数(人)", func:"sum", args:["1ST_IND"]},
+      {name: "1st_indR", label:"第一次産業従業者割合(%)", func:"rate", args:["1ST_IND", "WORKER"], prec:1},
+      {name: "2ND_IND", label:"第二次産業従業者数(人)", func:"sum", args:["2ND_IND"]},
+      {name: "2nd_indR", label:"第二次産業従業者割合(%)", func:"rate", args:["2ND_IND", "WORKER"], prec:1},
+      {name: "3RD_IND", label:"第三次産業従業者数(人)", func:"sum", args:["3RD_IND"]},
+      {name: "3rd_indR", label:"第三次産業従業者割合(%)", func:"rate", args:["3RD_IND", "WORKER"], prec:1},
+      {name: "IND_AGRI", label:"農林業(人)", func:"sum", args:["IND_AGRI"]},
+      {name: "ind_agriR", label:"農林業割合(%)", func:"rate", args:["IND_AGRI", "WORKER"], prec:1},
+      {name: "IND_MANU", label:"製造業(人)", func:"sum", args:["IND_MANU"]},
+      {name: "ind_manuR", label:"製造業割合(%)", func:"rate", args:["IND_MANU", "WORKER"], prec:1},
+      {name: "IND_SALE", label:"卸・小売・飲食業(人)", func:"sum", args:["IND_SALE"]},
+      {name: "ind_saleR", label:"卸・小売・飲食業割合(%)", func:"rate", args:["IND_SALE", "WORKER"], prec:1},
+      {name: "IND_SERV", label:"サービス業(人)", func:"sum", args:["IND_SERV"]},
+      {name: "ind_servR", label:"サービス業割合(%)", func:"rate", args:["IND_SERV", "WORKER"], prec:1}
+    ]}];
+
+    var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
+      {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
+      {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"平成27年国勢調査による面積。"},
+      {name: "OFFICE", label: "民営事業所数(所)", func: "sum", args: ["OFFICE"], desc:"事業所の数(公務を除く)。"},
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"]}
+    ]}, {name: "ind_office", label: "産業別事業所数", data:[
+      {name: "OFFICE", label: "民営事業所数(所)", func: "sum", args: ["OFFICE"], desc:"事業所の数(公務を除く・事業内容不詳を含む)。"},
+      {},
+      {name: "O_1ST", label: "第一次産業(所)", func: "sum", args: ["O_1ST"], desc:"事業所のうち、農林業・漁業に分類されるものの数。"},
+      {name: "o_1stR", label: "第一次産業割合(%)", func: "rate", args: ["O_1ST", "OFFICE"], prec: 1, desc:"第一次産業事業所数を民営事業所数で割ったもの。"},
+      {name: "O_2ND", label: "第二次産業(所)", func: "sum", args: ["O_2ND"], desc:"事業所のうち、鉱業・建設業・製造業等に分類されるものの数。"},
+      {name: "o_2ndR", label: "第二次産業割合(%)", func: "rate", args: ["O_2ND", "OFFICE"], prec: 1, desc:"第二次産業事業所数を民営事業所数で割ったもの。"},
+      {name: "O_3RD", label: "第三次産業(所)", func: "sum", args: ["O_3RD"], desc:"事業所のうち、第三次産業(産業大分類のうちF～R)に分類されるものの数。"},
+      {name: "o_3rdR", label: "第三次産業割合(%)", func: "rate", args: ["O_3RD", "OFFICE"], prec: 1, desc:"第三次産業事業所数を民営事業所数で割ったもの。"}
+    ]}, {name: "ind_worker", label: "産業別従業者数", data:[
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"], desc:"民営事業所(事業内容不詳を含む)の従業者の数。"},
+      {},
+      {name: "W_1ST", label: "第一次産業(人)", func: "sum", args: ["W_1ST"], desc:"事業所のうち、農林業・漁業に分類されるものに従事している従業者の数。"},
+      {name: "w_1stR", label: "第一次産業割合(%)", func: "rate", args: ["W_1ST", "WORKER"], prec: 1, desc:"第一次産業従業者数を民営事業所従業者数で割ったもの。"},
+      {name: "W_2ND", label: "第二次産業(人)", func: "sum", args: ["W_2ND"], desc:"事業所のうち、鉱業・建設業・製造業等に分類されるものに従事している従業者の数。"},
+      {name: "w_2ndR", label: "第二次産業割合(%)", func: "rate", args: ["W_2ND", "WORKER"], prec: 1, desc:"第二次産業従業者数を民営事業所従業者数で割ったもの。"},
+      {name: "W_3RD", label: "第三次産業(人)", func: "sum", args: ["W_3RD"], desc:"事業所のうち、第三次産業(産業大分類のうちF～R)に分類されるものに従事している従業者の数。"},
+      {name: "w_3rdR", label: "第三次産業割合(%)", func: "rate", args: ["W_3RD", "WORKER"], prec: 1, desc:"第三次産業従業者数を民営事業所従業者数で割ったもの。"}
+    ]}, {name: "sales_all", label: "売上・付加価値額(全産業)", data:[
+      {name: "SALES_EST", label: "売上金額試算値(百万円)", func: "sum", args: ["SALES_EST"], desc: "1年間(調査年前年)の売上利益。一部の産業は事業所別の売上高を算出することが困難であるため、推計値を用いる。"},
+      {name: "ADD_VALUE", label: "付加価値額(百万円)", func: "sum", args: ["ADD_VALUE"], desc: "生産活動によって新たに生み出された価値。売上高から費用等を引いたもの。"},
+      {name: "productivity", label: "労働生産性(百万円/人)", func: "div", args: ["ADD_VALUE", "WORKER"], prec: 2, desc: "付加価値額を民営事業所従業者数で割ったもの。"},
+      {}
+    ]}, {name: "sales_ind", label: "主要産業売上高", data:[
+      {name: "SALES_AGRI", label: "農林漁業(百万円)", func: "sum", args: ["SALES_AGRI"]},
+      {name: "SALES_MANU", label: "製造業(百万円)", func: "sum", args: ["SALES_MANU"]},
+      {name: "SALES_SALE", label: "卸・小売業(百万円)", func: "sum", args: ["SALES_SALE"]},
+      {name: "SALES_ACCO", label: "宿泊・飲食サービス業(百万円)", func: "sum", args: ["SALES_ACCO"]},
+      {name: "SALES_MEDI", label: "医療・福祉(百万円)", func: "sum", args: ["SALES_MEDI"]},
+      {}
+    ]}, {name: "manufacture", label: "製造業に関する指標", data:[
+      {name: "MANU_OFFICE", label: "事業所数(所)", func: "sum", args: ["MANU_OFFICE"], desc:"従業員数4人以上の製造業事業所の数。"},
+      {name: "MANU_WORKER", label: "従業者数(人)", func: "sum", args: ["MANU_WORKER"]},
+      {name: "MANU_SHIP", label: "製造品出荷額等(万円)", func: "sum", args: ["MANU_SHIP"], desc:"1年間(調査年前年)に製造された製品の出荷額。"},
+      {name: "MANU_ADD", label: "粗付加価値額(万円)", func: "sum", args: ["MANU_ADD"], desc:"製造品出荷額等から原材料費・燃料費・諸税等を差し引いたもの。"},
+      {name: "manu_shipPW", label: "従業員あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "MANU_WORKER"], prec: 1},
+      {name: "manu_shipPO", label: "事業所あたり出荷額(万円/所)", func: "div", args: ["MANU_SHIP", "MANU_OFFICE"], prec: 1},
+      {name: "manu_shipPC", label: "人口あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "POPULATION"], prec: 1},
+      {}
+    ]}, {name: "sales", label: "卸・小売業に関する指標", data:[
+      {name: "SL_OFFICE", label: "事業所数(所)", func: "sum", args: ["SL_OFFICE"], desc:"卸売業・小売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "SL_WORKER", label: "従業者数(人)", func: "sum", args: ["SL_WORKER"]},
+      {name: "SL_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["SL_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "sl_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["SL_SALES", "SL_OFFICE"], prec: 1},
+      {name: "sl_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "SL_WORKER"], prec: 1},
+      {name: "sl_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "POPULATION"], prec: 2}
+    ]}, {name: "wholesale", label: "卸売業に関する指標", data:[
+      {name: "WH_OFFICE", label: "事業所数(所)", func: "sum", args: ["WH_OFFICE"], desc:"卸売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "WH_WORKER", label: "従業者数(人)", func: "sum", args: ["WH_WORKER"]},
+      {name: "WH_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["WH_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "wh_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["WH_SALES", "WH_OFFICE"], prec: 1},
+      {name: "wh_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "WH_WORKER"], prec: 1},
+      {name: "wh_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "POPULATION"], prec: 2}
+    ]}, {name: "retail", label: "小売業に関する指標", data:[
+      {name: "RE_OFFICE", label: "事業所数(所)", func: "sum", args: ["RE_OFFICE"], desc:"小売業に分類される事業所の数(販売額等の数値が得られたもののみ)。"},
+      {name: "RE_WORKER", label: "従業者数(人)", func: "sum", args: ["RE_WORKER"]},
+      {name: "RE_SALES", label: "年間商品販売額(百万円)", func: "sum", args: ["RE_SALES"], desc:"1年間(調査年前年)に販売された有体商品の売上高。"},
+      {name: "re_salesPO", label: "事業所あたり商品販売額(百万円/所)", func: "div", args: ["RE_SALES", "RE_OFFICE"], prec: 1},
+      {name: "re_salesPW", label: "従業員あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "RE_WORKER"], prec: 1},
+      {name: "re_salesPC", label: "人口あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "POPULATION"], prec: 2},
+      {name: "RE_AREA", label: "売場面積(㎡)", func: "sum", args: ["RE_AREA"]},
+      {}
+    ]}, {name: "csv", data: [
+      {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"]},
+      {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2},
+      {name: "OFFICE", label: "事業所数(所)", func: "sum", args: ["OFFICE"]},
+      {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"]},
+      {name: "O_1ST", label: "【事】第一次産業(所)", func: "sum", args: ["O_1ST"]},
+      {name: "o_1stR", label: "【事】第一次産業割合(%)", func: "rate", args: ["O_1ST", "OFFICE"], prec: 1},
+      {name: "O_2ND", label: "【事】第二次産業(所)", func: "sum", args: ["O_2ND"]},
+      {name: "o_2ndR", label: "【事】第二次産業割合(%)", func: "rate", args: ["O_2ND", "OFFICE"], prec: 1},
+      {name: "O_3RD", label: "【事】第三次産業(所)", func: "sum", args: ["O_3RD"]},
+      {name: "o_3rdR", label: "【事】第三次産業割合(%)", func: "rate", args: ["O_3RD", "OFFICE"], prec: 1},
+      {name: "W_1ST", label: "【従】第一次産業(人)", func: "sum", args: ["W_1ST"]},
+      {name: "w_1stR", label: "【従】第一次産業割合(%)", func: "rate", args: ["W_1ST", "WORKER"], prec: 1},
+      {name: "W_2ND", label: "【従】第二次産業(人)", func: "sum", args: ["W_2ND"]},
+      {name: "w_2ndR", label: "【従】第二次産業割合(%)", func: "rate", args: ["W_2ND", "WORKER"], prec: 1},
+      {name: "W_3RD", label: "【従】第三次産業(人)", func: "sum", args: ["W_3RD"]},
+      {name: "w_3rdR", label: "【従】第三次産業割合(%)", func: "rate", args: ["W_3RD", "WORKER"], prec: 1},
+      {name: "SALES_EST", label: "売上金額試算値(百万円)", func: "sum", args: ["SALES_EST"]},
+      {name: "ADD_VALUE", label: "付加価値額(百万円)", func: "sum", args: ["ADD_VALUE"]},
+      {name: "productivity", label: "労働生産性(百万円/人)", func: "div", args: ["ADD_VALUE", "W_PRIVATE"], prec: 2},
+      {name: "SALES_AGRI", label: "農林漁業売上高(百万円)", func: "sum", args: ["SALES_AGRI"]},
+      {name: "SALES_MANU", label: "製造業売上高(百万円)", func: "sum", args: ["SALES_MANU"]},
+      {name: "SALES_SALE", label: "卸・小売業売上高(百万円)", func: "sum", args: ["SALES_SALE"]},
+      {name: "SALES_ACCO", label: "宿泊・飲食サービス業売上高(百万円)", func: "sum", args: ["SALES_ACCO"]},
+      {name: "SALES_MEDI", label: "医療・福祉売上高(百万円)", func: "sum", args: ["SALES_MEDI"]},
+      {name: "MANU_OFFICE", label: "【製】事業所数(所)", func: "sum", args: ["MANU_OFFICE"]},
+      {name: "MANU_WORKER", label: "【製】従業者数(人)", func: "sum", args: ["MANU_WORKER"]},
+      {name: "MANU_SHIP", label: "【製】製造品出荷額等(万円)", func: "sum", args: ["MANU_SHIP"]},
+      {name: "MANU_ADD", label: "【製】粗付加価値額(万円)", func: "sum", args: ["MANU_ADD"]},
+      {name: "manu_shipPW", label: "【製】従業員あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "MANU_WORKER"], prec: 1},
+      {name: "manu_shipPO", label: "【製】事業所あたり出荷額(万円/所)", func: "div", args: ["MANU_SHIP", "MANU_OFFICE"], prec: 1},
+      {name: "manu_shipPC", label: "【製】人口あたり出荷額(万円/人)", func: "div", args: ["MANU_SHIP", "POPULATION"], prec: 1},
+      {name: "SL_OFFICE", label: "【卸・小】事業所数(所)", func: "sum", args: ["SL_OFFICE"]},
+      {name: "SL_WORKER", label: "【卸・小】従業者数(人)", func: "sum", args: ["SL_WORKER"]},
+      {name: "SL_SALES", label: "【卸・小】年間商品販売額(百万円)", func: "sum", args: ["SL_SALES"]},
+      {name: "sl_salesPO", label: "【卸・小】事業所あたり商品販売額(百万円/所)", func: "div", args: ["SL_SALES", "SL_OFFICE"], prec: 1},
+      {name: "sl_salesPW", label: "【卸・小】従業員あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "SL_WORKER"], prec: 1},
+      {name: "sl_salesPC", label: "【卸・小】人口あたり商品販売額(百万円/人)", func: "div", args: ["SL_SALES", "POPULATION"], prec: 2},
+      {name: "WH_OFFICE", label: "【卸】事業所数(所)", func: "sum", args: ["WH_OFFICE"]},
+      {name: "WH_WORKER", label: "【卸】従業者数(人)", func: "sum", args: ["WH_WORKER"]},
+      {name: "WH_SALES", label: "【卸】年間商品販売額(百万円)", func: "sum", args: ["WH_SALES"]},
+      {name: "wh_salesPO", label: "【卸】事業所あたり商品販売額(百万円/所)", func: "div", args: ["WH_SALES", "WH_OFFICE"], prec: 1},
+      {name: "wh_salesPW", label: "【卸】従業員あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "WH_WORKER"], prec: 1},
+      {name: "wh_salesPC", label: "【卸】人口あたり商品販売額(百万円/人)", func: "div", args: ["WH_SALES", "POPULATION"], prec: 2},
+      {name: "RE_OFFICE", label: "【小】事業所数(所)", func: "sum", args: ["RE_OFFICE"]},
+      {name: "RE_WORKER", label: "【小】従業者数(人)", func: "sum", args: ["RE_WORKER"]},
+      {name: "RE_SALES", label: "【小】年間商品販売額(百万円)", func: "sum", args: ["RE_SALES"]},
+      {name: "re_salesPO", label: "【小】事業所あたり商品販売額(百万円/所)", func: "div", args: ["RE_SALES", "RE_OFFICE"], prec: 1},
+      {name: "re_salesPW", label: "【小】従業員あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "RE_WORKER"], prec: 1},
+      {name: "re_salesPC", label: "【小】人口あたり商品販売額(百万円/人)", func: "div", args: ["RE_SALES", "POPULATION"], prec: 2},
+      {name: "RE_AREA", label: "【小】売場面積(㎡)", func: "sum", args: ["RE_AREA"]}
+    ]}];
+
+    var polygon2015Json;
+    var polygon2010Json;
+    var polygon2005Json;
+    var polygon2000Json;
+    var keizai2016Json;
+    var line2015Json;
+    var line2010Json;
+    var line2005Json;
+    var line2000Json;
+    var line2016Json;
+    var polygon2020Json;
+    var line2020Json;
+
+    async function getResources(name, date){
+      var path = "./json/" + name;
+      return $.getJSON(path, function(json){
+        var features = json.features;
+        if (json.name === "line"){
+
+          var mura = features.filter(function(f){return f.properties.TYPE === "村"});
+          var ku = features.filter(function(f){return f.properties.TYPE === "区"});
+          var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+          var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+          var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+          var ken = features.filter(function(f){return f.properties.TYPE === "県"});
+          var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+          var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+          var features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
+
+          if(date){
+            features = features.filter(function(f){
+              return new Date(f.properties.START) <= new Date(date) & new Date(f.properties.END) > new Date(date);
+            });
+          }
+
+        }
+
+        features.forEach(function(f, i){
+          f.properties.uid = i;
+        });
+        json.features = features
+      });
+    }
+
+    async function init(){
+
+      dialog_reset = new Dialog;
+      dialog_delete = new Dialog;
+      dialog_changeDataset = new Dialog;
+
+      colorPicker[0] = new EightBitColorPicker({el: 'colorPicker0', color: 112});
+      colorPicker[0].addEventListener("colorChange", e=> selectColor(e));
+
+      map = L.map("map", {zoomControl: false});
+      map.setView([35, 137], 8);
+      map.setMinZoom(5);
+      L.control.zoom({position: "topright"}).addTo(map);
+      map.createPane("base").style.zIndex = 100;
+      map.createPane("polygon").style.zindex = 150;
+      map.createPane("line").style.zindex = 400;
+
+      //ドラッグ時にクリックイベントを呼び出さないようにする(iOS用)
+      map.on("mousedown", function(e){
+        dragging = false;
+        dragStart.x = e.originalEvent.clientX;
+        dragStart.y = e.originalEvent.clientY;
+        $(document).on("mousemove", (e)=>{
+          var deltaX = e.originalEvent.clientX - dragStart.x;
+          var deltaY = e.originalEvent.clientY - dragStart.y;
+          var distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+          if(distance > 5){
+            dragging = true;
+          }
+        });
+        $(document).on("mouseup", (e)=>{
+          dragging = false;
+          $(document).off("mousemove");
+        });
+      });
+
+      currentSelectedDataset = Dataset[0];
+      $("#dataset").val("kokusei2020");
+
+      categories = window[currentSelectedDataset.category];
+      currentSelectedCategory = categories[0].data;
+      $("#category").val("population");
+
+      var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base",
+          opacity: 0.5
+      });
+      var photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+          attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
+          pane: "base"
+      });
+      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+          pane: "base"
+      });
+
+      var blank = L.tileLayer('', {pane:"base"});
+
+      var baseMaps = {
+        "淡色地図(地理院地図)": paleMap,
+        "標準地図(地理院地図)": standardMap,
+        "陰影起伏図": shadeMap,
+        "航空写真": photo,
+        "OpenStreetMap": osm,
+        "背景非表示":blank
+      };
+
+      L.control.layers(baseMaps).addTo(map);
+
+      //背景地図一覧(文字列)
+      var baseMapNames = {
+        "淡色地図(地理院地図)": "paleMap",
+        "標準地図(地理院地図)": "standardMap",
+        "陰影起伏図": "shadeMap",
+        "航空写真": "photo",
+        "OpenStreetMap": "osm",
+        "背景非表示": "blank"
+      }
+
+      map.addLayer(paleMap);
+
+      L.control.scale({imperial: false, maxWidth: 300, position: "bottomright"}).addTo(map);
+
+      var sidebar = L.control.sidebar({container: "sidebar", closeButton: false}).addTo(map);
+      sidebar.open("home");
+
+      var columnSelect = document.getElementById("columnName0")
+      columnSelect.addEventListener("change", columnChange);
+
+      currentSelectedColumn = currentSelectedCategory[0];
+      columnSelect.value = "POPULATION";
+      groupSelect(0);
+
+      document.getElementById("dataset").addEventListener("change", datasetChange);
+      document.getElementById("category").addEventListener("change", categoryChange);
+
+      $('.inline').modaal({
+	      content_source: '#inline',
+        before_open: openTable,
+        before_close: closeTable
+      });
+
+      $('input[name="tableType"]').change(function(){
+        closeTable();
+        openTable();
+      });
+
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+
+      polygon2020Json = await getResources("2020kokusei_add.geojson");
+      line2020Json = await getResources("line_calc.geojson", "2020-10-01");
+
+      polygonRedraw(polygon2020Json);
+      lineRedraw(line2020Json);
+
+      document.querySelector(".loader").style.display = "none";
+      document.querySelector(".loaderBG").style.display = "none";
+      document.querySelector(".loaderCover").style.display = "none";
+
+    }
+
+    function polygonRedraw(json){
+      polygonLayer = L.vectorGrid.slicer(json, {
+        vectorTileLayerStyles: {
+          sliced:function(properties){
+             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+          }
+        },
+        maxZoom: 18,
+        interactive: true,
+        getFeatureId: function(f){
+          return f.properties.uid;
+        },
+        pane: "polygon"
+      }).on("mouseup", obj => {
+        if(!dragging){
+          clickEvent(obj);
+        }
+      }).on("mouseover mousedown", obj => {
+        cursorObj = obj.layer.properties;
+        rewriteCursorTable(cursorObj);
+      });
+
+      polygonLayer.addTo(map);
+    }
+
+    function lineRedraw(json){
+      lineLayer = L.vectorGrid.slicer(json, {
+        vectorTileLayerStyles: {
+          sliced: function(properties){
+              switch(properties.TYPE){
+                case '村': return{color:"#639394", weight:2}
+                case '区': return{color:"#857944", weight:2}
+                case '特別区': return{color:"#326333", weight:2}
+                case '郡': return{color:"#326333", weight:2}
+                case '支庁': return{color:"#995514", weight:2}
+                case '県': return{color:"#8a2725", weight:2}
+                case '湖': return{color:"#5363b5", weight:2}
+                case '海': return{color:"#223c8a", weight:2}
+             }
+          }
+        },
+        maxZoom: 18,
+        pane: "line"
+      });
+      lineLayer.addTo(map);
+    }
+
+    //地物クリック時の処理
+    function clickEvent(obj){
+      if(selectedFeatures[currentSelectedGroup].some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が選択済みの場合(クリックした地物を削除)
+        selectedFeatures[currentSelectedGroup] = selectedFeatures[currentSelectedGroup].filter(f => f.uid !== obj.layer.properties.uid);
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+      }else if(selectedFeatures.flat().some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が他のグループで選択されている場合(クリックした地物のグループを変更)
+        var locA, locB;  //selectedFeatures[locA][locB]がクリックしたした地物の位置
+        selectedFeatures.some(function(group, groupNo){
+          if(group.findIndex(f => f.uid === obj.layer.properties.uid) !== -1){
+            locA = groupNo;
+            locB = group.findIndex(f => f.uid === obj.layer.properties.uid);
+            return true;
+          }else{
+            return false;
+          }
+        });
+        selectedFeatures[locA].splice(locB, 1);
+        rewriteSumTable(locA);
+
+        selectedFeatures[currentSelectedGroup].push(obj.layer.properties);
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup]) ,fillOpacity:0.4, opacity:0});
+
+      }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
+        selectedFeatures[currentSelectedGroup].push(obj.layer.properties);
+        polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:(groupColors[currentSelectedGroup]) ,fillOpacity:0.4, opacity:0});
+      }
+
+      rewriteSumTable(currentSelectedGroup);
+
+    }
+
+    //カーソル位置の地物情報表示
+    function rewriteCursorTable(obj){
+      if(obj){
+        //北海道の郡名処理
+        var gun = "";
+        if(obj.GUN){
+          gun = obj.GUN.split("(")[0];
+        }
+        $("#mouse_name").text(obj.KEN + gun + obj.NAME);
+        currentSelectedCategory.forEach(function(f, i){
+          $("#mouseCol_data" + i).text(calc(obj, f.func, f.prec, f.args));
+        });
+      }else{
+        $("#mouse_name").text("-");
+        currentSelectedCategory.forEach(function(f, i){
+          $("#mouseCol_data" + i).text("");
+        });
+      }
+    }
+
+    //リセットボタン処理
+    function resetGroup(n){
+      //グループ内に選択済みの地物が存在するときのみ発動
+      if(selectedFeatures[n].length > 0){
+        function determ(){
+          selectedFeatures[n].forEach(function(f){
+            polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+          });
+          selectedFeatures[n].splice(0);
+
+          rewriteSumTable(n);
+        }
+
+        dialog_reset.msg = groupNames[n] + "の選択を全て解除しますか？";
+        dialog_reset.buttons = [{id: "determ", text: "OK", onclick: determ}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
+        dialog_reset.show();
+      }
+    }
+
+    //デリートボタン処理
+    function deleteGroup(n){
+      function determ(){
+        selectedFeatures[n].forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+        });
+        //グループ数が1の場合、そのグループのリセットのみ行う
+        if(selectedFeatures.length === 1){
+          selectedFeatures[n].splice(0);
+          rewriteSumTable(n);
+        }else{
+          document.getElementById("group" + currentSelectedGroup).style.border = "2px solid #777";
+          selectedFeatures.splice(n, 1);
+          groupNames.splice(n, 1);
+          groupColors.splice(n, 1);
+          colorPicker.splice(n, 1);
+          document.getElementById("group" + n).remove();
+          //後続のグループのidを変更
+          for(var i=(n+1); i<=selectedFeatures.length; i++){
+            var groupNode = document.getElementById("group" + i);
+            groupNode.setAttribute("onclick", "groupSelect(" + (i - 1) + ")");
+            groupNode.id = "group" + (i - 1);
+            groupNode.querySelector("#colorPicker" + i).id = "colorPicker" + (i - 1);
+            groupNode.querySelector("#groupName" + i).id = "groupName" + (i - 1);
+            groupNode.querySelector("#resetBtn" + i).setAttribute("onclick", "resetGroup(" + (i - 1) + ")");
+            groupNode.querySelector("#resetBtn" + i).id = "resetBtn" + (i - 1);
+            groupNode.querySelector("#deleteBtn" + i).setAttribute("onclick", "deleteGroup(" + (i - 1) + ")");
+            groupNode.querySelector("#deleteBtn" + i).id = "deleteBtn" + (i - 1);
+            groupNode.querySelector("#groupTable" + i).id = "groupTable" + (i - 1);
+            for(j=0; j<currentSelectedCategory.length; j++){
+              groupNode.querySelector("#groupCol_name" + j + "_" + i).id = "groupCol_name" + j + "_" + (i - 1);
+              groupNode.querySelector("#groupCol_data" + j + "_" + i).id = "groupCol_data" + j + "_" + (i - 1);
+            }
+            groupNode.querySelector("#sel_count" + i).id = "sel_count" + (i - 1);
+            groupNode.querySelector("#sel_table" + i).id = "sel_table" + (i - 1);
+            groupNode.querySelector("#columnName" + i).id = "columnName" + (i - 1);
+
+
+          }
+
+          if(currentSelectedGroup > n){
+            currentSelectedGroup--;
+          }
+
+          groupSelect(currentSelectedGroup);
+        }
+      }
+
+      dialog_delete.msg = groupNames[n] + "を削除しますか？";
+      dialog_delete.buttons = [{id: "determ", text: "OK", onclick: determ}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
+      dialog_delete.show();
+
+    }
+
+    //グループの値合計用
+    function sum(arr, key){
+      if(Array.isArray(arr)){ //arrが配列である場合、配列の合計を返す(非数値は0とみなす)
+        return arr.reduce((sum, e) => {
+          return sum + (Number(e[key]) || 0);
+        },0);
+      }else{ //arrが配列でない場合(=カーソル位置テーブル・個別地物テーブル)
+        if(isNaN(Number(arr[key]))){ //値が非数値(秘匿値)
+          return arr[key];
+        }else{ //値が数値(0を含む)
+          return Number(arr[key]);
+        }
+      }
+
+    }
+
+    //各種計算用関数
+    //features: 計算に使用するオブジェクトの配列;  func: 計算式の種類;  prec: 小数点以下の桁数;  args: 計算に用いるkeyの名称の配列(要求される数はfuncによる)
+    function calc(features, func, prec = 0, args){
+      var result;
+      if(func === "div"){ //割り算　args[0]/args[1]
+        result = sum(features, args[0]) / sum(features, args[1]);
+        if(isNaN(result) || sum(features, args[1]) == 0){
+          return "-";
+        }else{
+          return result.toFixed(prec);
+        }
+      }else if(func === "rate"){ //割合(百分率) args[0]/args[1]*100
+        result = sum(features, args[0]) / sum(features, args[1]);
+        if(isNaN(result) || sum(features, args[1]) == 0){
+          return "-";
+        }else{
+          return (result * 100).toFixed(prec);
+        }
+      }else if(func === "incr_rate"){ //増加率(百分率) args[0]/(args[1]-args[0])*100
+        result = sum(features, args[0]) / (sum(features, args[1]) - sum(features, args[0]));
+        if(isNaN(result) || sum(features, args[1]) - sum(features, args[0]) == 0){
+          return "-";
+        }else{
+          return (result * 100).toFixed(prec);
+        }
+      }else if(func === "sum"){ //足し算 args[0]
+        result = sum(features, args[0]);
+        if(isNaN(result)){
+          return result;
+        }else{
+          return result.toFixed(prec);
+        }
+      }else{ //空白
+        return "";
+      }
+    }
+
+    //グループの合計値書き換え
+    function rewriteSumTable(n){
+      currentSelectedCategory.forEach(function(f, i){
+        document.getElementById("groupCol_data" + i + "_" + n).innerHTML = calc(selectedFeatures[n], f.func, f.prec, f.args);
+      });
+      document.getElementById('sel_count' + n).innerHTML = selectedFeatures[n].length;
+
+      var table = document.getElementById("sel_table" + n)
+      //地物一覧表を削除
+      while (table.rows[1]) {
+        table.deleteRow(1);
+      }
+      //新しい地物一覧表を追加
+      selectedFeatures[n].forEach(function(f){
+        var row = document.createElement("tr");
+        var value = calc(f, currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
+        var sumVal = parseInt(calc(selectedFeatures[n], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args));
+        var propotion = "-";
+        if(currentSelectedColumn.func == "sum" && !currentSelectedColumn.noprop && sumVal){
+          if(isNaN(value)){
+            propotion = "0.00";
+          }else{
+            propotion = (value / sumVal * 100).toFixed(2);
+          }
+        }
+        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td><td>" + propotion + "</td>";
+        table.appendChild(row);
+      });
+    }
+
+    //グループの追加
+    function addGroup(){
+      var newId = selectedFeatures.length;
+      var gCont = document.getElementById('groupsContainer');
+      var newGroupNode = document.getElementById('group0').cloneNode(true); //複製元のdiv要素
+      newGroupNode.setAttribute("onclick", "groupSelect(" + newId + ")");
+      newGroupNode.id = "group" + newId;
+      newGroupNode.querySelector("#colorPicker0").id = "colorPicker" + newId;
+      newGroupNode.querySelector("#groupName0").textContent = "グループ" + (newGroupNo);
+      newGroupNode.querySelector("#groupName0").id = "groupName" + newId;
+      newGroupNode.querySelector("#resetBtn0").setAttribute("onclick", "resetGroup(" + newId + ")");
+      newGroupNode.querySelector("#resetBtn0").id = "resetBtn" + newId;
+      newGroupNode.querySelector("#deleteBtn0").setAttribute("onclick", "deleteGroup(" + newId + ")");
+      newGroupNode.querySelector("#deleteBtn0").id = "deleteBtn" + newId;
+      newGroupNode.querySelector("#groupTable0").id = "groupTable" + newId;
+      for(i=0; i<currentSelectedCategory.length; i++){
+        newGroupNode.querySelector("#groupCol_name" + i + "_0").id = "groupCol_name" + i + "_" + newId;
+        newGroupNode.querySelector("#groupCol_data" + i + "_0").id = "groupCol_data" + i + "_" + newId;
+      }
+      newGroupNode.querySelector("#sel_count0").id = "sel_count" + newId;
+      newGroupNode.querySelector("#sel_table0").id = "sel_table" + newId;
+      newGroupNode.querySelector("#columnName0").value = currentSelectedColumn.name;
+      newGroupNode.querySelector("#columnName0").id = "columnName" + newId;
+      gCont.appendChild(newGroupNode);
+      selectedFeatures.push([]);
+      groupNames.push("グループ" + (newGroupNo));
+      colorPicker[newId] = new EightBitColorPicker({el: 'colorPicker' + newId, color: (DefaultColorNo[newGroupNo - 1] || 238)});
+      newGroupNo++
+
+      document.getElementById("columnName" + newId).addEventListener("change", columnChange);
+      colorPicker[newId].addEventListener("colorChange", e=> selectColor(e));
+      groupColors.push(colorPicker[newId].getHexColor());
+      rewriteSumTable(newId);
+      groupSelect(newId);
+    }
+
+    //グループをクリックしたときの処理
+    function groupSelect(n){
+      //元のグループの枠線を灰色に戻す
+      if(selectedFeatures[currentSelectedGroup] !== undefined){
+        document.getElementById("group" + currentSelectedGroup).style.border = "2px solid #777";
+      }  //最後のクループをdeleteした場合は実行されない
+
+      //クリックされたグループの枠線を赤くする
+      if(selectedFeatures[n] !== undefined){
+        document.getElementById("group" + n).style.border = "4px solid #a00";
+        currentSelectedGroup = n;
+      }else{ //最後のクループをdeleteした場合
+        document.getElementById("group" + (n-1)).style.border = "4px solid #a00";
+        currentSelectedGroup = (n-1);
+      }
+    }
+
+    //地物一覧テーブルのカテゴリ変更
+    function columnChange(e){
+      currentSelectedColumn = currentSelectedCategory.find(f => {return f.name === e.target.value;});
+      for(var i=0; i < selectedFeatures.length; i++){
+        rewriteSumTable(i);
+        document.getElementById("columnName" + i).value = currentSelectedColumn.name;
+      }
+    }
+
+    //色変更時
+    function selectColor(e){
+      var n = parseInt((e.target.id).substr(11));
+      groupColors[n] = colorPicker[n].getHexColor();
+      if(selectedFeatures[n]){
+        selectedFeatures[n].forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:groupColors[n] ,fillOpacity:0.4, opacity:0});
+        });
+      }
+
+    }
+
+    //表示サブデータセット変更
+    function categoryChange(e){
+      currentSelectedCategory = categories.find(f => {return f.name === e.target.value;}).data;
+
+      //カーソル位置地物情報テーブルの書き換え
+      var mouseTable = document.getElementById("mouseTable");
+      while (mouseTable.rows[0]) {
+        mouseTable.deleteRow(0);
+      }
+      for(i=0; i<currentSelectedCategory.length/2; i++){
+        var tr = document.createElement("tr");
+        for(j=0; j<2; j++){
+          var th = document.createElement("th");
+          th.id = "mouseCol_name" + (i*2+j);
+          th.innerText = currentSelectedCategory[i*2+j].label || "";
+          tr.appendChild(th);
+          var td = document.createElement("td");
+          td.id = "mouseCol_data" + (i*2+j);
+          //td.innerText = cursorObj[data[i*2+j].name];
+          tr.appendChild(td);
+        }
+        mouseTable.appendChild(tr);
+      }
+      if(cursorObj){
+        rewriteCursorTable(cursorObj);
+      }
+
+      //グループの書き換え
+      selectedFeatures.forEach((group, groupIdx) => {
+        var groupTable = document.getElementById("groupTable" + groupIdx);
+        while (groupTable.rows[0]) {
+          groupTable.deleteRow(0);
+        }
+        for(i=0; i<currentSelectedCategory.length; i++){
+          var tr = document.createElement("tr");
+          var th = document.createElement("th");
+          th.id = "groupCol_name" + i + "_" + groupIdx;
+          if(Object.keys(currentSelectedCategory[i]).length){ //currentSelectedCategory[i]が空でない場合
+            th.innerText = currentSelectedCategory[i].label || "";
+            if(currentSelectedCategory[i].desc !== undefined){ //ツールチップを付加
+              var div1 = document.createElement("div");
+              div1.className = "tooltip";
+              var icon = document.createElement("i");
+              icon.className = "fas fa-question-circle";
+              icon.style = "color:#0f5f91;";
+              div1.appendChild(icon);
+              var div2 = document.createElement("div");
+              div2.className = "description";
+              div2.innerText = currentSelectedCategory[i].desc;
+              div1.appendChild(div2);
+              th.appendChild(div1);
+            }
+          }else{
+            th.style = "display:none";
+          }
+          tr.appendChild(th);
+          var td = document.createElement("td");
+          td.id = "groupCol_data" + i + "_" + groupIdx;
+          if(Object.keys(currentSelectedCategory[i]).length){ //currentSelectedCategory[i]が空でない場合
+            td.innerText = "";
+          }else{
+            td.style = "display:none";
+          }
+          tr.appendChild(td);
+          groupTable.appendChild(tr);
+        }
+
+        var columnSelector = document.getElementById("columnName" + groupIdx);
+        while (columnSelector.firstChild) {
+          columnSelector.removeChild(columnSelector.firstChild);
+        }
+        currentSelectedCategory.forEach(e => {
+          var option = document.createElement("option");
+          if(Object.keys(e).length){
+            option.value = e.name;
+            option.innerText = e.label;
+            columnSelector.appendChild(option);
+          }else{
+            //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
+            option.style = "display:none";
+            $(columnSelector).append($("<span>", {style: "display: none;"}).append(option));
+          }
+        });
+        currentSelectedColumn = currentSelectedCategory[0];
+        rewriteSumTable(groupIdx);
+
+      });
+
+    }
+
+    //データセット変更
+    function datasetChange(e){
+      //「選択地物を保持してデータセット変更」
+      let save = async()=>{
+        currentSelectedDataset = Dataset.find(f => {return f.name === e.target.value});
+        //selectedFeaturesをコピー
+        var formerFeatures = [];
+        selectedFeatures.forEach((group, groupIdx)=>{
+          group.forEach((feature)=>{
+            formerFeatures.push({code: feature.CODE5, group: groupIdx});
+          });
+          group.length = 0;
+        });
+
+        document.querySelector(".loader").style.display = "inline";
+        document.querySelector(".loaderBG").style.display = "inline";
+        document.querySelector(".loaderCover").style.display = "inline";
+
+        polygonLayer.remove();
+        lineLayer.remove();
+        if(!window[currentSelectedDataset.polygonObj]){ //ポリゴンデータの取得が済んでいない場合
+          window[currentSelectedDataset.polygonObj] = await getResources(currentSelectedDataset.polygonFile);
+        }
+        polygonRedraw(window[currentSelectedDataset.polygonObj]);
+        if(!window[currentSelectedDataset.lineObj]){ //ラインデータの取得が済んでいない場合
+          window[currentSelectedDataset.lineObj] = await getResources(currentSelectedDataset.lineFile, currentSelectedDataset.date);
+        }
+        lineRedraw(window[currentSelectedDataset.lineObj]);
+
+
+        formerFeatures.forEach((e)=>{
+          let match = window[currentSelectedDataset.polygonObj].features.find((f)=>{
+            return(f.properties.CODE5 === e.code);
+          });
+          if(match){
+            selectedFeatures[e.group].push(match.properties);
+            polygonLayer.setFeatureStyle(match.properties.uid, {fill: true, fillColor:(groupColors[e.group]) ,fillOpacity:0.4, opacity:0});
+          }
+        });
+
+        categories = window[currentSelectedDataset.category];
+        currentSelectedCategory = categories[0].data;
+        currentSelectedColumn = currentSelectedCategory[0];
+
+        //カテゴリ選択部の更新
+        var categorySelector = document.getElementById("category");
+        while (categorySelector.firstChild) {
+          categorySelector.removeChild(categorySelector.firstChild);
+        }
+        categories.forEach(f => {
+          if(f.name !== "csv"){ //csv用のカテゴリセットは除く
+            var option = document.createElement("option");
+            option.value = f.name;
+            option.innerText = f.label;
+            categorySelector.appendChild(option);
+          }
+        });
+        if(categories.length === 2){
+          categorySelector.disabled = true;
+        }else{
+          categorySelector.disabled = false;
+        }
+        categorySelector.value = categories[0].name;
+
+        //データ出典書き換え
+        $("#attribution").text(currentSelectedDataset.attr.label);
+        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+
+        //グループの再描画
+        var event = new Event("change");
+        categorySelector.dispatchEvent(event);
+        rewriteCursorTable();
+
+
+        document.querySelector(".loader").style.display = "none";
+        document.querySelector(".loaderBG").style.display = "none";
+        document.querySelector(".loaderCover").style.display = "none";
+      }
+      //「選択地物を破棄してデータセット変更」
+      let discard = async()=>{
+        currentSelectedDataset = Dataset.find(f => {return f.name === e.target.value});
+        //地図上の色をリセット
+        selectedFeatures.flat().forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+        });
+        for(var i=1; i < selectedFeatures.length; i++){
+          document.getElementById("group" + i).remove();
+        }
+        colorPicker.splice(1);
+        selectedFeatures.splice(1);
+        selectedFeatures[0] = [];
+        document.getElementById("groupName0").textContent = "グループ1";
+        //group0を再選択
+        document.getElementById("group0").style.border = "4px solid #a00";
+        currentSelectedGroup = 0;
+        //値リセット
+        newGroupNo = 2;
+        groupNames = ["グループ1"];
+        groupColors = ["#cc0000"];
+        colorPicker[0].updateColor(112);
+        categories = window[currentSelectedDataset.category];
+        currentSelectedCategory = categories[0].data;
+        currentSelectedColumn = currentSelectedCategory[0];
+
+
+        //カテゴリ選択部の更新
+        var categorySelector = document.getElementById("category");
+        while (categorySelector.firstChild) {
+          categorySelector.removeChild(categorySelector.firstChild);
+        }
+        categories.forEach(f => {
+          if(f.name !== "csv"){ //csv用のカテゴリセットは除く
+            var option = document.createElement("option");
+            option.value = f.name;
+            option.innerText = f.label;
+            categorySelector.appendChild(option);
+          }
+        });
+        if(categories.length === 2){
+          categorySelector.disabled = true;
+        }else{
+          categorySelector.disabled = false;
+        }
+        categorySelector.value = categories[0].name;
+
+        //データ出典書き換え
+        $("#attribution").text(currentSelectedDataset.attr.label);
+        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+
+        //グループの再描画
+        var event = new Event("change");
+        categorySelector.dispatchEvent(event);
+        rewriteCursorTable();
+
+
+        document.querySelector(".loader").style.display = "inline";
+        document.querySelector(".loaderBG").style.display = "inline";
+        document.querySelector(".loaderCover").style.display = "inline";
+
+        polygonLayer.remove();
+        lineLayer.remove();
+        if(!window[currentSelectedDataset.polygonObj]){ //ポリゴンデータの取得が済んでいない場合
+          window[currentSelectedDataset.polygonObj] = await getResources(currentSelectedDataset.polygonFile);
+        }
+        polygonRedraw(window[currentSelectedDataset.polygonObj]);
+        if(!window[currentSelectedDataset.lineObj]){ //ラインデータの取得が済んでいない場合
+          window[currentSelectedDataset.lineObj] = await getResources(currentSelectedDataset.lineFile, currentSelectedDataset.date);
+        }
+        lineRedraw(window[currentSelectedDataset.lineObj]);
+
+        document.querySelector(".loader").style.display = "none";
+        document.querySelector(".loaderBG").style.display = "none";
+        document.querySelector(".loaderCover").style.display = "none";
+
+      }
+
+      dialog_changeDataset.msg = "データセットを「" + $("#dataset option:selected").text() +  "」に変更しますか？";
+      dialog_changeDataset.cancel = ()=>{document.getElementById("dataset").value = currentSelectedDataset.name;};
+      dialog_changeDataset.buttons = [{id: "save", text: "選択地物を保持して変更", onclick: save}, {id: "discard", text: "選択地物をリセットして変更", onclick: discard}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
+      dialog_changeDataset.show();
+
+      /*if(window.confirm("データを変更すると全ての選択がリセットされます。\nデータを変更しますか？")){
+        currentSelectedDataset = Dataset.find(f => {return f.name === e.target.value});
+        //地図上の色をリセット
+        selectedFeatures.flat().forEach(function(f){
+          polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+        });
+        for(var i=1; i < selectedFeatures.length; i++){
+          document.getElementById("group" + i).remove();
+        }
+        colorPicker.splice(1);
+        selectedFeatures.splice(1);
+        selectedFeatures[0] = [];
+        document.getElementById("groupName0").textContent = "グループ1";
+        //group0を再選択
+        document.getElementById("group0").style.border = "4px solid #a00";
+        currentSelectedGroup = 0;
+        //値リセット
+        newGroupNo = 2;
+        groupNames = ["グループ1"];
+        groupColors = ["#cc0000"];
+        colorPicker[0].updateColor(112);
+        categories = window[currentSelectedDataset.category];
+        currentSelectedCategory = categories[0].data;
+        currentSelectedColumn = currentSelectedCategory[0];
+
+
+        //カテゴリ選択部の更新
+        var categorySelector = document.getElementById("category");
+        while (categorySelector.firstChild) {
+          categorySelector.removeChild(categorySelector.firstChild);
+        }
+        categories.forEach(f => {
+          if(f.name !== "csv"){ //csv用のカテゴリセットは除く
+            var option = document.createElement("option");
+            option.value = f.name;
+            option.innerText = f.label;
+            categorySelector.appendChild(option);
+          }
+        });
+        if(categories.length === 2){
+          categorySelector.disabled = true;
+        }else{
+          categorySelector.disabled = false;
+        }
+        categorySelector.value = categories[0].name;
+
+        //データ出典書き換え
+        $("#attribution").text(currentSelectedDataset.attr.label);
+        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+
+        //グループの再描画
+        var event = new Event("change");
+        categorySelector.dispatchEvent(event);
+        rewriteSumTable(0);
+
+
+        document.querySelector(".loader").style.display = "inline";
+        document.querySelector(".loaderBG").style.display = "inline";
+        document.querySelector(".loaderCover").style.display = "inline";
+
+        polygonLayer.remove();
+        lineLayer.remove();
+        if(!window[currentSelectedDataset.polygonObj]){ //ポリゴンデータの取得が済んでいない場合
+          window[currentSelectedDataset.polygonObj] = await getResources(currentSelectedDataset.polygonFile);
+        }
+        polygonRedraw(window[currentSelectedDataset.polygonObj]);
+        if(!window[currentSelectedDataset.lineObj]){ //ラインデータの取得が済んでいない場合
+          window[currentSelectedDataset.lineObj] = await getResources(currentSelectedDataset.lineFile, currentSelectedDataset.date);
+        }
+        lineRedraw(window[currentSelectedDataset.lineObj]);
+
+        document.querySelector(".loader").style.display = "none";
+        document.querySelector(".loaderBG").style.display = "none";
+        document.querySelector(".loaderCover").style.display = "none";
+
+      }else{
+        document.getElementById("dataset").value = currentSelectedDataset.name;
+      }*/
+    }
+
+    //csv生成用テーブルを開く
+    function openTable(){
+      var tableType = $('input[name="tableType"]:checked').val();
+      var csvCate = categories.slice(-1)[0].data; //categoriesの最後の要素
+      $("#csvTableHeader").text("データ: " + currentSelectedDataset.label);
+      //表一行目
+      var tr1 = $("<tr>");
+      $("#csvTable").append(tr1);
+      $("<th>", {text: "コード"}).appendTo(tr1);
+      $("<th>", {text: "名前"}).appendTo(tr1);
+      if(tableType === "all"){$("<th>", {text: "グループ"}).appendTo(tr1);}else{$("<th>", {text: "選択地物数"}).appendTo(tr1);}
+      csvCate.forEach(cate => {
+        if(cate.func){
+          $("<th>", {text: cate.label}).appendTo(tr1);
+        }
+      });
+
+      for(i=0; i<selectedFeatures.length; i++){
+        //各地物のデータ
+        if(tableType === "all"){
+          selectedFeatures[i].forEach(fts => {
+            var tr2 = $("<tr>");
+            $("#csvTable").append(tr2);
+            $("<td>", {text: fts.CODE5}).appendTo(tr2);
+            $("<td>", {text: fts.NAME}).appendTo(tr2);
+            $("<td>", {text: "G" + groupNames[i].substr(4)}).appendTo(tr2);
+            csvCate.forEach(cate => {
+              if(cate.func){
+                var tableData = calc(fts, cate.func, cate.prec, cate.args);
+                $("<td>", {text: tableData, css:{textAlign: "right"}}).appendTo(tr2);
+              }
+            });
+          });
+        }
+
+        //グループ合計値
+        var tr3 = $("<tr>");
+        $(tr3).css("background-color", "#ddf");
+        $("#csvTable").append(tr3);
+        $("<td>", {text: "G" + groupNames[i].substr(4)}).appendTo(tr3);
+        $("<td>", {text: groupNames[i]}).appendTo(tr3);
+        if(tableType === "all"){$("<td>").appendTo(tr3);}else{$("<td>", {text: selectedFeatures[i].length}).appendTo(tr3);}
+        csvCate.forEach(cate => {
+          if(cate.func){
+            var tableData = calc(selectedFeatures[i], cate.func, cate.prec, cate.args);
+            $("<td>", {text: tableData, css:{textAlign: "right"}}).appendTo(tr3);
+          }
+        });
+      }
+
+      //全グループ合計
+      var tr4 = $("<tr>");
+      $(tr4).css("background-color", "#fdd");
+      $("#csvTable").append(tr4);
+      $("<td>", {text: "Gtotal"}).appendTo(tr4);
+      $("<td>", {text: "全グループ"}).appendTo(tr4);
+      if(tableType === "all"){$("<td>").appendTo(tr4);}else{$("<td>", {text: selectedFeatures.flat().length}).appendTo(tr4);}
+      csvCate.forEach(cate => {
+        if(cate.func){
+          var tableData = calc(selectedFeatures.flat(), cate.func, cate.prec, cate.args);
+          $("<td>", {text: tableData, css:{textAlign: "right"}}).appendTo(tr4);
+        }
+      });
+
+
+    }
+
+    function closeTable(){
+      $("#csvTable").empty();
+    }
+
+    function downloadCsv(){
+      //テーブルからcsv用文字列を作成
+      var csvData = "データ: " + currentSelectedDataset.label + "\n";
+      var table = $("#csvTable")[0];
+      for(i = 0;  i < table.rows.length; i++){
+        for(j = 0; j < table.rows[i].cells.length; j++){
+          csvData += table.rows[i].cells[j].innerText;
+          if(j == table.rows[i].cells.length-1) {csvData += "\n";}
+          else {csvData += ",";}
+        }
+      }
+
+      //csvダウンロード
+      var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+      var blob = new Blob([bom, csvData], { type: 'text/csv' });
+      var url = (window.URL || window.webkitURL).createObjectURL(blob);
+      var download = document.createElement("a");
+      download.href = url;
+      download.download = "populationCalculator.csv";
+      download.click();
+      (window.URL || window.webkitURL).revokeObjectURL(url);
+      csvData = "";
+    }
+
+    function copyTable(){
+      var clipBoardData = "";
+      var table = $("#csvTable")[0];
+      for(i = 0;  i < table.rows.length; i++){
+        for(j = 0; j < table.rows[i].cells.length; j++){
+          clipBoardData += table.rows[i].cells[j].innerText;
+          if(j == table.rows[i].cells.length-1) {clipBoardData += "\n";}
+          else {clipBoardData += "\t";}
+        }
+      }
+
+      var promise = new Promise((resolve, reject) => {
+        navigator.clipboard.writeText(clipBoardData);
+        resolve();
+      });
+      promise.then(() => {toastr["success"]("表をクリップボードにコピーしました。");});
+
+    }
+
+  </script>
+</head>
+
+<body onload="init()">
+  <div class="header">
+    <div class="title">市区町村人口計算機</div>
+    <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./calculator_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+  </div>
+  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。</div>
+
+  <div class="border">
+    <div>
+      使用データ・年次の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
+      <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査</a></span>
+    </div>
+    <div style="position: relative;">
+      <div class="loaderCover"></div>
+      <div class="loaderBG"></div>
+      <div class="loader"></div>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <!-- Nav tabs -->
+    <div class="leaflet-sidebar-tabs">
+        <ul role="tablist"> <!-- top aligned tabs -->
+            <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+        </ul>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="leaflet-sidebar-content">
+        <div class="leaflet-sidebar-pane" id="home">
+            <h1 class="leaflet-sidebar-header">
+                人口計算機
+            </h1>
+            <div>表示するデータセット:<select id="category"><option value="population">人口・人口増減・面積</option><option value="house">世帯数</option><option value="did">人口集中地区(DID)</option><option value="age">年齢別人口</option><option value="foreigner">外国人人口</option></select></div>
+            <details id="mouseContainer" open class="current">
+              <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
+              <div id="mouse_name" class="current">-</div>
+              <table id="mouseTable" class="current">
+                <tr><th id="mouseCol_name0">人口(人)</th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
+                <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口増加率(%)</th><td id="mouseCol_data3"></td></tr>
+                <tr><th id="mouseCol_name4">人口密度(人/㎢)</th><td id="mouseCol_data4"></td><th id="mouseCol_name5"></th><td id="mouseCol_data5"></td></tr>
+              </table>
+            </details>
+            <div id="groupsContainer" ontouchstart="">
+              <div id="group0" class="group" onclick="groupSelect(0)">
+                <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker" id="colorPicker0"></span><span  id="groupName0" style="margin: 0px 2px;">グループ1</span><span style="margin-left: auto;"><input id="resetBtn0" type="button" value="選択をリセット" onclick="resetGroup(0)"/><input id="deleteBtn0" type="button" value="グループを削除" onclick="deleteGroup(0)"/><span></div>
+                <table class="sum" id="groupTable0">
+                  <tr><th id="groupCol_name0_0">人口(人)</th><td id="groupCol_data0_0">0</td></tr>
+                  <tr><th id="groupCol_name1_0">面積(㎢)</th><td id="groupCol_data1_0">0.00</td></tr>
+                  <tr><th id="groupCol_name2_0">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></div></th><td id="groupCol_data2_0">0</td></tr>
+                  <tr><th id="groupCol_name3_0">人口増加率(%)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">人口増加数を前回調査時人口で割ったもの。</div></div></th><td id="groupCol_data3_0">-</td></tr>
+                  <tr><th id="groupCol_name4_0">人口密度(人/㎢)</th><td id="groupCol_data4_0">-</td></tr>
+                  <tr><th id="groupCol_name5_0" style="display: none;"></th><td id="groupCol_data5_0" style="display: none;">-</td></tr>
+                </table>
+                <details>
+                  <summary>選択地物数：<span id="sel_count0">0</span></summary>
+                  <table id="sel_table0" class="selects">
+                    <tr><th>地物名</th><th><select id="columnName0" class="columnSelect"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="pop_increaseR">人口増加率(%)</option><option value="density">人口密度(人/㎢)</option></select></th><th>構成比(%)</th></tr>
+                  </table>
+                </details>
+              </div>
+            </div>
+            <div class="addGroup" onclick="addGroup()"><i class="far fa-plus-square"></i>新規グループ追加</div>
+            <div><input type="button" value="表形式で表示" class="inline"/></div>
+          </div>
+      </div>
+  </div>
+
+  <div id="inline" style="display:none;">
+    <div><a id="download"><input type="button" value="csvファイルとして保存" onclick="downloadCsv()"/></a><input type="button" value="クリップボードにコピー" onclick="copyTable()"/></div>
+    <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label></div>
+    <div id="csvTableHeader"></div>
+    <div style="overflow: scroll; height: 60vh">
+	     <table id="csvTable" class="csv"></table>
+    </div>
+  </div>
+
+  <div id="dialogCont">
+    <div id="dialogBG"></div>
+    <div id="dialog">
+      <div id="dialogMsg">メッセージボックステスト</div>
+      <div id="dialogButtons"><input type="button"/><input type="button"/></div>
+    </div>
+  </div>
+
+</body>
+</html>
