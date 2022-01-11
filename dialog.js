@@ -26,9 +26,9 @@ function Dialog(options){
     $(button).on("click", (e)=>{
       this.hide();
       if(obj.onclick === "ok"){
-        ok();
+        this.ok();
       }else if(obj.onclick === "cancel"){
-        cancel();
+        this.cancel();
       }else{
         obj.onclick(e);
       }
