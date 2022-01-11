@@ -136,10 +136,10 @@ ul.mylist li:before{
   position: fixed;
   left: 50%;
   top: 50%;
+  transform: translate(-50%, -50%);
   width: 500px;
-  margin-left: -250px;
-  margin-top: -100px;
   background-color: #fff;
+  font-size: 1em;
   text-align: center;
   border: solid 2px #aaa;
   z-index: 1012;
@@ -162,12 +162,11 @@ ul.mylist li:before{
 
 .dialogBtn{
   background-color: #ddd;
-  border: solid 1px #77f;
+  border: solid 2px #77f;
   border-radius: 0.5em;
   cursor: pointer;
-  font-size: 80%;
-  margin: 5px;
-  padding: 3px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .dialogBtn:hover{
