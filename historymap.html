@@ -36,8 +36,10 @@
      var labelLayers = [];
      var labelLayerGroups = [];
      var baseLayerNames = [];
-     var polygonColoredLayers = [];
-     var polygonColoredLayerGroups = [];
+     var typeColoredLayers = [];
+     var typeColoredLayerGroups = [];
+     var gunColoredLayers = [];
+     var gunColoredLayerGroups = [];
 
      var polygonJson;
      var lineJson;
@@ -48,6 +50,8 @@
      var dualChkbx;
      var containerA;
      var containerB;
+
+     var layerControl = [];
 
      var cookies;
      var urlParams;
@@ -125,7 +129,8 @@
 
          labelLayerGroups[n] = new L.LayerGroup();
          labelLayers[n] = new L.LayerGroup();
-         polygonColoredLayerGroups[n] = new L.LayerGroup();
+         typeColoredLayerGroups[n] = new L.LayerGroup();
+         gunColoredLayerGroups[n] = new L.LayerGroup();
 
 
          var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -169,9 +174,11 @@
          };
          var overlayMaps = {
            "市区町村名ラベルを表示": labelLayerGroups[n],
-           "色分け(市・町・村)": polygonColoredLayerGroups[n]
+           "色分け(市・町・村)": typeColoredLayerGroups[n],
+           "色分け(郡)": gunColoredLayerGroups[n]
          };
-         L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+         layerControl[n] = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
          //背景地図一覧(文字列)
          var baseMapNames = {
@@ -184,27 +191,24 @@
          }
 
          //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
-         if(Object.values(baseMapNames).includes(urlParams.get("base" + n))){
-           map.addLayer(eval(urlParams.get("base" + n)));
-           baseLayerNames[n] = urlParams.get("base" + n);
-         }else if(Object.values(baseMapNames).includes(cookies["base" + n])){
-           map.addLayer(eval(cookies["base" + n]));
-           baseLayerNames[n] = cookies["base" + n];
+         var layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0};
+         
+         if(Object.values(baseMapNames).includes(layerParams.base)){
+           map.addLayer(eval(layerParams.base));
+           baseLayerNames[n] = layerParams.base;
          }else{
            map.addLayer(paleMap);
            baseLayerNames[n] = "paleMap";
          }
 
-         if(urlParams.get("label" + n) === "true"){
-           map.addLayer(labelLayerGroups[n]);
-         }else if(urlParams.get("label" + n) === null & cookies["label" + n] === "true"){
+         if(layerParams.label === "true"){
            map.addLayer(labelLayerGroups[n]);
          }
 
-         if(urlParams.get("color" + n) === "true"){
-           map.addLayer(polygonColoredLayerGroups[n]);
-         }else if(urlParams.get("color" + n) === null & cookies["color" + n] === "true"){
-           map.addLayer(polygonColoredLayerGroups[n]);
+         if(layerParams.color == 1){
+           map.addLayer(typeColoredLayerGroups[n]);
+         }else if(layerParams.color == 2){
+           map.addLayer(gunColoredLayerGroups[n]);
          }
 
          L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
@@ -220,7 +224,32 @@
            baseLayerNames[n] = baseMapNames[e.name];
          });
 
-         polygonColoredRedraw(n);
+
+         map.on("overlayadd", (e)=>{
+           //レイヤー削除時に遅延処理が必要(leafletのバグ？)
+           if(e.name === "色分け(市・町・村)" && map.hasLayer(gunColoredLayerGroups[n])){
+             setTimeout(()=>{
+               map.removeLayer(gunColoredLayerGroups[n]);
+               layerControl[n].removeLayer(typeColoredLayerGroups[n]);
+               layerControl[n].removeLayer(gunColoredLayerGroups[n]);
+               layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
+               layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
+             }, 10);
+           }
+           if(e.name === "色分け(郡)" && map.hasLayer(typeColoredLayerGroups[n])){
+             setTimeout(()=>{
+               map.removeLayer(typeColoredLayerGroups[n]);
+               layerControl[n].removeLayer(typeColoredLayerGroups[n]);
+               layerControl[n].removeLayer(gunColoredLayerGroups[n]);
+               layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
+               layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
+             }, 10);
+           }
+         });
+
+
+         typeColoredRedraw(n);
+         gunColoredRedraw(n);
          polygonRedraw(n);
          lineRedraw(n);
          labelRedraw(n);
@@ -251,6 +280,7 @@
          labelRedraw(1);
 
          //urlパラメータ生成
+         function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
          var statusParams = {
            "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
            "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
@@ -261,8 +291,8 @@
            "base1" : baseLayerNames[1],
            "label0" : maps[0].hasLayer(labelLayerGroups[0]),
            "label1" : maps[1].hasLayer(labelLayerGroups[1]),
-           "color0" : maps[0].hasLayer(polygonColoredLayerGroups[0]),
-           "color1" : maps[1].hasLayer(polygonColoredLayerGroups[1]),
+           "color0" : color(0),
+           "color1" : color(1),
            "dual" : dualChkbx.checked
          }
          for(var key in statusParams){
@@ -333,24 +363,49 @@
        polygonLayers[n].addTo(maps[n]);
      }
 
-     function polygonColoredRedraw(n){
-       polygonColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+     function typeColoredRedraw(n){
+       typeColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
          vectorTileLayerStyles: {
            sliced:function(properties){
              switch(properties.TYPE){
-               case '村': return{fill: true, fillColor:"#e6d5ff" ,fillOpacity:0.4, opacity:0, pane:"colored"}
-               case '町': return{fill: true, fillColor:"#aaeaad" ,fillOpacity:0.4, opacity:0, pane:"colored"}
-               case '市': return{fill: true, fillColor:"#ffdda1" ,fillOpacity:0.4, opacity:0, pane:"colored"}
-               case '政令区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0, pane:"colored"}
-               case '特別区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0, pane:"colored"}
-               default : return{fill: true, fillColor:"#ffffff" ,fillOpacity:0.4, opacity:0, pane:"colored"}
+               case '村': return{fill: true, fillColor:"#e6d5ff" ,fillOpacity:0.4, opacity:0}
+               case '町': return{fill: true, fillColor:"#aaeaad" ,fillOpacity:0.4, opacity:0}
+               case '市': return{fill: true, fillColor:"#ffdda1" ,fillOpacity:0.4, opacity:0}
+               case '政令区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0}
+               case '特別区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0}
+               default : return{fill: true, fillColor:"#ffffff" ,fillOpacity:0.4, opacity:0}
             }
            }
          },
          maxZoom: 18,
          pane: "colored"
        });
-       polygonColoredLayers[n].addTo(polygonColoredLayerGroups[n]);
+       typeColoredLayers[n].addTo(typeColoredLayerGroups[n]);
+     }
+
+     function gunColoredRedraw(n){
+       gunColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+         vectorTileLayerStyles: {
+           sliced:function(properties){
+              var op = 0.25;
+              if(properties.TYPE === "町"){op = 0.5}
+              switch(properties.GUNCOLOR){
+                case 1: return{fill: true, fillColor:"#ffb0b0" ,fillOpacity:op, opacity:0}
+                case 2: return{fill: true, fillColor:"#e3b77b" ,fillOpacity:op, opacity:0}
+                case 3: return{fill: true, fillColor:"#e6e491" ,fillOpacity:op, opacity:0}
+                case 4: return{fill: true, fillColor:"#beff8f" ,fillOpacity:op, opacity:0}
+                case 5: return{fill: true, fillColor:"#79ab85" ,fillOpacity:op, opacity:0}
+                case 6: return{fill: true, fillColor:"#bafff6" ,fillOpacity:op, opacity:0}
+                case 7: return{fill: true, fillColor:"#9e9eff" ,fillOpacity:op, opacity:0}
+                case 8: return{fill: true, fillColor:"#e2a9f5" ,fillOpacity:op, opacity:0}
+                default : return{fill: true, fillColor:"#ffffff" ,fillOpacity:0.0, opacity:0}
+             }
+           }
+         },
+         maxZoom: 18,
+         pane: "colored"
+       });
+       gunColoredLayers[n].addTo(gunColoredLayerGroups[n]);
      }
 
      function labelRedraw(n){
@@ -417,12 +472,14 @@
          default : break;
        }
        date[n] = new Date(form.year.value, form.month.value - 1, 1);
-       polygonColoredLayerGroups[n].removeLayer(polygonColoredLayers[n]);
+       typeColoredLayerGroups[n].removeLayer(typeColoredLayers[n]);
+       gunColoredLayerGroups[n].removeLayer(gunColoredLayers[n]);
        maps[n].removeLayer(lineLayers[n]);
        maps[n].removeLayer(polygonLayers[n]);
        labelLayerGroups[n].removeLayer(labelLayers[n]);
 
-       polygonColoredRedraw(n);
+       typeColoredRedraw(n);
+       gunColoredRedraw(n);
        polygonRedraw(n);
        lineRedraw(n);
        labelRedraw(n);
