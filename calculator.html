@@ -55,6 +55,9 @@
     var currentSelectedCategory; //選択中のサブデータセット(DID人口など)[obj]
     var currentSelectedGroup = 0; //選択中のグループ
     var currentSelectedColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
+    var currentDataset_estimateFields = [];
+
+    var polygonFields = []; //ポリゴンのフィールド名一覧。func:customの時用いる
 
     var cursorObj;
     var dragging = false;
@@ -65,13 +68,16 @@
     var groupNames = ["グループ1"];
     var groupColors = ["#cc0000"];
 
+    var Senkyo_estimate = ["H_VOTE", "H_VALID_VOTE", "H_JIMIN", "H_KOMEI", "H_RIKKEN", "H_ISHIN", "H_KYOSAN", "H_KOKUMIN", "H_REIWA", "H_SHAMIN", "H_NHK", "H_OTHER"];
+
     var Dataset = [
-      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: {label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}},
-      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line_calc.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: {label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}},
-      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: {label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}},
-      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: {label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}},
-      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: {label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}},
-      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line_calc.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: {label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}}
+      {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "2020kokusei_add.geojson", polygonObj: "polygon2020Json", lineFile: "line_calc.geojson", lineObj: "line2020Json", category: "Categories_kokusei_2020", attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
+      {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "2015kokusei_add.geojson", polygonObj: "polygon2015Json", lineFile: "line_calc.geojson", lineObj: "line2015Json", category: "Categories_kokusei_2015", attr: [{label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}]},
+      {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "2010kokusei_add.geojson", polygonObj: "polygon2010Json", lineFile: "line_calc.geojson", lineObj: "line2010Json", category: "Categories_kokusei_2015", attr: [{label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}]},
+      {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "2005kokusei_add.geojson", polygonObj: "polygon2005Json", lineFile: "line_calc.geojson", lineObj: "line2005Json", category: "Categories_kokusei_2015", attr: [{label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}]},
+      {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "2000kokusei_add.geojson", polygonObj: "polygon2000Json", lineFile: "line_calc.geojson", lineObj: "line2000Json", category: "Categories_kokusei_2000", attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
+      {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "2016keizaicensus.geojson", polygonObj: "keizai2016Json", lineFile: "line_calc.geojson", lineObj: "line2016Json", category: "Categories_keizai", attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
+      {name: "senkyo2021", label: "2021年衆院選", date: "2021-10-31", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021Json", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021Json", category: "Categories_senkyo", estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
     ];
 
     //カテゴリー一覧:最後のデータはcsvテーブル用(選択不可)
@@ -80,7 +86,7 @@
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
       {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "/", "AREA"], prec:1},
       {}
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -446,6 +452,82 @@
       {name: "RE_AREA", label: "【小】売場面積(㎡)", func: "sum", args: ["RE_AREA"]}
     ]}];
 
+    var Categories_senkyo = [{name: "shosenkyo", label: "小選挙区制", data:[
+      {name: "S_DIST", label: "小選挙区", func: "nonsum", args:["S_DIST"]},
+      {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"], desc: "選挙当日の有権者の数(在外を含む)。"},
+      {name: "S_VOTE", label: "投票者数", func: "sum", args:["S_VOTE"]},
+      {name: "s_voteR", label: "投票率(%)", func: "rate", args:["S_VOTE", "ELECTOR"], prec: 1, desc: "投票者数を有権者数で割ったもの。"},
+      {name: "S_VALID_VOTE", label: "有効投票数", func: "sum", args:["S_VALID_VOTE"]},
+      {name: "s_valid_voteR", label: "有効投票率(%)", func: "rate", args:["S_VALID_VOTE", "S_VOTE"], prec: 1, desc: "有効投票数を投票者数で割ったもの。"}
+    ]}, {name: "hirei", label: "比例代表制", data:[
+      {name: "H_DIST", label: "比例ブロック", func: "nonsum", args:["H_DIST"]},
+      {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"], desc: "選挙当日の有権者の数(在外を含む)。"},
+      {name: "H_VOTE", label: "投票者数", func: "sum", args:["H_VOTE"]},
+      {name: "h_voteR", label: "投票率(%)", func: "rate", args:["H_VOTE", "ELECTOR"], prec: 1, desc: "投票者数を有権者数で割ったもの。"},
+      {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+      {name: "h_valid_voteR", label: "有効投票率(%)", func: "rate", args:["H_VALID_VOTE", "H_VOTE"], prec: 1, desc: "有効投票数を投票者数で割ったもの。"}
+    ]}, {name: "party", label: "比例：政党別得票数", data:[
+      {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+      {name: "ruling", label: "与党", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")"], desc: "自由民主党および公明党の得票数。"},
+      {name: "H_JIMIN", label: "自民党", func: "sum", args:["H_JIMIN"], desc: "自由民主党の得票数。"},
+      {name: "H_KOMEI", label: "公明党", func: "sum", args:["H_KOMEI"], desc: "公明党の得票数。"},
+      {name: "H_RIKKEN", label: "立憲民主党", func: "sum", args:["H_RIKKEN"], prec: "floor", desc: "立憲民主党の得票数。按分により生じる端数は切り捨て。"},
+      {name: "H_ISHIN", label: "日本維新の会", func: "sum", args:["H_ISHIN"], desc: "日本維新の会の得票数。"},
+      {name: "H_KYOSAN", label: "共産党", func: "sum", args:["H_KYOSAN"], desc: "日本共産党の得票数。"},
+      {name: "H_KOKUMIN", label: "国民民主党", func: "sum", args:["H_KOKUMIN"], prec: "floor", desc: "国民民主党の得票数。按分により生じる端数は切り捨て。"},
+      {name: "H_REIWA", label: "れいわ新選組", func: "sum", args:["H_REIWA"], desc: "れいわ新選組の得票数。"},
+      {name: "H_SHAMIN", label: "社民党", func: "sum", args:["H_SHAMIN"], desc: "社会民主党の得票数。"},
+      {name: "H_NHK", label: "NHK党", func: "sum", args:["H_NHK"], desc: "ＮＨＫと裁判してる党弁護士法７２条違反での得票数。"},
+      {name: "H_OTHER", label: "その他", func: "sum", args:["H_OTHER"], desc: "上記以外の党の得票数の合計。"}
+    ]}, {name: "party_rate", label: "比例：政党別得票率", data:[
+      {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+      {name: "rulingR", label: "与党(%)", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")", "/", "H_VALID_VOTE", "*", "100"], prec: 1, noprop:true, desc: "自由民主党および公明党の得票数。"},
+      {name: "h_jiminR", label: "自民党(%)", func: "rate", args:["H_JIMIN", "H_VALID_VOTE"], prec: 1, desc: "自由民主党の得票率。"},
+      {name: "h_komeiR", label: "公明党(%)", func: "rate", args:["H_KOMEI", "H_VALID_VOTE"], prec: 1, desc: "公明党の得票率。"},
+      {name: "h_rikkenR", label: "立憲民主党(%)", func: "rate", args:["H_RIKKEN", "H_VALID_VOTE"], prec: 1, desc: "立憲民主党の得票率。"},
+      {name: "h_ishinR", label: "日本維新の会(%)", func: "rate", args:["H_ISHIN", "H_VALID_VOTE"], prec: 1, desc: "日本維新の会の得票率。"},
+      {name: "h_kyosanR", label: "共産党(%)", func: "rate", args:["H_KYOSAN", "H_VALID_VOTE"], prec: 1, desc: "日本共産党の得票率。"},
+      {name: "h_kokuminR", label: "国民民主党(%)", func: "rate", args:["H_KOKUMIN", "H_VALID_VOTE"], prec: 1, desc: "国民民主党の得票率。"},
+      {name: "h_reiwaR", label: "れいわ新選組(%)", func: "rate", args:["H_REIWA", "H_VALID_VOTE"], prec: 1, desc: "れいわ新選組の得票率。"},
+      {name: "h_shaminR", label: "社民党(%)", func: "rate", args:["H_SHAMIN", "H_VALID_VOTE"], prec: 1, desc: "社会民主党の得票率。"},
+      {name: "h_nhkR", label: "NHK党(%)", func: "rate", args:["H_NHK", "H_VALID_VOTE"], prec: 1, desc: "ＮＨＫと裁判してる党弁護士法７２条違反での得票率。"},
+      {name: "h_otherR", label: "その他(%)", func: "rate", args:["H_OTHER", "H_VALID_VOTE"], prec: 1, desc: "上記以外の党の合計得票率。"}
+    ]}, {name: "csv", data:[
+      {name: "H_DIST", label: "比例ブロック", func: "nonsum", args:["H_DIST"]},
+      {name: "S_DIST", label: "小選挙区", func: "nonsum", args:["S_DIST"]},
+      {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"]},
+      {name: "S_VOTE", label: "【小】投票者数", func: "sum", args:["S_VOTE"]},
+      {name: "s_voteR", label: "【小】投票率(%)", func: "rate", args:["S_VOTE", "ELECTOR"], prec: 1},
+      {name: "S_VALID_VOTE", label: "【小】有効投票数", func: "sum", args:["S_VALID_VOTE"]},
+      {name: "s_valid_voteR", label: "【小】有効投票率(%)", func: "rate", args:["S_VALID_VOTE", "S_VOTE"], prec: 1},
+      {name: "H_VOTE", label: "【比】投票者数", func: "sum", args:["H_VOTE"]},
+      {name: "h_voteR", label: "【比】投票率(%)", func: "rate", args:["H_VOTE", "ELECTOR"], prec: 1},
+      {name: "H_VALID_VOTE", label: "【比】有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+      {name: "h_valid_voteR", label: "【比】有効投票率(%)", func: "rate", args:["H_VALID_VOTE", "H_VOTE"], prec: 1},
+      {name: "ruling", label: "与党得票数", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")"]},
+      {name: "H_JIMIN", label: "自民党得票数", func: "sum", args:["H_JIMIN"]},
+      {name: "H_KOMEI", label: "公明党得票数", func: "sum", args:["H_KOMEI"]},
+      {name: "H_RIKKEN", label: "立憲民主党得票数", func: "sum", args:["H_RIKKEN"], prec: "floor"},
+      {name: "H_ISHIN", label: "日本維新の会得票数", func: "sum", args:["H_ISHIN"]},
+      {name: "H_KYOSAN", label: "共産党得票数", func: "sum", args:["H_KYOSAN"]},
+      {name: "H_KOKUMIN", label: "国民民主党得票数", func: "sum", args:["H_KOKUMIN"], prec: "floor"},
+      {name: "H_REIWA", label: "れいわ新選組得票数", func: "sum", args:["H_REIWA"]},
+      {name: "H_SHAMIN", label: "社民党得票数", func: "sum", args:["H_SHAMIN"]},
+      {name: "H_NHK", label: "NHK党得票数", func: "sum", args:["H_NHK"]},
+      {name: "H_OTHER", label: "その他得票数", func: "sum", args:["H_OTHER"]},
+      {name: "rulingR", label: "与党得票率(%)", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")", "/", "H_VALID_VOTE", "*", "100"], prec: 1, noprop:true},
+      {name: "h_jiminR", label: "自民党得票率(%)", func: "rate", args:["H_JIMIN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_komeiR", label: "公明党得票率(%)", func: "rate", args:["H_KOMEI", "H_VALID_VOTE"], prec: 1},
+      {name: "h_rikkenR", label: "立憲民主党得票率(%)", func: "rate", args:["H_RIKKEN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_ishinR", label: "日本維新の会得票率(%)", func: "rate", args:["H_ISHIN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_kyosanR", label: "共産党得票率(%)", func: "rate", args:["H_KYOSAN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_kokuminR", label: "国民民主党得票率(%)", func: "rate", args:["H_KOKUMIN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_reiwaR", label: "れいわ新選組得票率(%)", func: "rate", args:["H_REIWA", "H_VALID_VOTE"], prec: 1},
+      {name: "h_shaminR", label: "社民党得票率(%)", func: "rate", args:["H_SHAMIN", "H_VALID_VOTE"], prec: 1},
+      {name: "h_nhkR", label: "NHK党得票率(%)", func: "rate", args:["H_NHK", "H_VALID_VOTE"], prec: 1},
+      {name: "h_otherR", label: "その他得票率(%)", func: "rate", args:["H_OTHER", "H_VALID_VOTE"], prec: 1}
+    ]}];
+
     var polygon2015Json;
     var polygon2010Json;
     var polygon2005Json;
@@ -458,12 +540,14 @@
     var line2016Json;
     var polygon2020Json;
     var line2020Json;
+    var senkyo2021Json;
+    var senkyoLine2021Json;
 
     async function getResources(name, date){
       var path = "./json/" + name;
       return $.getJSON(path, function(json){
         var features = json.features;
-        if (json.name === "line"){
+        if (json.name === "line" || json.name === "line_calc"){
 
           var mura = features.filter(function(f){return f.properties.TYPE === "村"});
           var ku = features.filter(function(f){return f.properties.TYPE === "区"});
@@ -480,6 +564,17 @@
               return new Date(f.properties.START) <= new Date(date) & new Date(f.properties.END) > new Date(date);
             });
           }
+
+        }
+
+        if (json.name === "2021shosenkyoku_l"){
+
+          var mura = features.filter(function(f){return f.properties.type === "市区町村"});
+          var shosenkyoku = features.filter(function(f){return f.properties.type === "小選挙区"});
+          var ken = features.filter(function(f){return f.properties.type === "県"});
+          var hirei = features.filter(function(f){return f.properties.type === "比例"});
+          var umi = features.filter(function(f){return f.properties.type === "海"});
+          var features = mura.concat(shosenkyoku, ken, hirei, umi);
 
         }
 
@@ -630,6 +725,9 @@
       polygonRedraw(polygon2020Json);
       lineRedraw(line2020Json);
 
+      //フィールド一覧を取得
+      polygonFields = Object.keys(polygon2020Json.features[0].properties);
+
       document.querySelector(".loader").style.display = "none";
       document.querySelector(".loaderBG").style.display = "none";
       document.querySelector(".loaderCover").style.display = "none";
@@ -665,6 +763,7 @@
       lineLayer = L.vectorGrid.slicer(json, {
         vectorTileLayerStyles: {
           sliced: function(properties){
+            if(json.name === "line" || json.name === "line_calc"){
               switch(properties.TYPE){
                 case '村': return{color:"#639394", weight:2}
                 case '区': return{color:"#857944", weight:2}
@@ -675,6 +774,15 @@
                 case '湖': return{color:"#5363b5", weight:2}
                 case '海': return{color:"#223c8a", weight:2}
              }
+           }else if(json.name === "2021shosenkyoku_l"){
+             switch(properties.type){
+               case '市区町村': return{color:"#808080", weight:2}
+               case '小選挙区': return{color:"#0c7482", weight:2.5}
+               case '県': return{color:"#c95b5b", weight:2.5}
+               case '比例': return{color:"#632a70", weight:3}
+               case '海': return{color:"#223c8a", weight:2}
+            }
+           }
           }
         },
         maxZoom: 18,
@@ -725,6 +833,18 @@
         $("#mouse_name").text(obj.KEN + gun + obj.NAME);
         currentSelectedCategory.forEach(function(f, i){
           $("#mouseCol_data" + i).text(calc(obj, f.func, f.prec, f.args));
+          //按分の有無判定
+          if(f.args && currentSelectedDataset.estimate){
+            var a = [...f.args, ...currentSelectedDataset.estimate];
+            var b = new Set([...f.args, ...currentSelectedDataset.estimate]);
+            if(obj.ESTIMATE == true && a.length !== b.size){
+              $("#mouseCol_data" + i).css({color: "#0000ee"});
+            }else{
+              $("#mouseCol_data" + i).css({color: "#000000"});
+            }
+          }else{
+            $("#mouseCol_data" + i).css({color: "#000000"});
+          }
         });
       }else{
         $("#mouse_name").text("-");
@@ -853,7 +973,40 @@
         if(isNaN(result)){
           return result;
         }else{
-          return result.toFixed(prec);
+          if(prec === "floor"){
+            return Math.floor(result);
+          }else{
+            return result.toFixed(prec);
+          }
+        }
+      }else if(func === "nonsum"){ //合計を行わない(個別地物テーブルにのみ表示)
+        if(!Array.isArray(features)){
+          return features[args[0]];
+        }else{
+          return "";
+        }
+      }else if(func === "custom"){
+        var expression = "";
+        args.forEach((arg)=>{
+          if(["+", "-", "*", "/", "(", ")"].includes(arg)){
+            expression = expression + arg;
+          }else if(!isNaN(arg)){
+            expression = expression + String(arg);
+          }else if(polygonFields.includes(arg)){
+            expression = expression + "sum(features, '" + arg + "')";
+          }else{
+            expression = expression + "0";
+          }
+        });
+        result = eval(expression);
+        if(isNaN(result)){
+          return "-";
+        }else{
+          if(prec === "floor"){
+            return Math.floor(result);
+          }else{
+            return result.toFixed(prec);
+          }
         }
       }else{ //空白
         return "";
@@ -878,14 +1031,23 @@
         var value = calc(f, currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args);
         var sumVal = parseInt(calc(selectedFeatures[n], currentSelectedColumn.func, currentSelectedColumn.prec, currentSelectedColumn.args));
         var propotion = "-";
-        if(currentSelectedColumn.func == "sum" && !currentSelectedColumn.noprop && sumVal){
+        if(["sum", "custom"].includes(currentSelectedColumn.func) && !currentSelectedColumn.noprop && sumVal){
           if(isNaN(value)){
             propotion = "0.00";
           }else{
             propotion = (value / sumVal * 100).toFixed(2);
           }
         }
-        row.innerHTML = "<td>" + f.NAME + "</td><td>" + value + "</td><td>" + propotion + "</td>";
+        //按分の有無判定
+        var style = "style='color:#000000;'";
+        if(currentSelectedColumn.args && currentSelectedDataset.estimate){
+          var a = [...currentSelectedColumn.args, ...currentSelectedDataset.estimate];
+          var b = new Set([...currentSelectedColumn.args, ...currentSelectedDataset.estimate]);
+          if(f.ESTIMATE == true && a.length !== b.size){
+            style = "style='color:#0000ee;'";
+          }
+        }
+        row.innerHTML = "<td>" + f.NAME + "</td><td " + style + ">" + value + "</td><td " + style + ">" + propotion + "</td>";
         table.appendChild(row);
       });
     }
@@ -1001,7 +1163,7 @@
           var tr = document.createElement("tr");
           var th = document.createElement("th");
           th.id = "groupCol_name" + i + "_" + groupIdx;
-          if(Object.keys(currentSelectedCategory[i]).length){ //currentSelectedCategory[i]が空でない場合
+          if(Object.keys(currentSelectedCategory[i]).length && currentSelectedCategory[i].func !== "nonsum"){ //currentSelectedCategory[i]が空でない場合
             th.innerText = currentSelectedCategory[i].label || "";
             if(currentSelectedCategory[i].desc !== undefined){ //ツールチップを付加
               var div1 = document.createElement("div");
@@ -1022,7 +1184,7 @@
           tr.appendChild(th);
           var td = document.createElement("td");
           td.id = "groupCol_data" + i + "_" + groupIdx;
-          if(Object.keys(currentSelectedCategory[i]).length){ //currentSelectedCategory[i]が空でない場合
+          if(Object.keys(currentSelectedCategory[i]).length && currentSelectedCategory[i].func !== "nonsum"){ //currentSelectedCategory[i]が空でない場合
             td.innerText = "";
           }else{
             td.style = "display:none";
@@ -1083,6 +1245,9 @@
         }
         lineRedraw(window[currentSelectedDataset.lineObj]);
 
+        //フィールド一覧を取得
+        polygonFields = Object.keys(window[currentSelectedDataset.polygonObj].features[0].properties);
+
 
         formerFeatures.forEach((e)=>{
           let match = window[currentSelectedDataset.polygonObj].features.find((f)=>{
@@ -1119,8 +1284,12 @@
         categorySelector.value = categories[0].name;
 
         //データ出典書き換え
-        $("#attribution").text(currentSelectedDataset.attr.label);
-        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+        $("#attribution").empty();
+        $("#attribution").append("データ出典:");
+        currentSelectedDataset.attr.forEach((attr, i)=>{
+          $("<a>", {href: attr.link, text: attr.label}).appendTo("#attribution");
+          if(currentSelectedDataset.attr[i+1]){$("#attribution").append("、");}
+        });
 
         //グループの再描画
         var event = new Event("change");
@@ -1180,8 +1349,13 @@
         categorySelector.value = categories[0].name;
 
         //データ出典書き換え
-        $("#attribution").text(currentSelectedDataset.attr.label);
-        $("#attribution").attr("href", currentSelectedDataset.attr.link);
+        $("#attribution").empty();
+        $("#attribution").append("データ出典:");
+        currentSelectedDataset.attr.forEach((attr, i)=>{
+          $("<a>", {href: attr.link, text: attr.label}).appendTo("#attribution");
+          if(currentSelectedDataset.attr[i+1]){$("#attribution").append("、");}
+        });
+
 
         //グループの再描画
         var event = new Event("change");
@@ -1203,6 +1377,9 @@
           window[currentSelectedDataset.lineObj] = await getResources(currentSelectedDataset.lineFile, currentSelectedDataset.date);
         }
         lineRedraw(window[currentSelectedDataset.lineObj]);
+
+        //フィールド一覧を取得
+        polygonFields = Object.keys(window[currentSelectedDataset.polygonObj].features[0].properties);
 
         document.querySelector(".loader").style.display = "none";
         document.querySelector(".loaderBG").style.display = "none";
@@ -1245,7 +1422,8 @@
             csvCate.forEach(cate => {
               if(cate.func){
                 var tableData = calc(fts, cate.func, cate.prec, cate.args);
-                $("<td>", {text: tableData, css:{textAlign: "right"}}).appendTo(tr2);
+                var textAlign = function(){switch(cate.func){case "nonsum": return "left"; default: return "right"}};
+                $("<td>", {text: tableData, css:{"textAlign": textAlign}}).appendTo(tr2);
               }
             });
           });
@@ -1342,8 +1520,16 @@
 
   <div class="border">
     <div>
-      使用データ・年次の切り替え：<select id="dataset"><option value="kokusei2020">2020年国勢調査</option><option value="kokusei2015">2015年国勢調査</option><option value="kokusei2010">2010年国勢調査</option><option value="kokusei2005">2005年国勢調査</option><option value="kokusei2000">2000年国勢調査</option><option value="keizaicensus2016">2016年経済センサス</option></select>
-      <span class="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" id="attribution" target="_blank">令和2年国勢調査</a></span>
+      使用データ・年次の切り替え：<select id="dataset">
+        <option value="kokusei2020">2020年国勢調査</option>
+        <option value="kokusei2015">2015年国勢調査</option>
+        <option value="kokusei2010">2010年国勢調査</option>
+        <option value="kokusei2005">2005年国勢調査</option>
+        <option value="kokusei2000">2000年国勢調査</option>
+        <option value="keizaicensus2016">2016年経済センサス</option>
+        <option value="senkyo2021">2021年衆院選</option>
+      </select>
+      <span class="attribution" id="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" target="_blank">令和2年国勢調査</a></span>
     </div>
     <div style="position: relative;">
       <div class="loaderCover"></div>
