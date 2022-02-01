@@ -86,7 +86,7 @@
       {name: "AREA", label:"面積(㎢)", func:"sum", args:["AREA"], prec:2},
       {name: "POP_INCREASE", label:"人口増加数(人)", func:"sum", args:["POP_INCREASE"], noprop:true, desc:"前回調査(5年前)からの人口増加数。"},
       {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
-      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "/", "AREA"], prec:1},
+      {name: "density" , label:"人口密度(人/㎢)", func:"div", args:["POPULATION", "AREA"], prec:1},
       {}
     ]}, {name: "house", label: "世帯数", data:[
       {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
