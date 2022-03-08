@@ -192,7 +192,7 @@
 
          //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
          var layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0};
-         
+
          if(Object.values(baseMapNames).includes(layerParams.base)){
            map.addLayer(eval(layerParams.base));
            baseLayerNames[n] = layerParams.base;
@@ -335,7 +335,7 @@
            sliced:function(properties){
              //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
              if(date[n].getFullYear() < 1970){
-               if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県"].some(e => e === properties.KEN)){
+               if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "奈良県", "和歌山県"].some(e => e === properties.KEN)){
                  return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
                }else{
                  return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
@@ -772,7 +772,7 @@
     </div>
   </div>
   <div><input type="checkbox" id="dual" name="dual"/><label for="dual">2画面表示</label></div>
-  <div>[1947/5/3以降のデータを表示可能]関東地方、山梨県、長野県、岐阜県、静岡県、愛知県、三重県、滋賀県<br>
+  <div>[1947/5/3以降のデータを表示可能]関東地方、山梨県、長野県、岐阜県、静岡県、愛知県、三重県、滋賀県、奈良県、和歌山県<br>
   [1970/4/1以降のデータを表示可能]上記以外の地域</div>
 </body>
 </html>
