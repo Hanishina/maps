@@ -48,6 +48,10 @@ details[open] summary:after{
   font-size: 30px;
 }
 
+a{
+  color: #0017b0;
+}
+
 a.title:link{
   color: #000;
 }
@@ -442,6 +446,10 @@ div.group{
 
 .attribution{
   float: right;
+}
+
+div.chartContainer{
+  height: 200px;
 }
 
 /*ツールチップ(https://www.jungleocean.com/programming/190308tooltip-css)*/
