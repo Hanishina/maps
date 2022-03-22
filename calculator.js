@@ -798,7 +798,7 @@ function categoryChange(e){
         }else{
           $(td).css({display: "none"});
         }
-        $(groupTable).append($("<tr>")).append(th, td);
+        $(groupTable).append($("<tr>").append(th, td));
       }
     }else{ //円グラフ
       $("#group" + groupIdx).find(".groupTable").hide();
