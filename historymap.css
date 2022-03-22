@@ -374,46 +374,46 @@ table.current td{
   text-align: right;
 }
 
-table.sum{
+table.groupTable{
   width: 100%;
 }
 
-table.sum th{
+table.groupTable th{
   width: 60%;
   padding: 5px 0px;
 }
 
-table.sum td{
+table.groupTable td{
   width: 40%;
   padding: 5px 15px;
   text-align: right;
 }
 
-table.selects{
+table.sel_table{
   width: 100%;
 }
 
-table.selects th, table.selects td{
+table.sel_table th, table.sel_table td{
   padding: 5px 15px;
 }
 
-table.selects th:nth-child(1){
+table.sel_table th:nth-child(1){
   width: 40%;
 }
 
-table.selects th:nth-child(2){
+table.sel_table th:nth-child(2){
   width: 40%;
 }
 
-table.selects th:nth-child(3){
+table.sel_table th:nth-child(3){
   width: 20%;
 }
 
-table.selects td:nth-child(2){
+table.sel_table td:nth-child(2){
   text-align: right;
 }
 
-table.selects td:nth-child(3){
+table.sel_table td:nth-child(3){
   text-align: right;
 }
 
