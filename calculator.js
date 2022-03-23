@@ -578,7 +578,7 @@ function rewriteSumTable(n){
   selectedFeatures[n].forEach(function(f){
     let name = f.NAME || "-";
     if(f.TYPE === "政令区"){
-      name = f.GUN + f.NAME;
+      name = (f.GUN || "") + f.NAME;
     }
     if(f.CODE5 === "01223X" || f.CODE === "01223X"){
       name = name + "(歯舞群島)";
