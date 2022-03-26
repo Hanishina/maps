@@ -208,13 +208,16 @@ async function init(){
 
   /*--- chartの初期化処理 ---*/
 
-  Chart.defaults.plugins.legend.position = "right";
   Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.plugins.legend.position = "right";
+  Chart.defaults.plugins.legend.labels.padding = 5;
+  Chart.defaults.plugins.legend.labels.boxWidth = 12;
   Chart.overrides.pie.plugins.tooltip.callbacks.label = function(context){
     let value = context.parsed;
     let totalValue = context.dataset.data.reduce((sum, el)=>{return sum + parseFloat(el)}, 0);
     let percent = value / totalValue * 100;
-    return [context.label, context.formattedValue + "(" + percent.toFixed(1) + "%)"];
+    let unit = currentCategory.unit;
+    return [context.label, context.formattedValue + unit + "(" + percent.toFixed(1) + "%)"];
   }
   Chart.overrides.pie.plugins.legend.onClick = null;
   mouseChart = new Chart($("#mouseChart"), {
@@ -455,6 +458,7 @@ function rewriteCursorTable(obj){
         $("#mouseCol_data" + i).text("");
       });
     }else{
+      mouseChart.data.datasets[0].data = [];
       mouseChart.update();
     }
   }
