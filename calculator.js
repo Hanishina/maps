@@ -527,7 +527,11 @@ function calc(features, func, prec = 0, args){
     let total = sum(features, args[0]); //合計値(第一引数)
     let nonOther = 0;
     args.slice(1).forEach(arg => {
-      nonOther = nonOther + sum(features, arg);
+      let nextNumber = sum(features, arg);
+      if(isNaN(nextNumber)){
+        nextNumber = 0;
+      }
+      nonOther = nonOther + nextNumber;
     });
     return (total - nonOther).toFixed(prec);
   }else if(func === "custom"){
