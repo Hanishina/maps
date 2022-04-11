@@ -13,7 +13,7 @@ var Categories_kokusei_2020 = [{name: "population", label: "人口・人口増�
   {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
   {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
   {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
-  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"},
   {}
 ]}, {name: "did", label: "人口集中地区(DID)", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -75,7 +75,7 @@ var Categories_kokusei_old = [{name: "population", label: "人口・人口増減
   {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
   {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
   {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
-  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"},
   {}
 ]}, {name: "age", label: "年齢別人口", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -123,7 +123,7 @@ var Categories_kokusei_2015 = [{name: "population", label: "人口・人口増�
   {name: "pop_increaseR", label:"人口増加率(%)", func:"incr_rate", args:["POP_INCREASE", "POPULATION"], prec:1, desc:"人口増加数を前回調査時人口で割ったもの。"},
   {name: "HOU_INCREASE", label:"世帯増加数(世帯)", func:"sum", args:["HOU_INCREASE"], noprop:true, desc:"前回調査(5年前)からの世帯増加数。"},
   {name: "hou_increaseR", label:"世帯増加率(%)", func:"incr_rate", args:["HOU_INCREASE", "HOUSE"], prec:1, desc:"世帯増加数を前回調査時世帯数で割ったもの。"},
-  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"},
   {}
 ]}, {name: "did", label: "人口集中地区(DID)", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -250,7 +250,7 @@ var Categories_kokusei_2005 = [{name: "population", label: "人口・人口増�
 ]}, {name: "house", label: "世帯数", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
   {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"},
   {}
 ]}, {name: "did", label: "人口集中地区(DID)", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -371,7 +371,7 @@ var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増�
 ]}, {name: "house", label: "世帯数", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
   {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
-  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1, desc:"人口を世帯数で割ったもの。"},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"},
   {}
 ]}, {name: "did", label: "人口集中地区(DID)", data:[
   {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
@@ -472,6 +472,74 @@ var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増�
   {name: "IND_OSERV", label:"サービス業(人)", func:"sum", args:["IND_SERV"]},
   {name: "IND_GOVE", label:"公務(人)", func:"sum", args:["IND_GOVE"]},
   {name: "IND_OTHER", label:"分類不能の産業(人)", func:"sum", args:["IND_OTHER"]}
+]}];
+
+var Categories_juki = [{name: "population", label: "人口・世帯数", data:[
+  {name: "POPULATION", label: "人口(人)", func: "sum", args:["POPULATION"], desc:"住民基本台帳による調査年元日の人口。"},
+  {name: "AREA", label: "面積(㎢)", func: "sum", args:["AREA"], prec:2, desc:"全国都道府県市区町村別面積調(2021年1月)による。"},
+  {name: "density", label: "人口密度(人/㎢)", func: "div", args:["POPULATION", "AREA"], prec:1},
+  {},
+  {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:2, desc:"人口を世帯数で割ったもの。"}
+]}, {name: "incr1", label: "1年間の人口変化", data:[
+  {name: "POPULATION", label: "人口(人)", func: "sum", args:["POPULATION"], desc:"住民基本台帳による調査年元日の人口。"},
+  {name: "pop_prev", label: "1年前の人口(人)", func: "custom", args:["POPULATION", "-", "INCR"]},
+  {name: "INCR", label: "人口増加数(人)", func: "sum", args:["INCR"], noprop:true},
+  {name: "incrR", label: "人口増加率(%)", func: "incr_rate", args:["INCR", "POPULATION"], prec:1, desc:"人口増加数を1年前の人口で割ったもの。"},
+  {name: "SOC_INCR", label: "社会増加数(人)", func: "sum", args:["SOC_INCR"], noprop:true, desc:"転入者数から転出者数を引いたもの(国外を含む)。"},
+  {name: "NAT_INCR", label: "自然増加数(人)", func: "sum", args:["NAT_INCR"], noprop:true, desc:"出生数から死亡数を引いたもの。"},
+  {name: "BIRTH", label: "出生数(人)", func: "sum", args:["BIRTH"]},
+  {name: "DEATH", label: "死亡数(人)", func: "sum", args:["DEATH"]},
+]}, {name: "incr1_pie", label: "1年間の人口変化【円グラフ表示】", pie: true, unit: "人", data:[
+  {name: "MOVEIN", label: "転入者数", color:"#ff7171", func: "sum", args:["MOVEIN"]},
+  {name: "BIRTH", label: "出生数", color:"#ffbd3c", func: "sum", args:["BIRTH"]},
+  {name: "OTH_ADD", label: "その他の住民票記載数", color:"#fff08f", func: "custom", args:["ADD", "-", "MOVEIN", "-", "BIRTH"]},
+  {name: "OTH_DELETE", label: "その他の住民票消除数", color:"#9efff6", func: "custom", args:["DELETE", "-", "MOVEOUT", "-", "DEATH"]},
+  {name: "DEATH", label: "死亡数", color:"#5cd3ff", func: "sum", args:["DEATH"]},
+  {name: "MOVEOUT", label: "転出者数", color:"#4b5dff", func: "sum", args:["MOVEOUT"]}
+]},{name: "age", label: "年齢別人口", data:[
+  {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+  {},
+  {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+  {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1, desc:"15歳未満の人口を総人口で割ったもの。"},
+  {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+  {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1, desc:"15歳以上65歳未満の人口を総人口で割ったもの。"},
+  {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+  {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1, desc:"65歳以上の人口を総人口で割ったもの。"}
+]}, {name: "age_pie", label: "年齢別人口【円グラフ表示】", pie: true, unit: "人", data:[
+  {name: "POP_U15", label:"15歳未満人口", color:"#80acff", func:"sum", args:["POP_U15"]},
+  {name: "POP_O15", label:"15歳～64歳人口", color:"#e6de73", func:"sum", args:["POP_O15"]},
+  {name: "POP_O65", label:"65歳以上人口", color:"#de7571", func:"sum", args:["POP_O65"]},
+]}, {name: "foreigner", label: "外国人人口", data:[
+  {name: "POPULATION", label:"人口(人)", func:"sum", args:["POPULATION"]},
+  {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+  {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2, desc:"総人口に占める外国人人口の割合。"},
+  {}
+]}, {name: "csv", data: [
+  {name: "POPULATION", label: "住基人口(人)", func: "sum", args:["POPULATION"]},
+  {name: "AREA", label: "面積(㎢)", func: "sum", args:["AREA"], prec:2},
+  {name: "density", label: "人口密度(人/㎢)", func: "div", args:["POPULATION", "AREA"], prec:1},
+  {name: "HOUSE", label:"世帯数(世帯)", func:"sum", args:["HOUSE"]},
+  {name: "pop/house", label:"一世帯当たりの人員数(人)", func:"div", args:["POPULATION", "HOUSE"], prec:1},
+  {name: "pop_prev", label: "1年前の人口(人)", func: "custom", args:["POPULATION", "-", "INCR"]},
+  {name: "INCR", label: "人口増加数(人)", func: "sum", args:["INCR"], noprop:true},
+  {name: "incrR", label: "人口増加率(%)", func: "incr_rate", args:["INCR", "POPULATION"], prec:1},
+  {name: "SOC_INCR", label: "社会増加数(人)", func: "sum", args:["SOC_INCR"], noprop:true},
+  {name: "NAT_INCR", label: "自然増加数(人)", func: "sum", args:["NAT_INCR"], noprop:true},
+  {name: "MOVEIN", label: "転入者数(人)", func: "sum", args:["MOVEIN"]},
+  {name: "MOVEOUT", label: "転出者数(人)", func: "sum", args:["MOVEOUT"]},
+  {name: "BIRTH", label: "出生数(人)", func: "sum", args:["BIRTH"]},
+  {name: "DEATH", label: "死亡数(人)", func: "sum", args:["DEATH"]},
+  {name: "OTH_ADD", label: "その他の住民票記載数", func: "custom", args:["ADD", "-", "MOVEIN", "-", "BIRTH"]},
+  {name: "OTH_DELETE", label: "その他の住民票消除数", func: "custom", args:["DELETE", "-", "MOVEOUT", "-", "DEATH"]},
+  {name: "POP_U15", label:"15歳未満人口(人)", func:"sum", args:["POP_U15"]},
+  {name: "pop_u15R", label:"15歳未満人口割合(%)", func:"rate", args:["POP_U15", "POPULATION"], prec:1},
+  {name: "POP_O15", label:"15歳～64歳人口(人)", func:"sum", args:["POP_O15"]},
+  {name: "pop_o15R", label:"15歳～64歳人口割合(%)", func:"rate", args:["POP_O15", "POPULATION"], prec:1},
+  {name: "POP_O65", label:"65歳以上人口(人)", func:"sum", args:["POP_O65"]},
+  {name: "pop_o65R", label:"65歳以上人口割合(%)", func:"rate", args:["POP_O65", "POPULATION"], prec:1},
+  {name: "FOREIGNER", label:"外国人人口(人)", func:"sum", args:["FOREIGNER"]},
+  {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2}
 ]}];
 
 var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
@@ -734,12 +802,13 @@ var Categories_senkyo = [{name: "shosenkyo", label: "小選挙区制", data:[
 var Senkyo_estimate = ["H_VOTE", "H_VALID_VOTE", "H_JIMIN", "H_KOMEI", "H_RIKKEN", "H_ISHIN", "H_KYOSAN", "H_KOKUMIN", "H_REIWA", "H_SHAMIN", "H_NHK", "H_OTHER"];
 
 var Dataset = [
-  {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line_calc.geojson", lineObj: "line2020", csvFile: "2020kokusei.csv", csvObj: "kokusei2020", category: Categories_kokusei_2020, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
+  {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2020kokusei.csv", csvObj: "kokusei2020", category: Categories_kokusei_2020, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
   {name: "kokusei2020old", label: "2020年国勢調査[旧市町村単位]", polygonFile: "2020kokusei_old.geojson", polygonObj: "polygon2020Old", lineFile: "2020kokusei_old_l.geojson", lineObj: "line2020Old", csvFile: "2020kokusei_old.csv", csvObj: "kokusei2020Old", category: Categories_kokusei_old, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
-  {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line_calc.geojson", lineObj: "line2015", csvFile: "2015kokusei.csv", csvObj: "kokusei2015", category: Categories_kokusei_2015, attr: [{label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}]},
-  {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2010", lineFile: "line_calc.geojson", lineObj: "line2010", csvFile: "2010kokusei.csv", csvObj: "kokusei2010", category: Categories_kokusei_2015, attr: [{label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}]},
-  {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2005", lineFile: "line_calc.geojson", lineObj: "line2005", csvFile: "2005kokusei.csv", csvObj: "kokusei2005", category: Categories_kokusei_2005, attr: [{label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}]},
-  {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2000", lineFile: "line_calc.geojson", lineObj: "line2000", csvFile: "2000kokusei.csv", csvObj: "kokusei2000", category: Categories_kokusei_2000, attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
-  {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line_calc.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
+  {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015kokusei.csv", csvObj: "kokusei2015", category: Categories_kokusei_2015, attr: [{label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}]},
+  {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2010", lineFile: "line.geojson", lineObj: "line2010", csvFile: "2010kokusei.csv", csvObj: "kokusei2010", category: Categories_kokusei_2015, attr: [{label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}]},
+  {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2005", lineFile: "line.geojson", lineObj: "line2005", csvFile: "2005kokusei.csv", csvObj: "kokusei2005", category: Categories_kokusei_2005, attr: [{label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}]},
+  {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2000", lineFile: "line.geojson", lineObj: "line2000", csvFile: "2000kokusei.csv", csvObj: "kokusei2000", category: Categories_kokusei_2000, attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
+  {name: "juki2021", label: "2021年住民基本台帳人口", date: "2021-01-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2021juki.csv", csvObj: "juki2021", category: Categories_juki, attr: [{label: "住民基本台帳に基づく人口、人口動態及び世帯数調査", link: "https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200241&bunya_l=02&tstat=000001039591&cycle=7&year=20210&month=0&tclass1=000001039601&result_back=1&tclass2val=0"}]},
+  {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
   {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
 ];

@@ -243,6 +243,11 @@ img.headerImg{
   width: 90%;
 }
 
+img.imgContentsThumb{
+  height: 400px;
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.5);
+}
+
 
 /*境界時系列マップ*/
 
