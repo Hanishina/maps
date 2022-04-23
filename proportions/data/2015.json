@@ -1,0 +1,302 @@
+[
+  {"name": "北海道", "all": 5381733, "city": 4395172, "district": 986561, "majorCities": [
+    {"name": "札幌市", "pop": 1952356, "kencho": "true"},
+    {"name": "旭川市", "pop": 339605}
+  ]},
+  {"name": "青森県", "all": 1308265, "city": 1013321, "district": 294944, "majorCities": [
+    {"name": "青森市", "pop": 287648, "kencho": "true"},
+    {"name": "八戸市", "pop": 231257},
+    {"name": "弘前市", "pop": 177411}
+  ]},
+  {"name": "岩手県", "all": 1279594, "city": 1054276, "district": 225318, "majorCities": [
+    {"name": "盛岡市", "pop": 297631, "kencho": "true"},
+    {"name": "一関市", "pop": 121583},
+    {"name": "奥州市", "pop": 119422},
+    {"name": "花巻市", "pop": 97702},
+    {"name": "北上市", "pop": 93511}
+  ]},
+  {"name": "宮城県", "all": 2333899, "city": 1922201, "district": 411698, "majorCities": [
+    {"name": "仙台市", "pop": 1082159, "kencho": "true"},
+    {"name": "石巻市", "pop": 147214},
+    {"name": "大崎市", "pop": 133391}
+  ]},
+  {"name": "秋田県", "all": 1023119, "city": 925806, "district": 97313, "majorCities": [
+    {"name": "秋田市", "pop": 315814, "kencho": "true"},
+    {"name": "横手市", "pop": 92197},
+    {"name": "大仙市", "pop": 82783},
+    {"name": "由利本荘市", "pop": 79927},
+    {"name": "大館市", "pop": 74175},
+    {"name": "能代市", "pop": 54730}
+  ]},
+  {"name": "山形県", "all": 1123891, "city": 897041, "district": 226850, "majorCities": [
+    {"name": "山形市", "pop": 253832, "kencho": "true"},
+    {"name": "鶴岡市", "pop": 129652},
+    {"name": "酒田市", "pop": 106244},
+    {"name": "米沢市", "pop": 85953},
+    {"name": "天童市", "pop": 62194}
+  ]},
+  {"name": "福島県", "all": 1914039, "city": 1579063, "district": 334976, "majorCities": [
+    {"name": "いわき市", "pop": 350237},
+    {"name": "郡山市", "pop": 335444},
+    {"name": "福島市", "pop": 294247, "kencho": "true"},
+    {"name": "会津若松市", "pop": 124062}
+  ]},
+  {"name": "茨城県", "all": 2916976, "city": 2647421, "district": 269555, "majorCities": [
+    {"name": "水戸市", "pop": 270783, "kencho": "true"},
+    {"name": "つくば市", "pop": 226963},
+    {"name": "日立市", "pop": 185054},
+    {"name": "ひたちなか市", "pop": 155689}
+  ]},
+  {"name": "栃木県", "all": 1974255, "city": 1731571, "district": 242684, "majorCities": [
+    {"name": "宇都宮市", "pop": 518594, "kencho": "true"},
+    {"name": "小山市", "pop": 166760},
+    {"name": "栃木市", "pop": 159211},
+    {"name": "足利市", "pop": 149452},
+    {"name": "佐野市", "pop": 118919},
+    {"name": "那須塩原市", "pop": 117146}
+  ]},
+  {"name": "群馬県", "all": 1973115, "city": 1678998, "district": 294117, "majorCities": [
+    {"name": "高崎市", "pop": 370884},
+    {"name": "前橋市", "pop": 336154, "kencho": "true"},
+    {"name": "太田市", "pop": 219807},
+    {"name": "伊勢崎市", "pop": 208814},
+    {"name": "桐生市", "pop": 114714}
+  ]},
+  {"name": "埼玉県", "all": 7266534, "city": 6760813, "district": 505721, "majorCities": [
+    {"name": "さいたま市", "pop": 1263979, "kencho": "true"},
+    {"name": "川口市", "pop": 578112}
+  ]},
+  {"name": "千葉県", "all": 6222666, "city": 6012551, "district": 210115, "majorCities": [
+    {"name": "千葉市", "pop": 971882, "kencho": "true"},
+    {"name": "船橋市", "pop": 622890},
+    {"name": "松戸市", "pop": 483480},
+    {"name": "市川市", "pop": 481732},
+    {"name": "柏市", "pop": 413954}
+  ]},
+  {"name": "東京都", "all": 13515271, "ward": 9272740, "city": 4157706, "district": 84825, "majorWards": [
+    {"name": "世田谷区", "pop": 903346},
+    {"name": "練馬区", "pop": 721722},
+    {"name": "大田区", "pop": 717082},
+    {"name": "江戸川区", "pop": 681298}
+  ], "majorCities": []},
+  {"name": "神奈川県", "all": 9126214, "city": 8832932, "district": 293282, "majorCities": [
+    {"name": "横浜市", "pop": 3724844, "kencho": "true"},
+    {"name": "川崎市", "pop": 1475213},
+    {"name": "相模原市", "pop": 720780}
+  ]},
+  {"name": "新潟県", "all": 2304264, "city": 2224567, "district": 79697, "majorCities": [
+    {"name": "新潟市", "pop": 810157, "kencho": "true"},
+    {"name": "長岡市", "pop": 275133},
+    {"name": "上越市", "pop": 196987}
+  ]},
+  {"name": "富山県", "all": 1066328, "city": 978518, "district": 87810, "majorCities": [
+    {"name": "富山市", "pop": 418686, "kencho": "true"},
+    {"name": "高岡市", "pop": 172125},
+    {"name": "射水市", "pop": 92308}
+  ]},
+  {"name": "石川県", "all": 1154008, "city": 1006185, "district": 147823, "majorCities": [
+    {"name": "金沢市", "pop": 465699, "kencho": "true"},
+    {"name": "白山市", "pop": 109287},
+    {"name": "小松市", "pop": 106919},
+    {"name": "加賀市", "pop": 67186}
+  ]},
+  {"name": "福井県", "all": 786740, "city": 687790, "district": 98950, "majorCities": [
+    {"name": "福井市", "pop": 265904, "kencho": "true"},
+    {"name": "坂井市", "pop": 90280},
+    {"name": "越前市", "pop": 81524},
+    {"name": "鯖江市", "pop": 68284},
+    {"name": "敦賀市", "pop": 66165}
+  ]},
+  {"name": "山梨県", "all": 834930, "city": 712854, "district": 122076, "majorCities": [
+    {"name": "甲府市", "pop": 193125, "kencho": "true"},
+    {"name": "甲斐市", "pop": 74386},
+    {"name": "南アルプス市", "pop": 70828},
+    {"name": "笛吹市", "pop": 69559},
+    {"name": "富士吉田市", "pop": 49003},
+    {"name": "北杜市", "pop": 45111}
+  ]},
+  {"name": "長野県", "all": 2098804, "city": 1675324, "district": 423480, "majorCities": [
+    {"name": "長野市", "pop": 377598, "kencho": "true"},
+    {"name": "松本市", "pop": 243293},
+    {"name": "上田市", "pop": 156827}
+  ]},
+  {"name": "岐阜県", "all": 2031903, "city": 1719809, "district": 312094, "majorCities": [
+    {"name": "岐阜市", "pop": 406735, "kencho": "true"},
+    {"name": "大垣市", "pop": 159879},
+    {"name": "各務原市", "pop": 144690},
+    {"name": "多治見市", "pop": 110441}
+  ]},
+  {"name": "静岡県", "all": 3700305, "city": 3470363, "district": 229942, "majorCities": [
+    {"name": "浜松市", "pop": 797980},
+    {"name": "静岡市", "pop": 704989, "kencho": "true"},
+    {"name": "富士市", "pop": 248399},
+    {"name": "沼津市", "pop": 195633}
+  ]},
+  {"name": "愛知県", "all": 7483128, "city": 7084605, "district": 398523, "majorCities": [
+    {"name": "名古屋市", "pop": 2295638, "kencho": "true"},
+    {"name": "豊田市", "pop": 422542},
+    {"name": "岡崎市", "pop": 381051},
+    {"name": "一宮市", "pop": 380868},
+    {"name": "豊橋市", "pop": 374765}
+  ]},
+  {"name": "三重県", "all": 1815865, "city": 1589868, "district": 225997, "majorCities": [
+    {"name": "四日市市", "pop": 311031},
+    {"name": "津市", "pop": 279886, "kencho": "true"},
+    {"name": "鈴鹿市", "pop": 196403},
+    {"name": "松阪市", "pop": 163863},
+    {"name": "桑名市", "pop": 140303},
+    {"name": "伊勢市", "pop": 127817}
+  ]},
+  {"name": "滋賀県", "all": 1412916, "city": 1336015, "district": 76901, "majorCities": [
+    {"name": "大津市", "pop": 340973, "kencho": "true"},
+    {"name": "草津市", "pop": 137247},
+    {"name": "長浜市", "pop": 118193},
+    {"name": "彦根市", "pop": 113679},
+    {"name": "東近江市", "pop": 114180},
+    {"name": "甲賀市", "pop": 90901},
+    {"name": "近江八幡市", "pop": 81312},
+    {"name": "守山市", "pop": 79859}
+  ]},
+  {"name": "京都府", "all": 2610353, "city": 2479389, "district": 130964, "majorCities": [
+    {"name": "京都市", "pop": 1475183, "kencho": "true"},
+    {"name": "宇治市", "pop": 184678}
+  ]},
+  {"name": "大阪府", "all": 8839469, "city": 8657956, "district": 181513, "majorCities": [
+    {"name": "大阪市", "pop": 2691185, "kencho": "true"},
+    {"name": "堺市", "pop": 839310},
+    {"name": "東大阪市", "pop": 502784}
+  ]},
+  {"name": "兵庫県", "all": 5534800, "city": 5275200, "district": 259600, "majorCities": [
+    {"name": "神戸市", "pop": 1537272, "kencho": "true"},
+    {"name": "姫路市", "pop": 535664},
+    {"name": "西宮市", "pop": 487850},
+    {"name": "尼崎市", "pop": 452563},
+    {"name": "明石市", "pop": 293409}
+  ]},
+  {"name": "奈良県", "all": 1364316, "city": 1082329, "district": 281987, "majorCities": [
+    {"name": "奈良市", "pop": 360310, "kencho": "true"},
+    {"name": "橿原市", "pop": 124111},
+    {"name": "生駒市", "pop": 118233},
+    {"name": "大和郡山市", "pop": 87050},
+    {"name": "香芝市", "pop": 77561}
+  ]},
+  {"name": "和歌山県", "all": 963579, "city": 753075, "district": 210504, "majorCities": [
+    {"name": "和歌山市", "pop": 364154, "kencho": "true"},
+    {"name": "田辺市", "pop": 74770},
+    {"name": "橋本市", "pop": 63621},
+    {"name": "紀の川市", "pop": 62616},
+    {"name": "岩出市", "pop": 53452},
+    {"name": "海南市", "pop": 51860}
+  ]},
+  {"name": "鳥取県", "all": 573441, "city": 426248, "district": 147193, "majorCities": [
+    {"name": "鳥取市", "pop": 193717, "kencho": "true"},
+    {"name": "米子市", "pop": 149313},
+    {"name": "倉吉市", "pop": 49044},
+    {"name": "境港市", "pop": 34174}
+  ]},
+  {"name": "島根県", "all": 694352, "city": 622185, "district": 72167, "majorCities": [
+    {"name": "松江市", "pop": 206230, "kencho": "true"},
+    {"name": "出雲市", "pop": 171938},
+    {"name": "浜田市", "pop": 58105},
+    {"name": "益田市", "pop": 47718},
+    {"name": "安来市", "pop": 39528},
+    {"name": "雲南市", "pop": 39032},
+    {"name": "大田市", "pop": 35166}
+  ]},
+  {"name": "岡山県", "all": 1921525, "city": 1806324, "district": 115201, "majorCities": [
+    {"name": "岡山市", "pop": 719474, "kencho": "true"},
+    {"name": "倉敷市", "pop": 477118},
+    {"name": "津山市", "pop": 103746}
+  ]},
+  {"name": "広島県", "all": 2843990, "city": 2668832, "district": 175158, "majorCities": [
+    {"name": "広島市", "pop": 1194034, "kencho": "true"},
+    {"name": "福山市", "pop": 464811},
+    {"name": "呉市", "pop": 228552},
+    {"name": "東広島市", "pop": 192907}
+  ]},
+  {"name": "山口県", "all": 1404729, "city": 1346864, "district": 57865, "majorCities": [
+    {"name": "下関市", "pop": 268517},
+    {"name": "山口市", "pop": 197422, "kencho": "true"},
+    {"name": "宇部市", "pop": 169429},
+    {"name": "周南市", "pop": 144842},
+    {"name": "岩国市", "pop": 136757},
+    {"name": "防府市", "pop": 115942}
+  ]},
+  {"name": "徳島県", "all": 755733, "city": 565434, "district": 190299, "majorCities": [
+    {"name": "徳島市", "pop": 258554, "kencho": "true"},
+    {"name": "阿南市", "pop": 73019},
+    {"name": "鳴門市", "pop": 59101},
+    {"name": "吉野川市", "pop": 41466},
+    {"name": "小松島市", "pop": 38755}
+  ]},
+  {"name": "香川県", "all": 976263, "city": 823085, "district": 153178, "majorCities": [
+    {"name": "高松市", "pop": 420748, "kencho": "true"},
+    {"name": "丸亀市", "pop": 110010},
+    {"name": "三豊市", "pop": 65524},
+    {"name": "観音寺市", "pop": 59409},
+    {"name": "坂出市", "pop": 53164},
+    {"name": "さぬき市", "pop": 50272}
+  ]},
+  {"name": "愛媛県", "all": 1385262, "city": 1255330, "district": 129932, "majorCities": [
+    {"name": "松山市", "pop": 514865, "kencho": "true"},
+    {"name": "今治市", "pop": 158114},
+    {"name": "新居浜市", "pop": 119903},
+    {"name": "西条市", "pop": 108174},
+    {"name": "四国中央市", "pop": 87413},
+    {"name": "宇和島市", "pop": 77465}
+  ]},
+  {"name": "高知県", "all": 728276, "city": 595389, "district": 132887, "majorCities": [
+    {"name": "高知市", "pop": 337190, "kencho": "true"},
+    {"name": "南国市", "pop": 47982}
+  ]},
+  {"name": "福岡県", "all": 5101556, "city": 4448474, "district": 653082, "majorCities": [
+    {"name": "福岡市", "pop": 1538681, "kencho": "true"},
+    {"name": "北九州市", "pop": 961286},
+    {"name": "久留米市", "pop": 304552}
+  ]},
+  {"name": "佐賀県", "all": 832832, "city": 689229, "district": 143603, "majorCities": [
+    {"name": "佐賀市", "pop": 236372, "kencho": "true"},
+    {"name": "唐津市", "pop": 122785},
+    {"name": "鳥栖市", "pop": 72902},
+    {"name": "伊万里市", "pop": 55238},
+    {"name": "武雄市", "pop": 49062},
+    {"name": "小城市", "pop": 44259}
+  ]},
+  {"name": "長崎県", "all": 1377187, "city": 1231675, "district": 145512, "majorCities": [
+    {"name": "長崎市", "pop": 429508, "kencho": "true"},
+    {"name": "佐世保市", "pop": 255439},
+    {"name": "諫早市", "pop": 138078},
+    {"name": "大村市", "pop": 92757}
+  ]},
+  {"name": "熊本県", "all": 1786170, "city": 1440120, "district": 346050, "majorCities": [
+    {"name": "熊本市", "pop": 740822, "kencho": "true"},
+    {"name": "八代市", "pop": 127472}
+  ]},
+  {"name": "大分県", "all": 1166338, "city": 1110821, "district": 55517, "majorCities": [
+    {"name": "大分市", "pop": 478146, "kencho": "true"},
+    {"name": "別府市", "pop": 122138},
+    {"name": "中津市", "pop": 83965},
+    {"name": "佐伯市", "pop": 72211},
+    {"name": "日田市", "pop": 66523}
+  ]},
+  {"name": "宮崎県", "all": 1104069, "city": 922398, "district": 181671, "majorCities": [
+    {"name": "宮崎市", "pop": 401138, "kencho": "true"},
+    {"name": "都城市", "pop": 165029},
+    {"name": "延岡市", "pop": 125159},
+    {"name": "日向市", "pop": 61761}
+  ]},
+  {"name": "鹿児島県", "all": 1648177, "city": 1459172, "district": 189005, "majorCities": [
+    {"name": "鹿児島市", "pop": 599814, "kencho": "true"},
+    {"name": "霧島市", "pop": 125857},
+    {"name": "鹿屋市", "pop": 103608},
+    {"name": "薩摩川内市", "pop": 96076}
+  ]},
+  {"name": "沖縄県", "all": 1433566, "city": 1110193, "district": 323373, "majorCities": [
+    {"name": "那覇市", "pop": 319435, "kencho": "true"},
+    {"name": "沖縄市", "pop": 139279},
+    {"name": "うるま市", "pop": 118898},
+    {"name": "浦添市", "pop": 114232},
+    {"name": "宜野湾市", "pop": 96243}
+  ]},
+  {"name": "全国", "all": 127094745, "city": 116137232, "district": 10957513, "majorCities": []}
+]
