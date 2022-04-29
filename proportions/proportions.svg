@@ -22,14 +22,14 @@
 
   </g>
 
-  <g id="labelArea" stroke="#ffffff" stroke-width="3" paint-order="stroke" style="font-family: Century sans-serif; font-size: 16px;">
+  <g id="labelArea" stroke="#ffffff" stroke-width="3" paint-order="stroke" style="font-family: Century, sans-serif; font-size: 16px;">
 
   </g>
 
   <g>
     <path class="popup" d="M 0 0 l -10 -10 l -60 0 l 0 -50 l 140 0 l 0 50 l -60 0 l -10 10" stroke="#000" fill="#fff" transform="translate(0, 0)" display="none"></path>
-    <text class="popup" id="popupText1" x="0" y="-40" text-anchor="middle" font-family="Yu Gothic sans-serif" font-size="14px" display="none">---市</text>
-    <text class="popup" id="popupText2" x="0" y="-20" text-anchor="middle" font-family="Yu Gothic sans-serif" font-size="14px" display="none">123,456人(12.3%)</text>
+    <text class="popup" id="popupText1" x="0" y="-40" text-anchor="middle" font-family="Yu Gothic, sans-serif" font-size="14px" display="none">---市</text>
+    <text class="popup" id="popupText2" x="0" y="-20" text-anchor="middle" font-family="Yu Gothic, sans-serif" font-size="14px" display="none">123,456人(12.3%)</text>
   </g>
 
 </svg>
