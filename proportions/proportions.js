@@ -5,7 +5,6 @@ let color;
 
 let sliderTrans = 1000;
 
-let curData;
 let svg;
 let chartArea;
 let labelArea;
@@ -37,11 +36,11 @@ window.onload = async function(){
           year = 1970 + (sliderTrans/20);
 
           if(!gotData[year]){
-            await $.getJSON("./proportions/data/" + year + ".json", (json)=>{
-              gotData[year] = json;
+            let fixYear = year; //データ取得中にyearが書き変わっても対応可能
+            await $.getJSON("./proportions/data/" + fixYear + ".json", (json)=>{
+              gotData[fixYear] = json;
             });
           }
-          curData = gotData[year];
           chartWrite();
         }
       }
@@ -59,18 +58,18 @@ window.onload = async function(){
     $(slider).find("#slideKnob").attr("transform", "translate(" + sliderTrans + ", 0)");
 
     if(!gotData[year]){
-      await $.getJSON("./proportions/data/" + year + ".json", (json)=>{
-        gotData[year] = json;
+      let fixYear = year; //データ取得中にyearが書き変わっても対応可能
+      await $.getJSON("./proportions/data/" + fixYear + ".json", (json)=>{
+        gotData[fixYear] = json;
       });
     }
-    curData = gotData[year];
     chartWrite();
   });
 
   await $.getJSON("./proportions/data/2020.json", (json)=>{
     gotData[2020] = json;
   });
-  curData = gotData[2020];
+  year = 2020;
   chartClear();
   chartWrite();
 
@@ -80,10 +79,15 @@ window.onload = async function(){
 function chartClear(){
   $(chartArea).empty();
   $(labelArea).empty();
+  $(svg).find(".popup").each((i, elem)=>{
+    elem.setAttribute("display", "none");
+  });
 }
 
 function chartWrite(){
-  curData.forEach((pref, i)=>{
+  //ToDo:gotData[year]が読み込まれていない場合の処理を追加
+
+  gotData[year].forEach((pref, i)=>{
     let kenName = svg.createElementNS("http://www.w3.org/2000/svg", "text");
     $(kenName).text(pref.name);
     $(kenName).attr({x: -3, y: 60*(i+1)+20, "text-anchor": "end"});
