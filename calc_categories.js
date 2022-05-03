@@ -548,50 +548,78 @@ var Categories_shorai = [{name: "2020", label: "2020年推計人口", data:[
   {name: "EST2020", label: "2020年推計人口(人)", func: "sum", args: ["EST2020"]},
   {name: "2020dens", label: "2020年人口密度(人/㎢)", func: "div", args: ["EST2020", "AREA"], prec: 1},
   {name: "2020incr", label: "2020年推計人口増加数(人)", func: "custom", args: ["EST2020", "-", "POPULATION"], noprop:true, desc:"2015年人口と2020年推計人口を比較した人口増加数。"},
-  {name: "2020incrR", label: "2020年推計人口増加率(%)", func: "custom", args: ["(", "EST2020", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2020incrR", label: "2020年推計人口増加率(%)", func: "custom", args: ["(", "EST2020", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2025", label: "2025年推計人口", data:[
   {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
   {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
   {name: "EST2025", label: "2025年推計人口(人)", func: "sum", args: ["EST2025"]},
   {name: "2025dens", label: "2025年人口密度(人/㎢)", func: "div", args: ["EST2025", "AREA"], prec: 1},
   {name: "2025incr", label: "2025年推計人口増加数(人)", func: "custom", args: ["EST2025", "-", "POPULATION"], noprop:true, desc:"2015年人口と2025年推計人口を比較した人口増加数。"},
-  {name: "2025incrR", label: "2025年推計人口増加率(%)", func: "custom", args: ["(", "EST2025", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2025incrR", label: "2025年推計人口増加率(%)", func: "custom", args: ["(", "EST2025", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2030", label: "2030年推計人口", data:[
   {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
   {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
   {name: "EST2030", label: "2030年推計人口(人)", func: "sum", args: ["EST2030"]},
   {name: "2030dens", label: "2030年人口密度(人/㎢)", func: "div", args: ["EST2030", "AREA"], prec: 1},
   {name: "2030incr", label: "2030年推計人口増加数(人)", func: "custom", args: ["EST2030", "-", "POPULATION"], noprop:true, desc:"2015年人口と2030年推計人口を比較した人口増加数。"},
-  {name: "2030incrR", label: "2030年推計人口増加率(%)", func: "custom", args: ["(", "EST2030", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2030incrR", label: "2030年推計人口増加率(%)", func: "custom", args: ["(", "EST2030", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2035", label: "2035年推計人口", data:[
   {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
   {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
   {name: "EST2035", label: "2035年推計人口(人)", func: "sum", args: ["EST2035"]},
   {name: "2035dens", label: "2035年人口密度(人/㎢)", func: "div", args: ["EST2035", "AREA"], prec: 1},
   {name: "2035incr", label: "2035年推計人口増加数(人)", func: "custom", args: ["EST2035", "-", "POPULATION"], noprop:true, desc:"2015年人口と2035年推計人口を比較した人口増加数。"},
-  {name: "2035incrR", label: "2035年推計人口増加率(%)", func: "custom", args: ["(", "EST2035", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2035incrR", label: "2035年推計人口増加率(%)", func: "custom", args: ["(", "EST2035", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2040", label: "2040年推計人口", data:[
   {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
   {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
   {name: "EST2040", label: "2040年推計人口(人)", func: "sum", args: ["EST2040"]},
   {name: "2040dens", label: "2040年人口密度(人/㎢)", func: "div", args: ["EST2040", "AREA"], prec: 1},
   {name: "2040incr", label: "2040年推計人口増加数(人)", func: "custom", args: ["EST2040", "-", "POPULATION"], noprop:true, desc:"2015年人口と2040年推計人口を比較した人口増加数。"},
-  {name: "2040incrR", label: "2040年推計人口増加率(%)", func: "custom", args: ["(", "EST2040", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2040incrR", label: "2040年推計人口増加率(%)", func: "custom", args: ["(", "EST2040", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2045", label: "2045年推計人口", data:[
   {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
   {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
   {name: "EST2045", label: "2045年推計人口(人)", func: "sum", args: ["EST2045"]},
   {name: "2045dens", label: "2045年人口密度(人/㎢)", func: "div", args: ["EST2045", "AREA"], prec: 1},
   {name: "2045incr", label: "2045年推計人口増加数(人)", func: "custom", args: ["EST2045", "-", "POPULATION"], noprop:true, desc:"2015年人口と2045年推計人口を比較した人口増加数。"},
-  {name: "2045incrR", label: "2045年推計人口増加率(%)", func: "custom", args: ["(", "EST2045", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+  {name: "2045incrR", label: "2045年推計人口増加率(%)", func: "custom", args: ["(", "EST2045", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"}
 ]}, {name: "2020compare", label: "2020年人口比較", data:[
   {name: "EST2020", label: "2020年推計人口(人)", func: "sum", args: ["EST2020"]},
   {name: "POP2020", label: "2020年実測人口(人)", func: "sum", args: ["POP2020"], desc: "2020年国勢調査による実測人口。"},
   {name: "compare", label: "推計人口との差(人)", func: "custom", args: ["POP2020", "-", "EST2020"], noprop:true, desc: "2020年国勢調査人口から2020年推計人口を引いたもの。"},
   {name: "compareR", label: "推計人口との比(%)", func: "rate", args: ["POP2020", "EST2020"], prec:1, desc: "2020年国勢調査人口を2020年推計人口で割ったもの。"}
-]}
-
-]
+]}, {name: "csv", data: [
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"]},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2},
+  {name: "EST2020", label: "2020年推計人口(人)", func: "sum", args: ["EST2020"]},
+  {name: "EST2025", label: "2025年推計人口(人)", func: "sum", args: ["EST2025"]},
+  {name: "EST2030", label: "2030年推計人口(人)", func: "sum", args: ["EST2030"]},
+  {name: "EST2035", label: "2035年推計人口(人)", func: "sum", args: ["EST2035"]},
+  {name: "EST2040", label: "2040年推計人口(人)", func: "sum", args: ["EST2040"]},
+  {name: "EST2045", label: "2045年推計人口(人)", func: "sum", args: ["EST2045"]},
+  {name: "2020dens", label: "2020年人口密度(人/㎢)", func: "div", args: ["EST2020", "AREA"], prec: 1},
+  {name: "2025dens", label: "2025年人口密度(人/㎢)", func: "div", args: ["EST2025", "AREA"], prec: 1},
+  {name: "2030dens", label: "2030年人口密度(人/㎢)", func: "div", args: ["EST2030", "AREA"], prec: 1},
+  {name: "2035dens", label: "2035年人口密度(人/㎢)", func: "div", args: ["EST2035", "AREA"], prec: 1},
+  {name: "2040dens", label: "2040年人口密度(人/㎢)", func: "div", args: ["EST2040", "AREA"], prec: 1},
+  {name: "2045dens", label: "2045年人口密度(人/㎢)", func: "div", args: ["EST2045", "AREA"], prec: 1},
+  {name: "2020incr", label: "2020年推計人口増加数(人)", func: "custom", args: ["EST2020", "-", "POPULATION"], noprop:true},
+  {name: "2025incr", label: "2025年推計人口増加数(人)", func: "custom", args: ["EST2025", "-", "POPULATION"], noprop:true},
+  {name: "2030incr", label: "2030年推計人口増加数(人)", func: "custom", args: ["EST2030", "-", "POPULATION"], noprop:true},
+  {name: "2035incr", label: "2035年推計人口増加数(人)", func: "custom", args: ["EST2035", "-", "POPULATION"], noprop:true},
+  {name: "2040incr", label: "2040年推計人口増加数(人)", func: "custom", args: ["EST2040", "-", "POPULATION"], noprop:true},
+  {name: "2045incr", label: "2045年推計人口増加数(人)", func: "custom", args: ["EST2045", "-", "POPULATION"], noprop:true},
+  {name: "2020incrR", label: "2020年推計人口増加率(%)", func: "custom", args: ["(", "EST2020", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "2025incrR", label: "2025年推計人口増加率(%)", func: "custom", args: ["(", "EST2025", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "2030incrR", label: "2030年推計人口増加率(%)", func: "custom", args: ["(", "EST2030", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "2035incrR", label: "2035年推計人口増加率(%)", func: "custom", args: ["(", "EST2035", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "2040incrR", label: "2040年推計人口増加率(%)", func: "custom", args: ["(", "EST2040", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "2045incrR", label: "2045年推計人口増加率(%)", func: "custom", args: ["(", "EST2045", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true},
+  {name: "POP2020", label: "2020年実測人口(人)", func: "sum", args: ["POP2020"]},
+  {name: "compare", label: "推計人口との差(人)", func: "custom", args: ["POP2020", "-", "EST2020"], noprop:true},
+  {name: "compareR", label: "推計人口との比(%)", func: "rate", args: ["POP2020", "EST2020"], prec:1}
+]}]
 
 var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
   {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
