@@ -542,6 +542,57 @@ var Categories_juki = [{name: "population", label: "人口・世帯数", data:[
   {name: "foreignerR", label:"外国人人口割合(%)", func:"rate", args:["FOREIGNER", "POPULATION"], prec:2}
 ]}];
 
+var Categories_shorai = [{name: "2020", label: "2020年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2020", label: "2020年推計人口(人)", func: "sum", args: ["EST2020"]},
+  {name: "2020dens", label: "2020年人口密度(人/㎢)", func: "div", args: ["EST2020", "AREA"], prec: 1},
+  {name: "2020incr", label: "2020年推計人口増加数(人)", func: "custom", args: ["EST2020", "-", "POPULATION"], noprop:true, desc:"2015年人口と2020年推計人口を比較した人口増加数。"},
+  {name: "2020incrR", label: "2020年推計人口増加率(%)", func: "custom", args: ["(", "EST2020", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2025", label: "2025年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2025", label: "2025年推計人口(人)", func: "sum", args: ["EST2025"]},
+  {name: "2025dens", label: "2025年人口密度(人/㎢)", func: "div", args: ["EST2025", "AREA"], prec: 1},
+  {name: "2025incr", label: "2025年推計人口増加数(人)", func: "custom", args: ["EST2025", "-", "POPULATION"], noprop:true, desc:"2015年人口と2025年推計人口を比較した人口増加数。"},
+  {name: "2025incrR", label: "2025年推計人口増加率(%)", func: "custom", args: ["(", "EST2025", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2030", label: "2030年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2030", label: "2030年推計人口(人)", func: "sum", args: ["EST2030"]},
+  {name: "2030dens", label: "2030年人口密度(人/㎢)", func: "div", args: ["EST2030", "AREA"], prec: 1},
+  {name: "2030incr", label: "2030年推計人口増加数(人)", func: "custom", args: ["EST2030", "-", "POPULATION"], noprop:true, desc:"2015年人口と2030年推計人口を比較した人口増加数。"},
+  {name: "2030incrR", label: "2030年推計人口増加率(%)", func: "custom", args: ["(", "EST2030", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2035", label: "2035年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2035", label: "2035年推計人口(人)", func: "sum", args: ["EST2035"]},
+  {name: "2035dens", label: "2035年人口密度(人/㎢)", func: "div", args: ["EST2035", "AREA"], prec: 1},
+  {name: "2035incr", label: "2035年推計人口増加数(人)", func: "custom", args: ["EST2035", "-", "POPULATION"], noprop:true, desc:"2015年人口と2035年推計人口を比較した人口増加数。"},
+  {name: "2035incrR", label: "2035年推計人口増加率(%)", func: "custom", args: ["(", "EST2035", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2040", label: "2040年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2040", label: "2040年推計人口(人)", func: "sum", args: ["EST2040"]},
+  {name: "2040dens", label: "2040年人口密度(人/㎢)", func: "div", args: ["EST2040", "AREA"], prec: 1},
+  {name: "2040incr", label: "2040年推計人口増加数(人)", func: "custom", args: ["EST2040", "-", "POPULATION"], noprop:true, desc:"2015年人口と2040年推計人口を比較した人口増加数。"},
+  {name: "2040incrR", label: "2040年推計人口増加率(%)", func: "custom", args: ["(", "EST2040", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2045", label: "2045年推計人口", data:[
+  {name: "POPULATION", label: "2015年人口(人)", func: "sum", args: ["POPULATION"], desc:"2015年国勢調査による実測人口。"},
+  {name: "AREA", label: "面積(2015年)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"2015年国勢調査による面積。"},
+  {name: "EST2045", label: "2045年推計人口(人)", func: "sum", args: ["EST2045"]},
+  {name: "2045dens", label: "2045年人口密度(人/㎢)", func: "div", args: ["EST2045", "AREA"], prec: 1},
+  {name: "2045incr", label: "2045年推計人口増加数(人)", func: "custom", args: ["EST2045", "-", "POPULATION"], noprop:true, desc:"2015年人口と2045年推計人口を比較した人口増加数。"},
+  {name: "2045incrR", label: "2045年推計人口増加率(%)", func: "custom", args: ["(", "EST2045", "-", "POPULATION", ")", "/", "POPULATION", "*", 100], prec:2, noprop:true, desc:"人口増加数を2015年人口で割ったもの。"},
+]}, {name: "2020compare", label: "2020年人口比較", data:[
+  {name: "EST2020", label: "2020年推計人口(人)", func: "sum", args: ["EST2020"]},
+  {name: "POP2020", label: "2020年実測人口(人)", func: "sum", args: ["POP2020"], desc: "2020年国勢調査による実測人口。"},
+  {name: "compare", label: "推計人口との差(人)", func: "custom", args: ["POP2020", "-", "EST2020"], noprop:true, desc: "2020年国勢調査人口から2020年推計人口を引いたもの。"},
+  {name: "compareR", label: "推計人口との比(%)", func: "rate", args: ["POP2020", "EST2020"], prec:1, desc: "2020年国勢調査人口を2020年推計人口で割ったもの。"}
+]}
+
+]
+
 var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
   {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
   {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"平成27年国勢調査による面積。"},
@@ -809,6 +860,7 @@ var Dataset = [
   {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2005", lineFile: "line.geojson", lineObj: "line2005", csvFile: "2005kokusei.csv", csvObj: "kokusei2005", category: Categories_kokusei_2005, attr: [{label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}]},
   {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2000", lineFile: "line.geojson", lineObj: "line2000", csvFile: "2000kokusei.csv", csvObj: "kokusei2000", category: Categories_kokusei_2000, attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
   {name: "juki2021", label: "2021年住民基本台帳人口", date: "2021-01-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2021juki.csv", csvObj: "juki2021", category: Categories_juki, attr: [{label: "住民基本台帳に基づく人口、人口動態及び世帯数調査", link: "https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200241&bunya_l=02&tstat=000001039591&cycle=7&year=20210&month=0&tclass1=000001039601&result_back=1&tclass2val=0"}]},
+  {name: "shorai2015", label: "将来推計人口", polygonFile: "2015shorai.geojson", polygonObj: "shorai2015", lineFile: "2015shorai_l.geojson", lineObj: "shoraiLine2015", csvFile: "2015shorai.csv", csvObj: "shorai2015", category: Categories_shorai, attr: [{label: "国立社会保障・人口問題研究所", link: "https://www.ipss.go.jp/syoushika/tohkei/Mainmenu.asp"}]},
   {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
   {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
 ];

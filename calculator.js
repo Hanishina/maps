@@ -46,8 +46,7 @@ async function getJson(name, date){
       features = features.filter(f=>{return f.properties.TYPE !== "湖";});
     }
 
-    if (json.name === "line" || json.name === "line_calc"){
-
+    if (json.name === "line" || json.name === "line_calc" || json.name === "2015shorai_l"){
       let mura = features.filter(function(f){return f.properties.TYPE === "村"});
       let ku = features.filter(function(f){return f.properties.TYPE === "区"});
       let sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
@@ -302,7 +301,11 @@ function polygonRedraw(json){
   polygonLayer = L.vectorGrid.slicer(json, {
     vectorTileLayerStyles: {
       sliced:function(properties){
-         return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+        if(properties.NODATA){
+          return {fill: true, fillColor:"#757575" ,fillOpacity:0.5, opacity:0}
+        }else{
+          return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+        }
       }
     },
     maxZoom: 18,
@@ -327,7 +330,7 @@ function lineRedraw(json){
   lineLayer = L.vectorGrid.slicer(json, {
     vectorTileLayerStyles: {
       sliced: function(properties){
-        if(json.name === "line" || json.name === "line_calc"){
+        if(json.name === "line" || json.name === "line_calc" || json.name === "2015shorai_l"){
           switch(properties.TYPE){
             case '村': return{color:"#639394", weight:2}
             case '区': return{color:"#857944", weight:2}
@@ -371,7 +374,7 @@ function lineRedraw(json){
 function clickEvent(obj){
   if(selectedFeatures[currentGroup].some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が選択済みの場合(クリックした地物を削除)
     selectedFeatures[currentGroup] = selectedFeatures[currentGroup].filter(f => f.uid !== obj.layer.properties.uid);
-    polygonLayer.setFeatureStyle(obj.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+    polygonLayer.resetFeatureStyle(obj.layer.properties.uid);
 
   }else if(selectedFeatures.flat().some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が他のグループで選択されている場合(クリックした地物のグループを変更)
     let locA, locB;  //selectedFeatures[locA][locB]がクリックしたした地物の位置
@@ -395,12 +398,14 @@ function clickEvent(obj){
     polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
 
   }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
-    let feature = obj.layer.properties;
-    let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
-    //polygonのデータとcsvのデータを合体
-    Object.assign(feature, csvData);
-    selectedFeatures[currentGroup].push(feature);
-    polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
+    if(!obj.layer.properties.NODATA){
+      let feature = obj.layer.properties;
+      let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+      //polygonのデータとcsvのデータを合体
+      Object.assign(feature, csvData);
+      selectedFeatures[currentGroup].push(feature);
+      polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
+    }
   }
 
   rewriteSumTable(currentGroup);
@@ -426,30 +431,42 @@ function rewriteCursorTable(obj){
     }
     $("#mouse_name").text(obj.KEN + gun + name);
 
-    if(!currentCategory.pie){
-      currentCategory.data.forEach(function(f, i){
-        $("#mouseCol_data" + i).text(calc(obj, f.func, f.prec, f.args));
-        //按分の有無判定
-        if(f.args && currentDataset.estimate){
-          let a = [...f.args, ...currentDataset.estimate];
-          let b = new Set([...f.args, ...currentDataset.estimate]);
-          if(obj.ESTIMATE && (a.length !== b.size)){
-            $("#mouseCol_data" + i).css({color: "#0000ee"});
+    if(!obj.NODATA){
+      if(!currentCategory.pie){
+        currentCategory.data.forEach(function(f, i){
+          $("#mouseCol_data" + i).text(calc(obj, f.func, f.prec, f.args));
+          //按分の有無判定
+          if(f.args && currentDataset.estimate){
+            let a = [...f.args, ...currentDataset.estimate];
+            let b = new Set([...f.args, ...currentDataset.estimate]);
+            if(obj.ESTIMATE && (a.length !== b.size)){
+              $("#mouseCol_data" + i).css({color: "#0000ee"});
+            }else{
+              $("#mouseCol_data" + i).css({color: "#000000"});
+            }
           }else{
             $("#mouseCol_data" + i).css({color: "#000000"});
           }
-        }else{
-          $("#mouseCol_data" + i).css({color: "#000000"});
-        }
-      });
-    }else{
-      let datas = [];
-      currentCategory.data.forEach(function(f, i){
-        datas.push(calc(obj, f.func, f.prec, f.args));
-      });
-      mouseChart.data.datasets[0].data = datas;
-      mouseChart.update();
+        });
+      }else{
+        let datas = [];
+        currentCategory.data.forEach(function(f, i){
+          datas.push(calc(obj, f.func, f.prec, f.args));
+        });
+        mouseChart.data.datasets[0].data = datas;
+        mouseChart.update();
+      }
+    }else{ //NODATA
+      if(!currentCategory.pie){
+        currentCategory.data.forEach((f, i)=>{
+          $("#mouseCol_data" + i).text("-");
+        });
+      }else{
+        mouseChart.data.datasets[0].data = [];
+        mouseChart.update();
+      }
     }
+
 
   }else{
     $("#mouse_name").text("-");
@@ -875,8 +892,10 @@ function datasetChange(e){
           let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
           //polygonのデータとcsvのデータを合体
           Object.assign(feature, csvData);
-          selectedFeatures[e.group].push(feature);
-          polygonLayer.setFeatureStyle(match.properties.uid, {fill: true, fillColor:(groupColors[e.group]) ,fillOpacity:0.4, opacity:0});
+          if(!feature.NODATA){
+            selectedFeatures[e.group].push(feature);
+            polygonLayer.setFeatureStyle(match.properties.uid, {fill: true, fillColor:(groupColors[e.group]) ,fillOpacity:0.4, opacity:0});
+          }
         }
       });
     }
