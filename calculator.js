@@ -283,7 +283,7 @@ async function init(){
   /*--- 地図データ・統計データ読み込み ---*/
 
   geojsonFiles.polygon2020 = await getJson("polygon.geojson", "2020-10-01");
-  geojsonFiles.line2020 = await getJson("line_calc.geojson", "2020-10-01");
+  geojsonFiles.line2020 = await getJson("line.geojson", "2020-10-01");
 
   csvObjs.kokusei2020 = await getCsv("2020kokusei.csv");
 
