@@ -290,6 +290,7 @@ img.imgContentsThumb{
 
 #mapA{
   height: 82vh;
+  background: #FFF;
 }
 @media screen and (orientation: portrait) {
   #mapA{
@@ -299,6 +300,7 @@ img.imgContentsThumb{
 
 #mapB{
   height: 82vh;
+  background: #FFF;
 }
 @media screen and (orientation: portrait) {
   #mapB{

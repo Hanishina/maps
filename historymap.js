@@ -92,8 +92,8 @@ async function init(){
     map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
     map.setMinZoom(5);
     map.createPane("base").style.zIndex = 100;
-    map.createPane("polygon").style.zIndex = 150;
-    map.createPane("colored").style.zIndex = 140;
+    map.createPane("polygon").style.zIndex = 250;
+    map.createPane("colored").style.zIndex = 240;
     map.createPane("line").style.zIndex = 400;
 
     labelLayerGroups[n] = new L.LayerGroup();
@@ -131,6 +131,11 @@ async function init(){
         pane: "base"
     });
 
+    var googleRoads = L.gridLayer.googleMutant({
+		    type: "roadmap",
+        attribution: "Google"
+    });
+
     var blank = L.tileLayer('', {pane:"base"});
 
     var baseMaps = {
@@ -139,6 +144,7 @@ async function init(){
       "色別標高図+陰影起伏図": shadeAltitudeMap,
       "航空写真": photo,
       "OpenStreetMap": osm,
+      "GoogleMap": googleRoads,
       "背景非表示":blank
     };
     var overlayMaps = {
@@ -156,6 +162,7 @@ async function init(){
       "色別標高図+陰影起伏図": "shadeAltitudeMap",
       "航空写真": "photo",
       "OpenStreetMap": "osm",
+      "GoogleMap": "googleRoads",
       "背景非表示": "blank"
     }
 
@@ -304,7 +311,7 @@ function polygonRedraw(n){
       sliced:function(properties){
         //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
         if(date[n].getFullYear() < 1970){
-          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "奈良県", "和歌山県"].some(e => e === properties.KEN)){
+          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"].some(e => e === properties.KEN)){
             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
           }else{
             return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
