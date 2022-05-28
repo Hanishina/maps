@@ -1,0 +1,21 @@
+.commitButton{
+  background-color: #ddd;
+  border: 2px solid #aaa;
+  padding: 0.3em 1em;
+  border-radius: 0.5em;
+}
+
+.commitButton:hover{
+  background-color: #ccc;
+}
+
+.uncommitButton{
+  background-color: #ffbdbd;
+  border: 2px solid #a26a6a;
+  padding: 0.3em 1em;
+  border-radius: 0.5em;
+}
+
+.uncommitButton:hover{
+  background-color: #e9a0a0;
+}
