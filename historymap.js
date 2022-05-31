@@ -1,44 +1,49 @@
-var maps = [];
-var date = [];
-var lineLayers = [];
-var polygonLayers = [];
-var labelLayers = [];
-var labelLayerGroups = [];
-var baseLayerNames = [];
-var typeColoredLayers = [];
-var typeColoredLayerGroups = [];
-var gunColoredLayers = [];
-var gunColoredLayerGroups = [];
+let maps = [];
+let date = [];
+let lineLayers = [];
+let railLayers = [];
+let stationLayers = [];
+let polygonLayers = [];
+let labelLayers = [];
+let labelLayerGroups = [];
+let baseLayerNames = [];
+let typeColoredLayers = [];
+let typeColoredLayerGroups = [];
+let gunColoredLayers = [];
+let gunColoredLayerGroups = [];
+let railLayerGroups = [];
+let dateSelectors = [];
 
-var polygonJson;
-var lineJson;
-var nameJson;
+let polygonJson;
+let lineJson;
+let nameJson;
+let railJson;
 
-var mediaQ = matchMedia("screen and (orientation: portrait)");
-var orient;
-var dualChkbx;
-var containerA;
-var containerB;
+let mediaQ = matchMedia("screen and (orientation: portrait)");
+let orient;
+let dualChkbx;
+let containerA;
+let containerB;
 
-var layerControl = [];
+let layerControl = [];
 
-var cookies;
-var urlParams;
+let cookies;
+let urlParams;
 
 async function getResources(name){
-  var path = "./json/" + name;
+  let path = "./json/" + name;
   return $.getJSON(path, function(json){
-    var features = json.features;
+    let features = json.features;
     //並べ替え処理(暫定的)
     if (json.name === "line"){
-      var mura = features.filter(function(f){return f.properties.TYPE === "村"});
-      var ku = features.filter(function(f){return f.properties.TYPE === "区"});
-      var sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
-      var gun = features.filter(function(f){return f.properties.TYPE === "郡"});
-      var shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
-      var ken = features.filter(function(f){return f.properties.TYPE === "県"});
-      var mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
-      var umi = features.filter(function(f){return f.properties.TYPE === "海"});
+      let mura = features.filter(function(f){return f.properties.TYPE === "村"});
+      let ku = features.filter(function(f){return f.properties.TYPE === "区"});
+      let sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
+      let gun = features.filter(function(f){return f.properties.TYPE === "郡"});
+      let shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
+      let ken = features.filter(function(f){return f.properties.TYPE === "県"});
+      let mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
+      let umi = features.filter(function(f){return f.properties.TYPE === "海"});
       features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
     }
 
@@ -60,6 +65,8 @@ async function init(){
   polygonJson = await getResources("polygon.geojson");
   lineJson = await getResources("line.geojson");
   nameJson = await getResources("name.geojson");
+  railJson = await getResources("KSJrailroad_line.geojson");
+  stationJson = await getResources("KSJrailroad_point.geojson");
 
   cookies = getCookieArray();
   urlParams = new URL(window.location.href).searchParams;
@@ -67,6 +74,17 @@ async function init(){
 
   maps[0] = L.map('mapA');
   maps[1] = L.map('mapB');
+
+  //日付セレクトボックス初期設定
+  let formElemA = $("#dateSelectorA");
+  let commitBtnA = $("#dateSelectorA").find(".commit");
+  dateSelectors[0] = new DateSelector({formElem: formElemA, commitElem: commitBtnA, minYear: 1947});
+  $(commitBtnA).on("click", {n: 0} ,buttonClick);
+
+  let formElemB = $("#dateSelectorB");
+  let commitBtnB = $("#dateSelectorB").find(".commit");
+  dateSelectors[1] = new DateSelector({formElem: formElemB, commitElem: commitBtnB, minYear: 1947});
+  $(commitBtnB).on("click", {n: 1} , buttonClick);
 
   //URLパラメータ・cookie・デフォルト値の優先順位で日付を取得
   date[0] = new Date(urlParams.get("date0") ?? cookies.date0 ?? "");
@@ -80,13 +98,13 @@ async function init(){
   }
 
   //formに日付セット
-  var form = document.forms.dateA;
-  form.year.value = date[0].getFullYear();
-  form.month.value = date[0].getMonth() + 1;
+  $(formElemA).find(".year").val(date[0].getFullYear());
+  $(formElemA).find(".month").val(date[0].getMonth() + 1);
+  dateSelectors[0].sync();
 
-  form = document.forms.dateB;
-  form.year.value = date[1].getFullYear();
-  form.month.value = date[1].getMonth() + 1;
+  $(formElemB).find(".year").val(date[1].getFullYear());
+  $(formElemB).find(".month").val(date[1].getMonth() + 1);
+  dateSelectors[1].sync();
 
   maps.forEach(function(map, n){
     map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
@@ -94,51 +112,55 @@ async function init(){
     map.createPane("base").style.zIndex = 100;
     map.createPane("polygon").style.zIndex = 250;
     map.createPane("colored").style.zIndex = 240;
+    map.createPane("rail").style.zIndex = 380;
     map.createPane("line").style.zIndex = 400;
 
     labelLayerGroups[n] = new L.LayerGroup();
     labelLayers[n] = new L.LayerGroup();
     typeColoredLayerGroups[n] = new L.LayerGroup();
     gunColoredLayerGroups[n] = new L.LayerGroup();
+    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(国土交通省)"});
+    railLayers[n] = new L.LayerGroup();
+    stationLayers[n] = new L.LayerGroup();
 
 
-    var paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+    let paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
         attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
         pane: "base"
     });
-    var standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+    let standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
         attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
         pane: "base"
     });
-    var shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+    let shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
         attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
         pane: "base",
         opacity: 0.3
     });
-    var altitudeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
+    let altitudeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
         attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
         pane: "base",
         opacity: 0.3
     });
-    var shadeAltitudeMap = new L.LayerGroup([shadeMap, altitudeMap]);
-    var photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+    let shadeAltitudeMap = new L.LayerGroup([shadeMap, altitudeMap]);
+    let photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
         attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
         pane: "base",
         opacity: 0.7
     });
-    var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
         pane: "base"
     });
 
-    var googleRoads = L.gridLayer.googleMutant({
+    let googleRoads = L.gridLayer.googleMutant({
 		    type: "roadmap",
         attribution: "Google"
     });
 
-    var blank = L.tileLayer('', {pane:"base"});
+    let blank = L.tileLayer('', {pane:"base"});
 
-    var baseMaps = {
+    let baseMaps = {
       "淡色地図(地理院地図)": paleMap,
       "標準地図(地理院地図)": standardMap,
       "色別標高図+陰影起伏図": shadeAltitudeMap,
@@ -147,16 +169,17 @@ async function init(){
       "GoogleMap": googleRoads,
       "背景非表示":blank
     };
-    var overlayMaps = {
+    let overlayMaps = {
       "市区町村名ラベルを表示": labelLayerGroups[n],
       "色分け(市・町・村)": typeColoredLayerGroups[n],
-      "色分け(郡)": gunColoredLayerGroups[n]
+      "色分け(郡)": gunColoredLayerGroups[n],
+      "鉄道路線(1950年～)[年単位]": railLayerGroups[n]
     };
 
     layerControl[n] = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
     //背景地図一覧(文字列)
-    var baseMapNames = {
+    let baseMapNames = {
       "淡色地図(地理院地図)": "paleMap",
       "標準地図(地理院地図)": "standardMap",
       "色別標高図+陰影起伏図": "shadeAltitudeMap",
@@ -167,7 +190,7 @@ async function init(){
     }
 
     //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
-    var layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0};
+    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0, rail: urlParams.get("rail" + n) ?? cookies["rail" + n] ?? "false"};
 
     if(Object.values(baseMapNames).includes(layerParams.base)){
       map.addLayer(eval(layerParams.base));
@@ -185,6 +208,10 @@ async function init(){
       map.addLayer(typeColoredLayerGroups[n]);
     }else if(layerParams.color == 2){
       map.addLayer(gunColoredLayerGroups[n]);
+    }
+
+    if(layerParams.rail === "true"){
+      map.addLayer(railLayerGroups[n]);
     }
 
     L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
@@ -228,6 +255,8 @@ async function init(){
     gunColoredRedraw(n);
     polygonRedraw(n);
     lineRedraw(n);
+    railRedraw(n);
+    stationRedraw(n);
     labelRedraw(n);
     if(n === 0){
       $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
@@ -254,10 +283,12 @@ async function init(){
   maps[0].on("moveend", function(){
     labelRedraw(0);
     labelRedraw(1);
+    stationRedraw(0);
+    stationRedraw(1);
 
     //urlパラメータ生成
     function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
-    var statusParams = {
+    let statusParams = {
       "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
       "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
       "z" : maps[0].getZoom(),
@@ -269,13 +300,15 @@ async function init(){
       "label1" : maps[1].hasLayer(labelLayerGroups[1]),
       "color0" : color(0),
       "color1" : color(1),
+      "rail0" : maps[0].hasLayer(railLayerGroups[0]),
+      "rail1" : maps[1].hasLayer(railLayerGroups[1]),
       "dual" : dualChkbx.checked
     }
-    for(var key in statusParams){
-      var val = statusParams[key];
+    for(let key in statusParams){
+      let val = statusParams[key];
       document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
     }
-    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&dual=" + statusParams.dual);
+    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&dual=" + statusParams.dual);
   });
 
   checkOrientation(mediaQ);
@@ -305,6 +338,59 @@ function lineRedraw(n){
   lineLayers[n].addTo(maps[n]);
 }
 
+function railRedraw(n){
+  if(date[n].getFullYear() >= 1950){
+    railLayers[n] = L.vectorGrid.slicer(filter(railJson, n), {
+      vectorTileLayerStyles: {
+        sliced: function(properties){
+          switch(properties.JigyoshaType){
+            case "1": return{color:"#114211", weight:2, dashArray: "8 8"}
+            case "2": return{color:"#333958", weight:1.5, dashArray: "5 5"}
+            case "3": return{color:"#687943", weight:1.5, dashArray: "5 5"}
+            case "4": return{color:"#80663a", weight:1.5, dashArray: "5 5"}
+            case "5": return{color:"#6a1a47", weight:1.5, dashArray: "5 5"}
+         }
+        }
+      },
+      maxZoom: 18,
+      pane: "rail"
+    });
+    railLayers[n].addTo(railLayerGroups[n]);
+  }
+}
+
+function stationRedraw(n){
+  stationLayers[n].clearLayers();
+  if(date[n].getFullYear() >= 1950){
+    if(maps[n].getZoom() >= 10){
+      filter(stationJson, n).features.forEach(function(f){
+        let marker = L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+          radius: 3,
+          fillColor: "#5d5d5d",
+          weight: 0,
+          fillOpacity: 0.8,
+          interactive: false
+        });
+        stationLayers[n].addLayer(marker);
+        if(maps[n].getZoom() >= 12){
+          let divIcon = new L.DivIcon({
+            className: 'labelClassStation',
+            html: '<div>' + (f.properties.Name) + '</div>',
+            iconSize: [(f.properties.Name).length*12, 20],
+            iconAnchor: [-5, 8]
+          });
+          let label = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+            icon: divIcon,
+            interactive: false
+          });
+          stationLayers[n].addLayer(label);
+        }
+      });
+      stationLayers[n].addTo(railLayerGroups[n]);
+    }
+  }
+}
+
 function polygonRedraw(n){
   polygonLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
     vectorTileLayerStyles: {
@@ -328,11 +414,11 @@ function polygonRedraw(n){
     },
     pane: "polygon"
   }).bindPopup(function(e){
-    var start = e.properties.START;
+    let start = e.properties.START;
     if(start == "1889/04/01"){start = "-";}
-    var end = e.properties.END;
+    let end = e.properties.END;
     if(end == "2999/12/31"){end = "-";}
-    var name = (e.properties.NAME ?? e.properties.TYPE);
+    let name = (e.properties.NAME ?? e.properties.TYPE);
     if(e.properties.CODE5 === "01223X"){name = name + "(歯舞群島)";}
     return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
   }).on("click", function(e){
@@ -365,7 +451,7 @@ function gunColoredRedraw(n){
   gunColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
-         var op = 0.25;
+         let op = 0.25;
          if(properties.TYPE === "町"){op = 0.5}
          switch(properties.GUNCOLOR){
            case 1: return{fill: true, fillColor:"#ffb0b0" ,fillOpacity:op, opacity:0}
@@ -392,8 +478,8 @@ function labelRedraw(n){
   //レイヤ再描画はz>=10の時のみ
   if(maps[n].getZoom() >= 10){
     filter(nameJson, n).features.forEach(function(f){
-      var nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
-      var className;
+      let nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
+      let className;
       switch(f.properties.TYPE){
         case '町': className = 'labelClassMachi'; break;
         case '市': className = 'labelClassShi'; break;
@@ -401,12 +487,12 @@ function labelRedraw(n){
         case '特別区': className = 'labelClassShi'; break;
         default: className = 'labelClass';
       }
-      var icon = new L.DivIcon({
+      let icon = new L.DivIcon({
         className: className,
         html: '<div>' + (f.properties.NAME ?? f.properties.TYPE) + '</div>',
         iconSize: [nameLength*30, 30]
       });
-      var marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+      let marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
         icon: icon,
         interactive: false
       });
@@ -418,38 +504,34 @@ function labelRedraw(n){
 
 //JSONの日付フィルター
 function filter(json, n){
-  var features = json.features;
-  var newFeatures = features.filter(function(f){
-    return new Date(f.properties.START) <= (date[n]) & new Date(f.properties.END) > (date[n])
+  let features = json.features;
+  let newFeatures = features.filter(function(f){
+    return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) & new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
   });
 
   //画面内にあるものを取得(暫定的)
-  if(json.name === "name"){
-    var view = maps[n].getBounds();
+  if(json.name === "name" || json.name === "KSJrailroad_point"){
+    let view = maps[n].getBounds();
     newFeatures = newFeatures.filter(function(f){
       return f.geometry.coordinates[0] >= view.getWest() & f.geometry.coordinates[0] <= view.getEast() & f.geometry.coordinates[1] >= view.getSouth() & f.geometry.coordinates[1] <= view.getNorth()
     });
   }
 
-  var newJson = Object.assign({}, json);
+  let newJson = Object.assign({}, json);
   newJson.features = newFeatures;
   return newJson;
 }
 
-function buttonClick(n){
+function buttonClick(e){
+  let n = e.data.n;
   if(n === 0){
     $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
   }else{
     $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
   }
 
-  var form;
-  switch(n){
-    case 0 : form = document.forms.dateA; break;
-    case 1 : form = document.forms.dateB; break;
-    default : break;
-  }
-  date[n] = new Date(form.year.value, form.month.value - 1, 1);
+  date[n] = dateSelectors[n].commit();
+  railLayerGroups[n].removeLayer(railLayers[n]);
   typeColoredLayerGroups[n].removeLayer(typeColoredLayers[n]);
   gunColoredLayerGroups[n].removeLayer(gunColoredLayers[n]);
   maps[n].removeLayer(lineLayers[n]);
@@ -460,6 +542,8 @@ function buttonClick(n){
   gunColoredRedraw(n);
   polygonRedraw(n);
   lineRedraw(n);
+  railRedraw(n);
+  stationRedraw(n);
   labelRedraw(n);
   if(n === 0){
     $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
@@ -468,7 +552,7 @@ function buttonClick(n){
   }
 }
 
- var clickedObj
+ let clickedObj
 
  function clickEvent(e, n){
    //前回クリックしたオブジェクトのハイライトを消去
@@ -522,11 +606,11 @@ function buttonClick(n){
  }
 
  function getCookieArray(){
-  var arr = new Array();
+  let arr = new Array();
   if(document.cookie != ''){
-      var tmp = document.cookie.split('; ');
-      for(var i=0;i<tmp.length;i++){
-          var data = tmp[i].split('=');
+      let tmp = document.cookie.split('; ');
+      for(let i=0;i<tmp.length;i++){
+          let data = tmp[i].split('=');
           arr[data[0]] = decodeURIComponent(data[1]);
       }
   }

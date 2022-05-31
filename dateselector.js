@@ -134,6 +134,9 @@ class DateSelector{
   }
 
   commit(){
+    this.newY = $(this.yearElem).val();
+    this.newM = $(this.monthElem).val();
+    this.newD = $(this.dateElem).val();
     let newFullDate = new Date(this.newY, (this.newM - 1), this.newD);
     this.formerY = this.newY;
     this.formerM = this.newM;
@@ -150,6 +153,17 @@ class DateSelector{
     $(this.yearElem).val(this.formerY);
     $(this.monthElem).val(this.formerM);
     this.monthChanged();
+  }
+
+  sync(){
+    this.formerY = $(this.yearElem).val();
+    this.formerM = $(this.monthElem).val();
+    this.formerD = $(this.dateElem).val();
+    this.newY = $(this.yearElem).val();
+    this.newM = $(this.monthElem).val();
+    this.newD = $(this.dateElem).val();
+    $(this.commitElem).removeClass("uncommitButton");
+    $(this.commitElem).addClass("commitButton");
   }
 
   isLeap(year){

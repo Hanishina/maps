@@ -345,6 +345,16 @@ div.labelClassKu{
               -1px 0 0 #FFF, 1px 0 0 #FFF;
 }
 
+div.labelClassStation{
+  color: #414eb5;
+  font-size: 12px;
+  text-align: center;
+  text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
+              0px 1px 0 #FFF,  0 -1px 0 #FFF,
+              -1px 0 0 #FFF, 1px 0 0 #FFF;
+}
+
 
 /*人口計算機*/
 
