@@ -100,10 +100,12 @@ async function init(){
   //formに日付セット
   $(formElemA).find(".year").val(date[0].getFullYear());
   $(formElemA).find(".month").val(date[0].getMonth() + 1);
+  $(formElemA).find(".date").val(date[0].getDate());
   dateSelectors[0].sync();
 
   $(formElemB).find(".year").val(date[1].getFullYear());
   $(formElemB).find(".month").val(date[1].getMonth() + 1);
+  $(formElemB).find(".date").val(date[1].getDate());
   dateSelectors[1].sync();
 
   maps.forEach(function(map, n){
