@@ -470,6 +470,36 @@ div.chartContainer{
   height: 200px;
 }
 
+.menuBtn{
+  background-color: inherit;
+  border: 2px solid #aaa;
+  cursor: pointer;
+}
+
+.menuBtn:hover{
+  background-color: #ccc;
+}
+
+.popupMenu{
+  position: absolute;
+  background-color: #ddd;
+  width: 200px;
+  right: 0px;
+  font-size: 16px;
+  font-weight: normal;
+  box-shadow: 3px 3px 3px #666;
+}
+
+.popupMenu div{
+  border: 1px solid #555;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.popupMenu div:hover{
+  background-color: #ccc;
+}
+
 /*ツールチップ(https://www.jungleocean.com/programming/190308tooltip-css)*/
 .tooltip{
     position: relative;

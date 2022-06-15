@@ -166,18 +166,18 @@
 
 @media (min-width: 768px) and (max-width: 991px) {
   .leaflet-sidebar-left ~ .leaflet-control-container .leaflet-left {
-    left: 315px; } }
+    left: 0px; } }
 
 @media (min-width: 992px) and (max-width: 1199px) {
   .leaflet-sidebar-left ~ .leaflet-control-container .leaflet-left {
-    left: 400px; } }
+    left: 0px; } }
 
 @media (min-width: 1200px) {
   .leaflet-sidebar-left ~ .leaflet-control-container .leaflet-left {
-    left: 470px; } }
+    left: 0px; } }
 
 .leaflet-sidebar-left.collapsed ~ .leaflet-control-container .leaflet-left {
-  left: 50px; }
+  left: 0px; }
 
 .leaflet-sidebar-right.leaflet-touch {
   box-shadow: none;
