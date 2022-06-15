@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
-<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="user-scalable=no">
+  <meta name="description" content="市区町村を地図上で選んで、人口・面積など様々なデータの合計値を算出できるツールです。">
   <title>人口計算機</title>
   <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -37,6 +37,8 @@
   <script src="./Plugins/modaal.min.js"></script>
   <script src="./Plugins/toastr.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA05mQQCiqSlagtiU7Z0NoeX3n1snBdg44" async defer></script>
   <script src="./dialog.js"></script>
 
   <script src="./calc_categories.js"></script>
@@ -93,7 +95,17 @@
             </details>
             <div id="groupsContainer" ontouchstart="">
               <div id="group0" class="group">
-                <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span><span style="margin-left: auto;"><input class="resetBtn" type="button" value="選択をリセット"/><input class="deleteBtn" type="button" value="グループを削除"/><span></div>
+                <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span>
+                  <span style="margin-left: auto;position: relative;">
+                    <button class="menuBtn"><i class="fa-solid fa-ellipsis-vertical" style="color: #05a"></i></button>
+                    <div class="popupMenu" style="display:none;">
+                      <div class="resetGroup">選択をリセット</div>
+                      <div class="deleteGroup">グループを削除</div>
+                      <div class="changeGroupColor">色を変更</div>
+                      <div class="changeGroupName">名前を変更</div>
+                    </div>
+                  </span>
+                </div>
                 <table class="groupTable">
                   <tr><th class="groupCol_name0">人口(人)</th><td class="groupCol_data0">0</td></tr>
                   <tr><th class="groupCol_name1">面積(㎢)</th><td class="groupCol_data1">0.00</td></tr>

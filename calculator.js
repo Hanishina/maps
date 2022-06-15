@@ -8,6 +8,7 @@ let mouseChart;
 let dialog_reset;
 let dialog_delete;
 let dialog_changeDataset;
+let dialog_groupMenu;
 
 let selectedFeatures = [];
 selectedFeatures[0] = [];
@@ -142,11 +143,16 @@ async function init(){
   });
   let photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
       attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-      pane: "base"
+      pane: "base",
+      opacity: 0.7
   });
   let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
       pane: "base"
+  });
+  let googleRoads = L.gridLayer.googleMutant({
+      type: "roadmap",
+      attribution: "Google"
   });
 
   let blank = L.tileLayer('', {pane:"base"});
@@ -157,6 +163,7 @@ async function init(){
     "陰影起伏図": shadeMap,
     "航空写真": photo,
     "OpenStreetMap": osm,
+    "GoogleMap": googleRoads,
     "背景非表示":blank
   };
 
@@ -169,6 +176,7 @@ async function init(){
     "陰影起伏図": "shadeMap",
     "航空写真": "photo",
     "OpenStreetMap": "osm",
+    "GoogleMap": "googleRoads",
     "背景非表示": "blank"
   }
 
@@ -235,8 +243,15 @@ async function init(){
   /*--- グループ内コンテンツの初期化処理 ---*/
 
   $("#group0").on("click", groupSelect);
-  $("#group0").find(".resetBtn").on("click", resetGroup);
-  $("#group0").find(".deleteBtn").on("click", deleteGroup);
+  $("#group0").find(".menuBtn").on("click", groupMenu);
+  let menu = $("#group0").find(".popupMenu");
+  $(menu).find(".resetGroup").on("click", resetGroup);
+  $(menu).find(".deleteGroup").on("click", deleteGroup);
+  $(menu).find(".changeGroupColor").on("click", function(e){
+    let n = $(this).parents(".group").attr("id").substr(5);
+    colorPicker[n].show();
+  });
+  $(menu).find(".changeGroupName").on("click", changeGroupName);
 
   colorPicker[0] = new EightBitColorPicker({el: $("#group0").find(".colorPicker")[0], color: 112});
   colorPicker[0].addEventListener("colorChange", e=> selectColor(e));
@@ -698,6 +713,69 @@ function selectColor(e){
 
 }
 
+//グループメニュー
+function groupMenu(e){
+  $(".popupMenu").each(function(){
+    $(this).hide();
+  });
+  let n = $(this).parents(".group").attr("id").substr(5);
+  $("#group" + n).find(".popupMenu").show();
+  $("#sidebar").on("click", closeGroupMenu);
+}
+
+function closeGroupMenu(e){
+  //メニューボタンクリック時は作動させない
+  if(!e.target.closest("button") || e.target.closest("button").className !== "menuBtn"){
+    $(".popupMenu").each(function(){
+      $(this).hide();
+    });
+    $("#sidebar").off("click", closeGroupMenu);
+  }
+}
+
+//グループの名称変更
+function changeGroupName(){
+  $(".groupName").each(function(){
+    let n = $(this).parents(".group").attr("id").substr(5);
+    $(this).empty();
+    $(this).text(groupNames[n]);
+  });
+  let n = $(this).parents(".group").attr("id").substr(5);
+  let nameArea = $("#group" + n).find(".groupName");
+  $(nameArea).text("");
+  $(nameArea).append($("<input>").attr({type: "text", name: "groupName", placeholder: groupNames[n]}).keypress(function(e){
+    if(e.which == 13){
+      $(this).next().click();
+    }
+  }));
+  let submitBtn = $("<input>").attr({type: "button", value: "OK"}).on("click", function(){
+    let n = $(this).parents(".group").attr("id").substr(5);
+    if($("input[name='groupName']").val()){
+      groupNames[n] = $("input[name='groupName']").val();
+    }
+    let nameArea = $("#group" + n).find(".groupName");
+    $(nameArea).empty();
+    $(nameArea).text(groupNames[n]);
+  });
+  $(nameArea).append(submitBtn);
+  $("input[name='groupName']").focus();
+
+  $("#sidebar").on("click", cancelGroupName);
+
+}
+
+function cancelGroupName(e){
+  //グループ名表示位置クリック時は作動させない
+  if($(e.target).closest(".h3").length == 0){
+    $(".groupName").each(function(){
+      let n = $(this).parents(".group").attr("id").substr(5);
+      $(this).empty();
+      $(this).text(groupNames[n]);
+    });
+    $("#sidebar").off("click", cancelGroupName);
+  }
+}
+
 //リセットボタン処理
 function resetGroup(){
   let n = $(this).parents(".group").attr("id").substr(5);
@@ -728,6 +806,11 @@ function deleteGroup(){
     //グループ数が1の場合、そのグループのリセットのみ行う
     if(selectedFeatures.length === 1){
       selectedFeatures[n].splice(0);
+      groupNames[n] = "グループ1";
+      $("#group" + n).find(".groupName").text(groupNames[n]);
+      newGroupNo = 2;
+      colorPicker[n].updateColor(112);
+      groupColors[n] = "#cc0000";
       rewriteSumTable(n);
     }else{
       selectedFeatures.splice(n, 1);
@@ -971,7 +1054,7 @@ function datasetChange(e){
     chart.splice(1);
     selectedFeatures.splice(1);
     selectedFeatures[0] = [];
-    $("group0").find(".groupName").text("グループ1");
+    $("#group0").find(".groupName").text("グループ1");
     //group0を再選択
     $("#group0").css({border: "3px solid #a00", backgroundColor: "#feffde"});
     currentGroup = 0;
@@ -1023,7 +1106,7 @@ function openTable(){
         $("#csvTable").append(tr2);
         $("<td>", {text: fts.CODE5}).appendTo(tr2);
         $("<td>", {text: name}).appendTo(tr2);
-        $("<td>", {text: "G" + groupNames[i].substr(4)}).appendTo(tr2);
+        $("<td>", {text: "G" + (i + 1)}).appendTo(tr2);
         csvCate.forEach(cate => {
           if(cate.func){
             let tableData = calc(fts, cate.func, cate.prec, cate.args);
@@ -1038,7 +1121,7 @@ function openTable(){
     let tr3 = $("<tr>");
     $(tr3).css("background-color", "#ddf");
     $("#csvTable").append(tr3);
-    $("<td>", {text: "G" + groupNames[i].substr(4)}).appendTo(tr3);
+    $("<td>", {text: "G" + (i + 1)}).appendTo(tr3);
     $("<td>", {text: groupNames[i]}).appendTo(tr3);
     if(tableType === "all"){$("<td>").appendTo(tr3);}else{$("<td>", {text: selectedFeatures[i].length}).appendTo(tr3);}
     csvCate.forEach(cate => {
