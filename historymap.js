@@ -70,7 +70,7 @@ async function init(){
   nameJson = await getResources("name.geojson");
   railJson = await getResources("KSJrailroad_line.geojson");
   stationJson = await getResources("KSJrailroad_point.geojson");
-  didJson = await getResources("DIDAll.geojson");
+  didJson = await getResources("DIDall.geojson");
 
   cookies = getCookieArray();
   urlParams = new URL(window.location.href).searchParams;
