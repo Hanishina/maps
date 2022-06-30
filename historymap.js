@@ -1,8 +1,6 @@
 let maps = [];
 let date = [];
 let lineLayers = [];
-let railLayers = [];
-let stationLayers = [];
 let polygonLayers = [];
 let labelLayers = [];
 let labelLayerGroups = [];
@@ -11,13 +9,18 @@ let typeColoredLayers = [];
 let typeColoredLayerGroups = [];
 let gunColoredLayers = [];
 let gunColoredLayerGroups = [];
+let railLayers = [];
+let stationLayers = [];
 let railLayerGroups = [];
+let didLayers = [];
+let didLayerGroups = [];
 let dateSelectors = [];
 
 let polygonJson;
 let lineJson;
 let nameJson;
 let railJson;
+let didJson;
 
 let mediaQ = matchMedia("screen and (orientation: portrait)");
 let orient;
@@ -67,6 +70,7 @@ async function init(){
   nameJson = await getResources("name.geojson");
   railJson = await getResources("KSJrailroad_line.geojson");
   stationJson = await getResources("KSJrailroad_point.geojson");
+  didJson = await getResources("DIDAll.geojson");
 
   cookies = getCookieArray();
   urlParams = new URL(window.location.href).searchParams;
@@ -113,7 +117,8 @@ async function init(){
     map.setMinZoom(5);
     map.createPane("base").style.zIndex = 100;
     map.createPane("polygon").style.zIndex = 250;
-    map.createPane("colored").style.zIndex = 240;
+    map.createPane("colored").style.zIndex = 230;
+    map.createPane("did").style.zIndex = 240;
     map.createPane("rail").style.zIndex = 380;
     map.createPane("line").style.zIndex = 400;
 
@@ -121,9 +126,10 @@ async function init(){
     labelLayers[n] = new L.LayerGroup();
     typeColoredLayerGroups[n] = new L.LayerGroup();
     gunColoredLayerGroups[n] = new L.LayerGroup();
-    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(国土交通省)"});
+    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
     railLayers[n] = new L.LayerGroup();
     stationLayers[n] = new L.LayerGroup();
+    didLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
 
 
     let paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -175,7 +181,8 @@ async function init(){
       "市区町村名ラベルを表示": labelLayerGroups[n],
       "色分け(市・町・村)": typeColoredLayerGroups[n],
       "色分け(郡)": gunColoredLayerGroups[n],
-      "鉄道路線(1950年～)[年単位]": railLayerGroups[n]
+      "鉄道路線(1950年～)[年単位]": railLayerGroups[n],
+      "人口集中地区(1960年～)[5年単位]": didLayerGroups[n]
     };
 
     layerControl[n] = L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -192,7 +199,7 @@ async function init(){
     }
 
     //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
-    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0, rail: urlParams.get("rail" + n) ?? cookies["rail" + n] ?? "false"};
+    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0, rail: urlParams.get("rail" + n) ?? cookies["rail" + n] ?? "false", did: urlParams.get("did" + n) ?? cookies["did" + n] ?? "false"};
 
     if(Object.values(baseMapNames).includes(layerParams.base)){
       map.addLayer(eval(layerParams.base));
@@ -216,6 +223,10 @@ async function init(){
       map.addLayer(railLayerGroups[n]);
     }
 
+    if(layerParams.did === "true"){
+      map.addLayer(didLayerGroups[n]);
+    }
+
     L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
 
     //マップ(地物が存在しない部分)クリック時にハイライト消去
@@ -235,19 +246,11 @@ async function init(){
       if(e.name === "色分け(市・町・村)" && map.hasLayer(gunColoredLayerGroups[n])){
         setTimeout(()=>{
           map.removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
-          layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
         }, 10);
       }
       if(e.name === "色分け(郡)" && map.hasLayer(typeColoredLayerGroups[n])){
         setTimeout(()=>{
           map.removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
-          layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
         }, 10);
       }
     });
@@ -259,6 +262,7 @@ async function init(){
     lineRedraw(n);
     railRedraw(n);
     stationRedraw(n);
+    didRedraw(n);
     labelRedraw(n);
     if(n === 0){
       $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
@@ -304,13 +308,15 @@ async function init(){
       "color1" : color(1),
       "rail0" : maps[0].hasLayer(railLayerGroups[0]),
       "rail1" : maps[1].hasLayer(railLayerGroups[1]),
+      "did0" : maps[0].hasLayer(didLayerGroups[0]),
+      "did1" : maps[1].hasLayer(didLayerGroups[1]),
       "dual" : dualChkbx.checked
     }
     for(let key in statusParams){
       let val = statusParams[key];
       document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
     }
-    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&dual=" + statusParams.dual);
+    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&did0=" + statusParams.did0 + "&did1=" + statusParams.did1 + "&dual=" + statusParams.dual);
   });
 
   checkOrientation(mediaQ);
@@ -474,6 +480,17 @@ function gunColoredRedraw(n){
   gunColoredLayers[n].addTo(gunColoredLayerGroups[n]);
 }
 
+function didRedraw(n){
+  didLayers[n] = L.vectorGrid.slicer(filter(didJson, n), {
+    vectorTileLayerStyles: {
+      sliced: {fill: true, fillColor:"#ff6aba" ,fillOpacity:0.4, opacity:0}
+    },
+    maxZoom: 18,
+    pane: "did"
+  });
+  didLayers[n].addTo(didLayerGroups[n]);
+}
+
 function labelRedraw(n){
   //マーカーを全消去
   labelLayers[n].clearLayers();
@@ -539,6 +556,7 @@ function buttonClick(e){
   maps[n].removeLayer(lineLayers[n]);
   maps[n].removeLayer(polygonLayers[n]);
   labelLayerGroups[n].removeLayer(labelLayers[n]);
+  didLayerGroups[n].removeLayer(didLayers[n]);
 
   typeColoredRedraw(n);
   gunColoredRedraw(n);
@@ -546,6 +564,7 @@ function buttonClick(e){
   lineRedraw(n);
   railRedraw(n);
   stationRedraw(n);
+  didRedraw(n);
   labelRedraw(n);
   if(n === 0){
     $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
