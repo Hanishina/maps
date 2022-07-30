@@ -1,27 +1,33 @@
-function Dialog(options){
-  this.el_dialogCont = $("#dialogCont")[0];
-  this.el_dialogBG = $("#dialogBG")[0];
-  this.el_dialog = $("#dialog")[0];
-  this.el_dialogMsg = $("#dialogMsg")[0];
-  this.el_dialogButtons = $("#dialogButtons")[0];
-  this.msg = "本当によろしいですか？";
-  this.buttons = [{id: "ok", text: "OK", onclick: ok}, {id: "cancel", text: "キャンセル", onclick: cancel}];
-  this.removeAllBtn = removeAllBtn;
-  this.addBtn = addBtn;
-  this.show = show;
-  this.hide = hide;
-  this.cancel = cancel;
+class Dialog{
+  el_dialogCont;
+  el_dialogBG;
+  el_dialog;
+  el_dialogMsg;
+  el_dialogButtons;
+  msg;
+  buttons;
 
-  this.removeBtn = (id)=>{
+  constructor(option = {}){
+    this.el_dialogCont = $(option.el_dialogCont || "#dialogCont")[0];
+    this.el_dialogBG = $(option.el_dialogBG || "#dialogBG")[0];
+    this.el_dialog = $(option.el_dialog || "#dialog")[0];
+    this.el_dialogMsg = $(option.el_dialogMsg || "#dialogMsg")[0];
+    this.el_dialogButtons = $(option.el_dialogButtons || "#dialogButtons")[0];
+    this.msg = option.msg || "本当によろしいですか？";
+    this.buttons = option.buttons || [{id: "ok", text: "OK", onclick: this.ok}, {id: "cancel", text: "キャンセル", onclick: this.cancel}];
+
+  }
+
+  removeBtn(id){
     let button = $("#dialogButtons").find("#" + id);
     $(button).remove();
   }
 
-  function removeAllBtn(){
+  removeAllBtn(){
     $(this.el_dialogButtons).empty();
   }
 
-  function addBtn(obj){
+  addBtn(obj){
     let button = $("<div>", {id: "dialog_" + obj.id, class: "dialogBtn"});
     $(button).on("click", (e)=>{
       this.hide();
@@ -37,7 +43,7 @@ function Dialog(options){
     $(this.el_dialogButtons).append(button);
   }
 
-  function show(){
+  show(){
     $(this.el_dialogMsg).text(this.msg);
     this.removeAllBtn();
     this.buttons.forEach((o)=>{
@@ -50,15 +56,15 @@ function Dialog(options){
     $(this.el_dialogCont).css({display: "inline"});
   }
 
-  function hide(){
+  hide(){
     $(this.el_dialogCont).css({display: "none"});
   }
 
-  function ok(){
+  ok(){
     return true;
   }
 
-  function cancel(){
+  cancel(){
     return false;
   }
 

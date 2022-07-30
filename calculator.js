@@ -18,8 +18,6 @@ let currentCategory; //選択中のサブデータセット(DID人口など)[obj
 let currentGroup = 0; //選択中のグループ
 let currentColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
 
-let csvFields = []; //csvのフィールド名一覧。func:customの時用いる
-
 let cursorObj;
 let dragging = false;
 let dragStart = {x:0, y:0};
@@ -91,10 +89,46 @@ async function getJson(name, date){
   });
 }
 
-async function getCsv(name){
-  let path = "./csv/" + name;
+async function getCsv(filename, idcolumn="CODE"){
+  let path = "./csv/" + filename;
   let csvText = await $.get(path);
-  return $.csv.toObjects(csvText);
+  let tempArr = csvText.split(/\r\n|\r|\n/g);
+  let csvArr = [];
+  tempArr.forEach((item, i)=>{
+    csvArr[i] = item.split(",");
+  });
+
+  let mainObj = {};
+  let idIndex = csvArr[0].indexOf(idcolumn)
+  mainObj.header = csvArr[0].filter((i)=>{return i != idcolumn});
+
+  let indexCol = new Set(); //インデックスの重複チェック用
+  csvArr.forEach((row, i)=>{
+    if((i > 0) && row[idIndex]){
+      if(indexCol.has(row[idIndex])){
+        console.log("注意：インデックス列に重複を検知しました。");
+        console.log("行:"+ i + " 値:" + row[idIndex]);
+      }
+      indexCol.add(row[idIndex]);
+
+      mainObj[row[idIndex]] = row;
+      mainObj[row[idIndex]].splice(idIndex, 1);
+    }
+  });
+
+  return mainObj;
+}
+
+function getCsvData(mainObj, index){
+  let obj = {};
+  mainObj.header.forEach((col, i)=>{
+    if(mainObj[index]){
+      obj[col] = mainObj[index][i];
+    }else{
+      obj[col] = "-";
+    }
+  });
+  return obj;
 }
 
 async function init(){
@@ -189,9 +223,9 @@ async function init(){
 
   /*--- ダイアログ初期化処理 ---*/
 
-  dialog_reset = new Dialog;
-  dialog_delete = new Dialog;
-  dialog_changeDataset = new Dialog;
+  dialog_reset = new Dialog();
+  dialog_delete = new Dialog();
+  dialog_changeDataset = new Dialog();
 
   /*--- データセット・カテゴリの初期化処理 ---*/
 
@@ -305,9 +339,6 @@ async function init(){
   polygonRedraw(geojsonFiles.polygon2020);
   lineRedraw(geojsonFiles.line2020);
 
-  //フィールド一覧を取得
-  csvFields = Object.keys(csvObjs.kokusei2020[0]);
-
   $(".loader, .loaderBG, .loaderCover").css("display", "none");
 
 }
@@ -406,7 +437,7 @@ function clickEvent(obj){
     rewriteSumTable(locA);
 
     let feature = obj.layer.properties;
-    let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+    let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
     //polygonのデータとcsvのデータを合体
     Object.assign(feature, csvData);
     selectedFeatures[currentGroup].push(feature);
@@ -415,7 +446,7 @@ function clickEvent(obj){
   }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
     if(!obj.layer.properties.NODATA){
       let feature = obj.layer.properties;
-      let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+      let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
       //polygonのデータとcsvのデータを合体
       Object.assign(feature, csvData);
       selectedFeatures[currentGroup].push(feature);
@@ -430,7 +461,7 @@ function clickEvent(obj){
 //カーソル位置の地物情報表示
 function rewriteCursorTable(obj){
   if(obj){
-    let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (obj.CODE || obj.CODE5);})[0];
+    let csvData = getCsvData(csvObjs[currentDataset.csvObj], (obj.CODE || obj.CODE5));
     //polygonのデータとcsvのデータを合体
     Object.assign(obj, csvData);
 
@@ -573,7 +604,7 @@ function calc(features, func, prec = 0, args){
         expression = expression + arg;
       }else if(!isNaN(arg)){
         expression = expression + String(arg);
-      }else if(csvFields.includes(arg)){
+      }else if(csvObjs[currentDataset.csvObj].header.includes(arg)){
         expression = expression + "sum(features, '" + arg + "')";
       }else{
         expression = expression + "0";
@@ -961,9 +992,6 @@ function datasetChange(e){
       csvObjs[currentDataset.csvObj] = await getCsv(currentDataset.csvFile);
     }
 
-    //フィールド一覧を取得
-    csvFields = Object.keys(csvObjs[currentDataset.csvObj][0]);
-
     //---以下、選択地物保持の場合のみ実行---
     if(formerFeatures){
       formerFeatures.forEach((e)=>{
@@ -972,7 +1000,7 @@ function datasetChange(e){
         });
         if(match){
           let feature = match.properties;
-          let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+          let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
           //polygonのデータとcsvのデータを合体
           Object.assign(feature, csvData);
           if(!feature.NODATA){

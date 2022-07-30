@@ -640,7 +640,32 @@ var Categories_shorai = [{name: "2020", label: "2020年推計人口", data:[
   {name: "POP2020", label: "2020年実測人口(人)", func: "sum", args: ["POP2020"]},
   {name: "compare", label: "推計人口との差(人)", func: "custom", args: ["POP2020", "-", "EST2020"], noprop:true},
   {name: "compareR", label: "推計人口との比(%)", func: "rate", args: ["POP2020", "EST2020"], prec:1}
-]}]
+]}];
+
+var Categories_habitable = [{name: "habitable", label: "可住地面積", data:[
+  {name: "AREA", label:"総面積(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"平成27年面積調による面積。"},
+  {name: "HABIT_AREA", label:"可住地面積(㎢)", func: "sum", args: ["HABIT_AREA"], prec: 2, desc:"総面積から主要湖沼面積・林野面積を引いたもの。"},
+  {name: "LAKE_AREA", label:"主要湖沼面積(㎢)", func: "sum", args: ["LAKE_AREA"], prec: 2, desc:"平成27年面積調による、1㎢以上の湖沼の面積。"},
+  {name: "FF_AREA", label:"林野面積(㎢)", func: "sum", args: ["FF_AREA"], prec: 2, desc:"平成27年農林業センサスによる、森林及び草生地の面積。"},
+  {name: "habitR", label:"総面積に占める可住地割合(%)", func: "rate", args: ["HABIT_AREA", "AREA"], prec: 1},
+  {}
+]},{name: "density", label: "可住地人口密度", data:[
+  {name: "POPULATION", label: "人口(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
+  {},
+  {name: "AREA", label:"総面積(㎢)", func: "sum", args: ["AREA"], prec: 2},
+  {name: "HABIT_AREA", label:"可住地面積(㎢)", func: "sum", args: ["HABIT_AREA"], prec: 2},
+  {name: "density_gross", label:"総人口密度(人/㎢)", func: "div", args: ["POPULATION", "AREA"], prec: 1},
+  {name: "density_habit", label:"可住地人口密度(人/㎢)", func: "div", args: ["POPULATION", "HABIT_AREA"], prec: 1}
+]},{name: "csv", data:[
+  {name: "AREA", label:"総面積(㎢)", func: "sum", args: ["AREA"], prec: 2},
+  {name: "HABIT_AREA", label:"可住地面積(㎢)", func: "sum", args: ["HABIT_AREA"], prec: 2},
+  {name: "LAKE_AREA", label:"主要湖沼面積(㎢)", func: "sum", args: ["LAKE_AREA"], prec: 2},
+  {name: "FF_AREA", label:"林野面積(㎢)", func: "sum", args: ["FF_AREA"], prec: 2},
+  {name: "habitR", label:"総面積に占める可住地割合(%)", func: "rate", args: ["HABIT_AREA", "AREA"], prec: 1},
+  {name: "POPULATION", label: "人口(人)", func: "sum", args: ["POPULATION"]},
+  {name: "density_gross", label:"総人口密度(人/㎢)", func: "div", args: ["POPULATION", "AREA"], prec: 1},
+  {name: "density_habit", label:"可住地人口密度(人/㎢)", func: "div", args: ["POPULATION", "HABIT_AREA"], prec: 1}
+]}];
 
 var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
   {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
@@ -902,7 +927,7 @@ var Categories_senkyo = [{name: "shosenkyo", label: "小選挙区制", data:[
 var Senkyo_estimate = ["H_VOTE", "H_VALID_VOTE", "H_JIMIN", "H_KOMEI", "H_RIKKEN", "H_ISHIN", "H_KYOSAN", "H_KOKUMIN", "H_REIWA", "H_SHAMIN", "H_NHK", "H_OTHER"];
 
 var Dataset = [
-  {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2020kokusei.csv", csvObj: "kokusei2020", category: Categories_kokusei_2020, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
+  {name: "kokusei2020", label: "2020年国勢調査", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2020kokusei.csv", csvObj: "kokusei2020", category: Categories_kokusei_2015, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
   {name: "kokusei2020old", label: "2020年国勢調査[旧市町村単位]", polygonFile: "2020kokusei_old.geojson", polygonObj: "polygon2020Old", lineFile: "2020kokusei_old_l.geojson", lineObj: "line2020Old", csvFile: "2020kokusei_old.csv", csvObj: "kokusei2020Old", category: Categories_kokusei_old, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
   {name: "kokusei2015", label: "2015年国勢調査", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015kokusei.csv", csvObj: "kokusei2015", category: Categories_kokusei_2015, attr: [{label: "平成27年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2015/index.html"}]},
   {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2010", lineFile: "line.geojson", lineObj: "line2010", csvFile: "2010kokusei.csv", csvObj: "kokusei2010", category: Categories_kokusei_2015, attr: [{label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}]},
@@ -910,6 +935,7 @@ var Dataset = [
   {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2000", lineFile: "line.geojson", lineObj: "line2000", csvFile: "2000kokusei.csv", csvObj: "kokusei2000", category: Categories_kokusei_2000, attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
   {name: "juki2021", label: "2021年住民基本台帳人口", date: "2021-01-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2021juki.csv", csvObj: "juki2021", category: Categories_juki, attr: [{label: "住民基本台帳に基づく人口、人口動態及び世帯数調査", link: "https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200241&bunya_l=02&tstat=000001039591&cycle=7&year=20210&month=0&tclass1=000001039601&result_back=1&tclass2val=0"}]},
   {name: "shorai2015", label: "将来推計人口", polygonFile: "2015shorai.geojson", polygonObj: "shorai2015", lineFile: "2015shorai_l.geojson", lineObj: "shoraiLine2015", csvFile: "2015shorai.csv", csvObj: "shorai2015", category: Categories_shorai, attr: [{label: "国立社会保障・人口問題研究所", link: "https://www.ipss.go.jp/syoushika/tohkei/Mainmenu.asp"}]},
+  {name: "habitable2015", label: "2015年可住地面積", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015habitable.csv", csvObj: "habitable2015", category: Categories_habitable, attr: [{label: "社会・人口統計体系", link: "https://www.e-stat.go.jp/regional-statistics/ssdsview"}]},
   {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
   {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
 ];
