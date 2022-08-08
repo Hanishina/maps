@@ -392,16 +392,16 @@ table.current td{
   text-align: right;
 }
 
-table.groupTable{
+table.groupTable, table.fromtoTable{
   width: 100%;
 }
 
-table.groupTable th{
+table.groupTable th, table.fromtoTable th{
   width: 60%;
   padding: 5px 0px;
 }
 
-table.groupTable td{
+table.groupTable td, table.fromtoTable td{
   width: 40%;
   padding: 5px 15px;
   text-align: right;
@@ -462,8 +462,15 @@ div.group{
   padding: 5px;
 }
 
+div.fromto{
+  border: 2px solid #555;
+  margin-top: 10px;
+  padding: 5px;
+}
+
 .attribution{
-  float: right;
+  position: absolute;
+  right: 0;
 }
 
 div.chartContainer{
