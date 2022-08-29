@@ -93,6 +93,12 @@
                 <canvas id="mouseChart"></canvas>
               </div>
             </details>
+            <div id="fromto" class="fromto" style="display: none;">
+              <div class="h3">グループ間分析</div>
+              A:<select id="selectFrom"></select> B:<select id="selectTo"></select><br>
+              <table class="fromtoTable">
+              </table>
+            </div>
             <div id="groupsContainer" ontouchstart="">
               <div id="group0" class="group">
                 <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span>
@@ -133,7 +139,7 @@
 
   <div id="inline" style="display:none;">
     <div><a id="download"><input type="button" value="csvファイルとして保存" onclick="downloadCsv()"/></a><input type="button" value="クリップボードにコピー" onclick="copyTable()"/></div>
-    <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label></div>
+    <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label><label><input type="radio" name="tableType" value="intergroup">グループ間クロス表</label></div>
     <div id="csvTableHeader"></div>
     <div style="overflow: scroll; height: 60vh">
 	     <table id="csvTable" class="csv"></table>

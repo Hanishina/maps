@@ -474,6 +474,60 @@ var Categories_kokusei_2000 = [{name: "population", label: "人口・人口増�
   {name: "IND_OTHER", label:"分類不能の産業(人)", func:"sum", args:["IND_OTHER"]}
 ]}];
 
+let Categories_kokusei2020move = [{name: "move", label: "移動人口", data:[
+  {name: "POPULATION", label: "2020年総人口(人)", func: "sum", args:["POPULATION"]},
+  {name: "NOMOVE", label: "移動なし(人)", func: "sum", args:["NOMOVE"], desc:"5年前から同じ場所に住んでいる者の数。"},
+  {name: "DOMESTIC", label: "市区町村内移動(人)", singleOnly: true,  func: "custom", args:"\domestic"},
+  {name: "DOMESTIC", label: "グループ内移動(人)", groupOnly: true,  func: "custom", args:"\domestic", desc:"同一グループ内(同一市区町村内を含む)で移動した者の数。"},
+  {name: "MOVEIN_JP", label: "転入(国内)(人)", func: "custom", args:"MOVEIN_JP,-,\domestic", desc:"国内からの転入者数。"},
+  {name: "MOVEIN_ABR", label: "転入(海外・移動元不詳)(人)", func: "custom", args:"MOVEIN_ABR,+,MOVEIN_UNK", desc:"海外からの転入者および移動元の市区町村が不詳の者の合計。"},
+  {name: "UNKNOWN", label: "移動状況不詳(人)", func: "sum", args:["UNKNOWN"]},
+  {name: "MOVEOUT", label: "転出(人)", func: "custom", args:"MOVEOUT_JP,-,\domestic", desc: "5年前にこの市区町村に常住していた者のうち国内の別の市区町村に移動した者の数。"},
+  {name: "move_dist", label: "転入超過数(国内)(人)", func: "custom", args:"MOVEIN_JP,-,MOVEOUT_JP", noprop:true, desc: "国内転入者数から国内転出者数を引いたもの。"}
+]},{name: "fromto", data:[
+  {name: "move", label: "A→B移動人口(人)", func: "custom", args:"\move", desc: "AからBに移動した者の数。"},
+  {name: "move_dist", label: "A→B転入超過数(人)", func: "custom", args:"\move,-,\revMove", desc: "AからBの移動者数からBからAの移動者数を引いたもの。"},
+  {name: "move_spRA", label: "A転出者に占めるBへの移動者割合(%)", func: "custom", prec: 2, args:"\move,/,MOVEOUT_JP,*,100", ab: "A"},
+  {name: "move_spRB", label: "B転入者に占めるAからの移動者割合(%)", func: "custom", prec: 2, args:"\move,/,MOVEIN_JP,*,100", ab: "B"}
+]},{name: "csv", data:[
+  {name: "POPULATION", label: "2020年総人口", func: "sum", args:["POPULATION"]},
+  {name: "NOMOVE", label: "移動なし", func: "sum", args:["NOMOVE"]},
+  {name: "DOMESTIC", label: "グループ内移動", func: "custom", args:"\domestic"},
+  {name: "MOVEIN_JP", label: "転入(国内)", func: "custom", args:"MOVEIN_JP,-,\domestic"},
+  {name: "MOVEIN_ABR", label: "転入(海外・移動元不詳)", func: "custom", args:"MOVEIN_ABR,+,MOVEIN_UNK"},
+  {name: "UNKNOWN", label: "移動状況不詳", func: "sum", args:["UNKNOWN"]},
+  {name: "MOVEOUT", label: "転出", func: "custom", args:"MOVEOUT_JP,-,\domestic"},
+  {name: "move_dist", label: "転入超過数(国内)", func: "custom", args:"MOVEIN_JP,-,MOVEOUT_JP"}
+]}];
+
+let Categories_kokusei2020work = [{name: "work", label: "通勤・通学者人口", data:[
+  {name: "POPULATION", label: "夜間人口(人)", func: "sum", args:["POPULATION"]},
+  {name: "POP_DAY", label: "昼間人口(人)", func: "sum", args:["POP_DAY"]},
+  {name: "NOCOMMUTE", label: "通勤なし(人)", func: "sum", args:["NOCOMMUTE"], desc:"従業も通学もしていない者の数。"},
+  {name: "DOMESTIC", label: "市区町村内で従業(人)", singleOnly: true, func: "custom", args:"\domestic"},
+  {name: "DOMESTIC", label: "グループ内で従業(人)", groupOnly: true, func: "custom", args:"\domestic", desc:"同一グループ内で従業・就学している物の数。(自宅で従業する者を含む)"},
+  {name: "WORKOUT", label: "市区町村外への通勤者数(人)", singleOnly: true, func: "custom", args:"COMMUTE_JP,-,\domestic"},
+  {name: "WORKOUT", label: "グループ外への通勤者数(人)", groupOnly: true, func: "custom", args:"COMMUTE_JP,-,\domestic", desc: "従業地が海外および不詳の者を除く。"},
+  {name: "WORKIN", label: "市区町村外からの通勤者数(人)", singleOnly: true, func: "custom", args:"WORKER,-,\domestic"},
+  {name: "WORKIN", label: "グループ外からの通勤者数(人)", groupOnly: true, func: "custom", args:"WORKER,-,\domestic"},
+  {name: "UNKNOWN", label: "従業状況不詳(人)", func: "sum", args:["UNKNOWN"]},
+  {name: "move_dist", label: "移入超過数(人)", func: "custom", args:"WORKER,-,COMMUTE_JP", noprop:true, desc:"昼間人口から夜間人口を引いたもの。"}
+]},{name: "fromto", data:[
+  {name: "move", label: "A→B通勤人口(人)", func: "custom", args:"\move", desc:"AからBに通勤・通学している者の数。"},
+  {name: "move_dist", label: "A→B通勤超過数(人)", func: "custom", args:"\move,-,\revMove", desc:"AからBへの通勤者数からBからAへの通勤者数を引いたもの。"},
+  {name: "move_popRA", label: "A夜間人口に占めるBへの通勤者割合(%)", func: "custom", prec: 2, args:"\move,/,POPULATION,*,100", ab: "A"},
+  {name: "move_spRA", label: "A常住労働者に占めるBへの通勤者割合(%)", func: "custom", prec: 2, args:"\move,/,COMMUTE_JP,*,100", ab: "A"},
+  {name: "move_popRB", label: "B昼間人口に占めるAからの通勤者割合(%)", func: "custom", prec: 2, args:"\move,/,POP_DAY,*,100", ab: "B"},
+  {name: "move_spRB", label: "B従業労働者に占めるAからの通勤者割合(%)", func: "custom", prec: 2, args:"\move,/,WORKER,*,100", ab: "B"}
+]},{name: "csv", data:[
+  {name: "POPULATION", label: "夜間人口", func: "sum", args:["POPULATION"]},
+  {name: "POP_DAY", label: "昼間人口", func: "sum", args:["POP_DAY"]},
+  {name: "NOCOMMUTE", label: "通勤なし", func: "sum", args:["NOCOMMUTE"]},
+  {name: "DOMESTIC", label: "グループ内で従業", func: "custom", args:"\domestic"},
+  {name: "WORKOUT", label: "グループ外への通勤者数", func: "custom", args:"COMMUTE_JP,-,\domestic"},
+  {name: "WORKIN", label: "グループ外からの通勤者数", func: "custom", args:"WORKER,-,\domestic"}
+]}];
+
 var Categories_juki = [{name: "population", label: "人口・世帯数", data:[
   {name: "POPULATION", label: "人口(人)", func: "sum", args:["POPULATION"], desc:"住民基本台帳による調査年元日の人口。"},
   {name: "AREA", label: "面積(㎢)", func: "sum", args:["AREA"], prec:2, desc:"全国都道府県市区町村別面積調(2021年1月)による。"},
@@ -933,6 +987,8 @@ var Dataset = [
   {name: "kokusei2010", label: "2010年国勢調査", date: "2010-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2010", lineFile: "line.geojson", lineObj: "line2010", csvFile: "2010kokusei.csv", csvObj: "kokusei2010", category: Categories_kokusei_2015, attr: [{label: "平成22年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2010/index.html"}]},
   {name: "kokusei2005", label: "2005年国勢調査", date: "2005-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2005", lineFile: "line.geojson", lineObj: "line2005", csvFile: "2005kokusei.csv", csvObj: "kokusei2005", category: Categories_kokusei_2005, attr: [{label: "平成17年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2005/index.html"}]},
   {name: "kokusei2000", label: "2000年国勢調査", date: "2000-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2000", lineFile: "line.geojson", lineObj: "line2000", csvFile: "2000kokusei.csv", csvObj: "kokusei2000", category: Categories_kokusei_2000, attr: [{label: "平成12年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2000/index.html"}]},
+  {name: "kokusei2020move", label: "2020年国勢調査：5年間の人口移動", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2020kokusei_move.csv", csvObj: "kokusei2020move", fromtoFile: "2020kokusei_move_fromto.csv", fromtoObj: "kokusei2020move_fromto", category: Categories_kokusei2020move, fromto: true, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
+  {name: "kokusei2020work", label: "2020年国勢調査：通勤および通学", date: "2020-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2020kokusei_work.csv", csvObj: "kokusei2020work", fromtoFile: "2020kokusei_work_fromto.csv", fromtoObj: "kokusei2020work_fromto", category: Categories_kokusei2020work, fromto: true, attr: [{label: "令和2年国勢調査", link: "https://www.stat.go.jp/data/kokusei/2020/index.html"}]},
   {name: "juki2021", label: "2021年住民基本台帳人口", date: "2021-01-01", polygonFile: "polygon.geojson", polygonObj: "polygon2020", lineFile: "line.geojson", lineObj: "line2020", csvFile: "2021juki.csv", csvObj: "juki2021", category: Categories_juki, attr: [{label: "住民基本台帳に基づく人口、人口動態及び世帯数調査", link: "https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200241&bunya_l=02&tstat=000001039591&cycle=7&year=20210&month=0&tclass1=000001039601&result_back=1&tclass2val=0"}]},
   {name: "shorai2015", label: "将来推計人口", polygonFile: "2015shorai.geojson", polygonObj: "shorai2015", lineFile: "2015shorai_l.geojson", lineObj: "shoraiLine2015", csvFile: "2015shorai.csv", csvObj: "shorai2015", category: Categories_shorai, attr: [{label: "国立社会保障・人口問題研究所", link: "https://www.ipss.go.jp/syoushika/tohkei/Mainmenu.asp"}]},
   {name: "habitable2015", label: "2015年可住地面積", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015habitable.csv", csvObj: "habitable2015", category: Categories_habitable, attr: [{label: "社会・人口統計体系", link: "https://www.e-stat.go.jp/regional-statistics/ssdsview"}]},
