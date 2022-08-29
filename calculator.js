@@ -605,24 +605,26 @@ function rewriteFromtoTable(){
     objB = selectedFeatures[currentSelectFromto.B];
   }
 
-  let move = calcFromto(objA, objB);
-  let revMove = calcFromto(objB, objA);
 
-  let tableColumn = currentDataset.category.find((f)=>{return f.name === "fromto"});
-  tableColumn.data.forEach(function(data, i){
-    let feature;
-    if(data.ab === "A"){
-      feature = objA;
-    }else{
-      feature = objB;
-    }
-    let args = data.args.replaceAll("\move", move).replaceAll("\revMove", revMove);
-    if(feature){
+  if(objA && objB){
+    let move = calcFromto(objA, objB);
+    let revMove = calcFromto(objB, objA);
+
+    let tableColumn = currentDataset.category.find((f)=>{return f.name === "fromto"});
+    tableColumn.data.forEach(function(data, i){
+      let feature;
+      if(data.ab === "A"){
+        feature = objA;
+      }else{
+        feature = objB;
+      }
+      let args = data.args.replaceAll("\move", move).replaceAll("\revMove", revMove);
       $(".fromtoCol_data" + i).text(calc(feature, "custom", data.prec, args));
-    }else{
-      $(".fromtoCol_data" + i).text();
-    }
-  });
+    });
+  }else{ //NODATA
+    $(".fromtoCol_data" + i).text();
+  }
+
 }
 
 //グループの値合計用
@@ -1075,6 +1077,7 @@ function categoryChange(e){
       $(".fromtoTable").append($("<tr>").append(th, td));
     }
 
+    fromtoSelectorSet();
     rewriteFromtoTable();
   }else{
     $("#fromto").hide();
@@ -1276,6 +1279,7 @@ function datasetChange(e){
     groupNames = ["グループ1"];
     groupColors = ["#cc0000"];
     colorPicker[0].updateColor(112);
+    currentSelectFromto = {A: "cursor", B: "cursor"};
 
     await common();
 
