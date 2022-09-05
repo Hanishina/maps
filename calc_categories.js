@@ -891,7 +891,7 @@ var Categories_keizai = [{name: "office", label: "事業所・従業者数", dat
   {name: "RE_AREA", label: "【小】売場面積(㎡)", func: "sum", args: ["RE_AREA"]}
 ]}];
 
-var Categories_senkyo = [{name: "shosenkyo", label: "小選挙区制", data:[
+var Categories_senkyo2021 = [{name: "shosenkyo", label: "小選挙区制", data:[
   {name: "S_DIST", label: "小選挙区", func: "nonsum", args:["S_DIST"]},
   {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"], desc: "選挙当日の有権者の数(在外を含む)。"},
   {name: "S_VOTE", label: "投票者数", func: "sum", args:["S_VOTE"]},
@@ -978,6 +978,98 @@ var Categories_senkyo = [{name: "shosenkyo", label: "小選挙区制", data:[
   {name: "h_otherR", label: "その他得票率(%)", func: "rate", args:["H_OTHER", "H_VALID_VOTE"], prec: 1}
 ]}];
 
+var Categories_senkyo2022 = [{name: "senkyoku", label: "選挙区制", data:[
+  {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"], desc: "選挙当日の有権者の数(在外を含む)。"},
+  {},
+  {name: "S_VOTE", label: "投票者数", func: "sum", args:["S_VOTE"]},
+  {name: "s_voteR", label: "投票率(%)", func: "rate", args:["S_VOTE", "ELECTOR"], prec: 1, desc: "投票者数を有権者数で割ったもの。"},
+  {name: "S_VALID_VOTE", label: "有効投票数", func: "sum", args:["S_VALID_VOTE"]},
+  {name: "s_valid_voteR", label: "有効投票率(%)", func: "rate", args:["S_VALID_VOTE", "S_VOTE"], prec: 1, desc: "有効投票数を投票者数で割ったもの。"}
+]}, {name: "hirei", label: "比例代表制", data:[
+  {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"], desc: "選挙当日の有権者の数(在外を含む)。"},
+  {},
+  {name: "H_VOTE", label: "投票者数", func: "sum", args:["H_VOTE"]},
+  {name: "h_voteR", label: "投票率(%)", func: "rate", args:["H_VOTE", "ELECTOR"], prec: 1, desc: "投票者数を有権者数で割ったもの。"},
+  {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+  {name: "h_valid_voteR", label: "有効投票率(%)", func: "rate", args:["H_VALID_VOTE", "H_VOTE"], prec: 1, desc: "有効投票数を投票者数で割ったもの。"}
+]}, {name: "party", label: "比例：政党別得票数", data:[
+  {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+  {name: "ruling", label: "与党", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")"], prec: 3, desc: "自由民主党および公明党の得票数。"},
+  {name: "H_JIMIN", label: "自民党", func: "sum", args:["H_JIMIN"], prec: 3, desc: "自由民主党の得票数。"},
+  {name: "H_KOMEI", label: "公明党", func: "sum", args:["H_KOMEI"], prec: 3, desc: "公明党の得票数。"},
+  {name: "H_ISHIN", label: "日本維新の会", func: "sum", args:["H_ISHIN"], prec: 3, desc: "日本維新の会の得票数。"},
+  {name: "H_RIKKEN", label: "立憲民主党", func: "sum", args:["H_RIKKEN"], prec: 3, desc: "立憲民主党の得票数。"},
+  {name: "H_KYOSAN", label: "共産党", func: "sum", args:["H_KYOSAN"], prec: 3, desc: "日本共産党の得票数。"},
+  {name: "H_KOKUMIN", label: "国民民主党", func: "sum", args:["H_KOKUMIN"], prec: 3, desc: "国民民主党の得票数。"},
+  {name: "H_REIWA", label: "れいわ新選組", func: "sum", args:["H_REIWA"], prec: 3, desc: "れいわ新選組の得票数。"},
+  {name: "H_SANSEI", label: "参政党", func: "sum", args:["H_SANSEI"], prec: 3, desc: "参政党の得票数。"},
+  {name: "H_SHAMIN", label: "社民党", func: "sum", args:["H_SHAMIN"], prec: 3, desc: "社会民主党の得票数。"},
+  {name: "H_NHK", label: "NHK党", func: "sum", args:["H_NHK"], prec: 3, desc: "ＮＨＫ党の得票数。"},
+  {name: "H_OTHER", label: "その他", func: "sum", args:["H_OTHER"], prec: 3, desc: "上記以外の党の得票数の合計。"},
+  {}
+]}, {name: "party_rate", label: "比例：政党別得票率", data:[
+  {name: "H_VALID_VOTE", label: "有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+  {name: "rulingR", label: "与党(%)", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")", "/", "H_VALID_VOTE", "*", "100"], prec: 1, noprop:true, desc: "自由民主党および公明党の得票数。"},
+  {name: "h_jiminR", label: "自民党(%)", func: "rate", args:["H_JIMIN", "H_VALID_VOTE"], prec: 1, desc: "自由民主党の得票率。"},
+  {name: "h_komeiR", label: "公明党(%)", func: "rate", args:["H_KOMEI", "H_VALID_VOTE"], prec: 1, desc: "公明党の得票率。"},
+  {name: "h_ishinR", label: "日本維新の会(%)", func: "rate", args:["H_ISHIN", "H_VALID_VOTE"], prec: 1, desc: "日本維新の会の得票率。"},
+  {name: "h_rikkenR", label: "立憲民主党(%)", func: "rate", args:["H_RIKKEN", "H_VALID_VOTE"], prec: 1, desc: "立憲民主党の得票率。"},
+  {name: "h_kyosanR", label: "共産党(%)", func: "rate", args:["H_KYOSAN", "H_VALID_VOTE"], prec: 1, desc: "日本共産党の得票率。"},
+  {name: "h_kokuminR", label: "国民民主党(%)", func: "rate", args:["H_KOKUMIN", "H_VALID_VOTE"], prec: 1, desc: "国民民主党の得票率。"},
+  {name: "h_reiwaR", label: "れいわ新選組(%)", func: "rate", args:["H_REIWA", "H_VALID_VOTE"], prec: 1, desc: "れいわ新選組の得票率。"},
+  {name: "h_sanseiR", label: "参政党(%)", func: "rate", args:["H_SANSEI", "H_VALID_VOTE"], prec: 1, desc: "参政党の得票率。"},
+  {name: "h_shaminR", label: "社民党(%)", func: "rate", args:["H_SHAMIN", "H_VALID_VOTE"], prec: 1, desc: "社会民主党の得票率。"},
+  {name: "h_nhkR", label: "NHK党(%)", func: "rate", args:["H_NHK", "H_VALID_VOTE"], prec: 1, desc: "ＮＨＫ党の得票率。"},
+  {name: "h_otherR", label: "その他(%)", func: "rate", args:["H_OTHER", "H_VALID_VOTE"], prec: 1, desc: "上記以外の党の合計得票率。"},
+  {}
+]}, {name: "party_pie", label: "比例：政党別得票数【円グラフ表示】", pie: true, unit: "票", data:[
+  {name: "H_JIMIN", label: "自民党", color:"#0b008a", func: "sum", args:["H_JIMIN"]},
+  {name: "H_KOMEI", label: "公明党", color:"#5b92db", func: "sum", args:["H_KOMEI"]},
+  {name: "H_ISHIN", label: "日本維新の会", color:"#fcbd00", func: "sum", args:["H_ISHIN"]},
+  {name: "H_RIKKEN", label: "立憲民主党", color:"#fff063", func: "sum", args:["H_RIKKEN"]},
+  {name: "H_KYOSAN", label: "共産党", color:"#ff4949", func: "sum", args:["H_KYOSAN"]},
+  {name: "H_KOKUMIN", label: "国民民主党", color:"#5e985b", func: "sum", args:["H_KOKUMIN"]},
+  {name: "H_REIWA", label: "れいわ新選組", color:"#eb6fff", func: "sum", args:["H_REIWA"]},
+  {name: "H_SANSEI", label: "参政党", color:"#886b12", func: "sum", args:["H_SANSEI"]},
+  {name: "H_SHAMIN", label: "社民党", color:"#b8fe9c", func: "sum", args:["H_SHAMIN"]},
+  {name: "H_NHK", label: "NHK党", color:"#cebaff", func: "sum", args:["H_NHK"]},
+  {name: "H_OTHER", label: "その他", color:"#b8b8b8", func: "sum", args:["H_OTHER"]}
+]}, {name: "csv", data:[
+  {name: "ELECTOR", label: "選挙当日有権者数", func: "sum", args:["ELECTOR"]},
+  {name: "S_VOTE", label: "【選】投票者数", func: "sum", args:["S_VOTE"]},
+  {name: "s_voteR", label: "【選】投票率(%)", func: "rate", args:["S_VOTE", "ELECTOR"], prec: 1},
+  {name: "S_VALID_VOTE", label: "【選】有効投票数", func: "sum", args:["S_VALID_VOTE"]},
+  {name: "s_valid_voteR", label: "【選】有効投票率(%)", func: "rate", args:["S_VALID_VOTE", "S_VOTE"], prec: 1},
+  {name: "H_VOTE", label: "【比】投票者数", func: "sum", args:["H_VOTE"]},
+  {name: "h_voteR", label: "【比】投票率(%)", func: "rate", args:["H_VOTE", "ELECTOR"], prec: 1},
+  {name: "H_VALID_VOTE", label: "【比】有効投票数", func: "sum", args:["H_VALID_VOTE"]},
+  {name: "h_valid_voteR", label: "【比】有効投票率(%)", func: "rate", args:["H_VALID_VOTE", "H_VOTE"], prec: 1},
+  {name: "ruling", label: "与党得票数", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")"]},
+  {name: "H_JIMIN", label: "自民党得票数", func: "sum", args:["H_JIMIN"]},
+  {name: "H_KOMEI", label: "公明党得票数", func: "sum", args:["H_KOMEI"]},
+  {name: "H_ISHIN", label: "日本維新の会得票数", func: "sum", args:["H_ISHIN"]},
+  {name: "H_RIKKEN", label: "立憲民主党得票数", func: "sum", args:["H_RIKKEN"]},
+  {name: "H_KYOSAN", label: "共産党得票数", func: "sum", args:["H_KYOSAN"]},
+  {name: "H_KOKUMIN", label: "国民民主党得票数", func: "sum", args:["H_KOKUMIN"]},
+  {name: "H_REIWA", label: "れいわ新選組得票数", func: "sum", args:["H_REIWA"]},
+  {name: "H_SANSEI", label: "参政党得票数", func: "sum", args:["H_SANSEI"]},
+  {name: "H_SHAMIN", label: "社民党得票数", func: "sum", args:["H_SHAMIN"]},
+  {name: "H_NHK", label: "NHK党得票数", func: "sum", args:["H_NHK"]},
+  {name: "H_OTHER", label: "その他得票数", func: "sum", args:["H_OTHER"]},
+  {name: "rulingR", label: "与党得票率(%)", func: "custom", args:["(", "H_JIMIN", "+", "H_KOMEI", ")", "/", "H_VALID_VOTE", "*", "100"], prec: 1, noprop:true},
+  {name: "h_jiminR", label: "自民党得票率(%)", func: "rate", args:["H_JIMIN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_komeiR", label: "公明党得票率(%)", func: "rate", args:["H_KOMEI", "H_VALID_VOTE"], prec: 1},
+  {name: "h_ishinR", label: "日本維新の会得票率(%)", func: "rate", args:["H_ISHIN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_rikkenR", label: "立憲民主党得票率(%)", func: "rate", args:["H_RIKKEN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_kyosanR", label: "共産党得票率(%)", func: "rate", args:["H_KYOSAN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_kokuminR", label: "国民民主党得票率(%)", func: "rate", args:["H_KOKUMIN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_reiwaR", label: "れいわ新選組得票率(%)", func: "rate", args:["H_REIWA", "H_VALID_VOTE"], prec: 1},
+  {name: "h_sanseiR", label: "参政党得票率(%)", func: "rate", args:["H_SANSEI", "H_VALID_VOTE"], prec: 1},
+  {name: "h_shaminR", label: "社民党得票率(%)", func: "rate", args:["H_SHAMIN", "H_VALID_VOTE"], prec: 1},
+  {name: "h_nhkR", label: "NHK党得票率(%)", func: "rate", args:["H_NHK", "H_VALID_VOTE"], prec: 1},
+  {name: "h_otherR", label: "その他得票率(%)", func: "rate", args:["H_OTHER", "H_VALID_VOTE"], prec: 1}
+]}];
+
 var Senkyo_estimate = ["H_VOTE", "H_VALID_VOTE", "H_JIMIN", "H_KOMEI", "H_RIKKEN", "H_ISHIN", "H_KYOSAN", "H_KOKUMIN", "H_REIWA", "H_SHAMIN", "H_NHK", "H_OTHER"];
 
 var Dataset = [
@@ -993,5 +1085,6 @@ var Dataset = [
   {name: "shorai2015", label: "将来推計人口", polygonFile: "2015shorai.geojson", polygonObj: "shorai2015", lineFile: "2015shorai_l.geojson", lineObj: "shoraiLine2015", csvFile: "2015shorai.csv", csvObj: "shorai2015", category: Categories_shorai, attr: [{label: "国立社会保障・人口問題研究所", link: "https://www.ipss.go.jp/syoushika/tohkei/Mainmenu.asp"}]},
   {name: "habitable2015", label: "2015年可住地面積", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015habitable.csv", csvObj: "habitable2015", category: Categories_habitable, attr: [{label: "社会・人口統計体系", link: "https://www.e-stat.go.jp/regional-statistics/ssdsview"}]},
   {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
-  {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
+  {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo2021, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]},
+  {name: "senkyo2022", label: "2022年参院選", date: "2022-07-10", polygonFile: "polygon.geojson", polygonObj: "polygon2022", lineFile: "line.geojson", lineObj: "line2022", csvFile: "2022election.csv", csvObj: "election2022", category: Categories_senkyo2022, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]}
 ];
