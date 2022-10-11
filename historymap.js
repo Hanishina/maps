@@ -264,6 +264,11 @@ async function init(){
     stationRedraw(n);
     didRedraw(n);
     labelRedraw(n);
+
+    if(!("GUNCOLOR" in polygonJson.features[0].properties)){
+      console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
+    }
+
     if(n === 0){
       $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
     }else{
