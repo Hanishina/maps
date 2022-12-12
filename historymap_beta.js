@@ -1,8 +1,6 @@
 let maps = [];
 let date = [];
 let lineLayers = [];
-let railLayers = [];
-let stationLayers = [];
 let polygonLayers = [];
 let labelLayers = [];
 let labelLayerGroups = [];
@@ -11,13 +9,20 @@ let typeColoredLayers = [];
 let typeColoredLayerGroups = [];
 let gunColoredLayers = [];
 let gunColoredLayerGroups = [];
+let railLayers = [];
+let stationLayers = [];
 let railLayerGroups = [];
+let didLayers = [];
+let didLayerGroups = [];
 let dateSelectors = [];
 
 let polygonJson;
 let lineJson;
 let nameJson;
+let nameCsv;
 let railJson;
+let stationJson;
+let didJson;
 
 let mediaQ = matchMedia("screen and (orientation: portrait)");
 let orient;
@@ -26,6 +31,9 @@ let containerA;
 let containerB;
 
 let layerControl = [];
+
+let clickedObj;
+let clickedOnFeature = false;
 
 let cookies;
 let urlParams;
@@ -61,12 +69,31 @@ async function getResources(name){
   });
 }
 
+async function getCsv(name){
+  let path = "./csv/" + name;
+  csvText = await $.get(path);
+  let tempArr = csvText.split(/\r\n|\r|\n/g);
+  let csvArr = [];
+  let columnNames;
+  tempArr.forEach((item, i)=>{
+    if(i == 0){
+      columnNames = item.split(",");
+    }else if(item){
+      let obj = {};
+      item.split(",").forEach((val, j)=>{
+        obj[columnNames[j]] = val;
+      });
+      csvArr.push(obj);
+    }
+  });
+  return csvArr;
+}
+
 async function init(){
   polygonJson = await getResources("polygon.geojson");
   lineJson = await getResources("line.geojson");
   nameJson = await getResources("name.geojson");
-  railJson = await getResources("KSJrailroad_line.geojson");
-  stationJson = await getResources("KSJrailroad_point.geojson");
+  nameCsv = await getCsv("shichosonname.csv");
 
   cookies = getCookieArray();
   urlParams = new URL(window.location.href).searchParams;
@@ -100,16 +127,21 @@ async function init(){
   //formに日付セット
   $(formElemA).find(".year").val(date[0].getFullYear());
   $(formElemA).find(".month").val(date[0].getMonth() + 1);
+  $(formElemA).find(".date").val(date[0].getDate());
+  dateSelectors[0].sync();
 
   $(formElemB).find(".year").val(date[1].getFullYear());
   $(formElemB).find(".month").val(date[1].getMonth() + 1);
+  $(formElemB).find(".date").val(date[1].getDate());
+  dateSelectors[1].sync();
 
-  maps.forEach(function(map, n){
+  maps.forEach(async function(map, n){
     map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
     map.setMinZoom(5);
     map.createPane("base").style.zIndex = 100;
     map.createPane("polygon").style.zIndex = 250;
-    map.createPane("colored").style.zIndex = 240;
+    map.createPane("colored").style.zIndex = 230;
+    map.createPane("did").style.zIndex = 240;
     map.createPane("rail").style.zIndex = 380;
     map.createPane("line").style.zIndex = 400;
 
@@ -117,9 +149,11 @@ async function init(){
     labelLayers[n] = new L.LayerGroup();
     typeColoredLayerGroups[n] = new L.LayerGroup();
     gunColoredLayerGroups[n] = new L.LayerGroup();
-    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(国土交通省)"});
+    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
     railLayers[n] = new L.LayerGroup();
     stationLayers[n] = new L.LayerGroup();
+    didLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
+    didLayers[n] = new L.LayerGroup();
 
 
     let paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -171,7 +205,8 @@ async function init(){
       "市区町村名ラベルを表示": labelLayerGroups[n],
       "色分け(市・町・村)": typeColoredLayerGroups[n],
       "色分け(郡)": gunColoredLayerGroups[n],
-      "鉄道路線": railLayerGroups[n]
+      "鉄道路線(1950年～)[年単位]": railLayerGroups[n],
+      "人口集中地区(1960年～)[5年単位]": didLayerGroups[n]
     };
 
     layerControl[n] = L.control.layers(baseMaps, overlayMaps).addTo(map);
@@ -188,7 +223,7 @@ async function init(){
     }
 
     //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
-    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0};
+    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0, rail: urlParams.get("rail" + n) ?? cookies["rail" + n] ?? "false", did: urlParams.get("did" + n) ?? cookies["did" + n] ?? "false"};
 
     if(Object.values(baseMapNames).includes(layerParams.base)){
       map.addLayer(eval(layerParams.base));
@@ -208,40 +243,95 @@ async function init(){
       map.addLayer(gunColoredLayerGroups[n]);
     }
 
+    if(layerParams.rail === "true"){
+      map.addLayer(railLayerGroups[n]);
+    }
+
+    if(layerParams.did === "true"){
+      map.addLayer(didLayerGroups[n]);
+    }
+
     L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
 
     //マップ(地物が存在しない部分)クリック時にハイライト消去
-    map.on("click", function(){
-      if(clickedObj){
+    map.on("click", function(e){
+      if(!clickedOnFeature && clickedObj){
         polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
       }
+      clickedOnFeature = false;
     });
 
     map.on("baselayerchange", function(e){
       baseLayerNames[n] = baseMapNames[e.name];
+      setUrlParam();
     });
 
 
-    map.on("overlayadd", (e)=>{
+    map.on("overlayadd", async(e)=>{
       //レイヤー削除時に遅延処理が必要(leafletのバグ？)
       if(e.name === "色分け(市・町・村)" && map.hasLayer(gunColoredLayerGroups[n])){
         setTimeout(()=>{
           map.removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
-          layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
         }, 10);
       }
       if(e.name === "色分け(郡)" && map.hasLayer(typeColoredLayerGroups[n])){
         setTimeout(()=>{
           map.removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(typeColoredLayerGroups[n]);
-          layerControl[n].removeLayer(gunColoredLayerGroups[n]);
-          layerControl[n].addOverlay(typeColoredLayerGroups[n], "色分け(市・町・村)");
-          layerControl[n].addOverlay(gunColoredLayerGroups[n], "色分け(郡)");
         }, 10);
       }
+
+      if(e.name === "鉄道路線(1950年～)[年単位]"){
+        //データ読み込み処理
+        if(!railJson){
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
+          }
+
+          railJson = await getResources("KSJrailroad_line.geojson");
+          stationJson = await getResources("KSJrailroad_point.geojson");
+          
+          
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+          }
+        }
+        if(!railLayerGroups[n].hasLayer(railLayers[n])){
+          railRedraw(n);
+          stationRedraw(n);
+        }
+      }
+
+      if(e.name === "人口集中地区(1960年～)[5年単位]"){
+        //データ読み込み処理
+        if(!didJson){
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
+          }
+
+          didJson = await getResources("DIDall.geojson");
+        
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+          }
+        }
+        if(!didLayerGroups[n].hasLayer(didLayers[n])){
+          didRedraw(n);
+        }
+      }
+
+      setUrlParam();
+    });
+
+    map.on("overlayremove", (e)=>{
+      setUrlParam();
     });
 
 
@@ -249,9 +339,30 @@ async function init(){
     gunColoredRedraw(n);
     polygonRedraw(n);
     lineRedraw(n);
-    railRedraw(n);
-    stationRedraw(n);
     labelRedraw(n);
+
+    if(map.hasLayer(railLayerGroups[n])){
+      //データ読み込み処理
+      if(!railJson){
+        railJson = await getResources("KSJrailroad_line.geojson");
+        stationJson = await getResources("KSJrailroad_point.geojson");
+        railRedraw(n);
+        stationRedraw(n);
+      }
+    }
+    if(map.hasLayer(didLayerGroups[n])){
+      //データ読み込み処理
+      if(!didJson){
+        didJson = await getResources("DIDall.geojson");
+        didRedraw(n);
+      }
+    }
+
+
+    if(!("GUNCOLOR" in polygonJson.features[0].properties)){
+      console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
+    }
+
     if(n === 0){
       $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
     }else{
@@ -277,30 +388,12 @@ async function init(){
   maps[0].on("moveend", function(){
     labelRedraw(0);
     labelRedraw(1);
-    stationRedraw(0);
-    stationRedraw(1);
+    if(stationJson){
+      stationRedraw(0);
+      stationRedraw(1);
+    }
 
-    //urlパラメータ生成
-    function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
-    let statusParams = {
-      "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
-      "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
-      "z" : maps[0].getZoom(),
-      "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
-      "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
-      "base0" : baseLayerNames[0],
-      "base1" : baseLayerNames[1],
-      "label0" : maps[0].hasLayer(labelLayerGroups[0]),
-      "label1" : maps[1].hasLayer(labelLayerGroups[1]),
-      "color0" : color(0),
-      "color1" : color(1),
-      "dual" : dualChkbx.checked
-    }
-    for(let key in statusParams){
-      let val = statusParams[key];
-      document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
-    }
-    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&dual=" + statusParams.dual);
+    setUrlParam();
   });
 
   checkOrientation(mediaQ);
@@ -309,7 +402,7 @@ async function init(){
 }
 
 function lineRedraw(n){
-  lineLayers[n] = L.vectorGrid.slicer(filter(lineJson, n), {
+  lineLayers[n] = L.vectorGrid.slicer(itemFilter(lineJson, n), {
     vectorTileLayerStyles: {
       sliced: function(properties){
           switch(properties.TYPE){
@@ -331,57 +424,61 @@ function lineRedraw(n){
 }
 
 function railRedraw(n){
-  railLayers[n] = L.vectorGrid.slicer(filter(railJson, n), {
-    vectorTileLayerStyles: {
-      sliced: function(properties){
-        switch(properties.JigyoshaType){
-          case "1": return{color:"#114211", weight:2, dashArray: "8 8"}
-          case "2": return{color:"#333958", weight:1.5, dashArray: "5 5"}
-          case "3": return{color:"#687943", weight:1.5, dashArray: "5 5"}
-          case "4": return{color:"#80663a", weight:1.5, dashArray: "5 5"}
-          case "5": return{color:"#544f28", weight:1.5, dashArray: "5 5"}
-       }
-      }
-    },
-    maxZoom: 18,
-    pane: "rail"
-  });
-  railLayers[n].addTo(railLayerGroups[n]);
-
+  console.log("rr");
+  if(date[n].getFullYear() >= 1950){
+    railLayers[n] = L.vectorGrid.slicer(itemFilter(railJson, n), {
+      vectorTileLayerStyles: {
+        sliced: function(properties){
+          switch(properties.JigyoshaType){
+            case "1": return{color:"#114211", weight:2, dashArray: "8 8"}
+            case "2": return{color:"#333958", weight:1.5, dashArray: "5 5"}
+            case "3": return{color:"#687943", weight:1.5, dashArray: "5 5"}
+            case "4": return{color:"#80663a", weight:1.5, dashArray: "5 5"}
+            case "5": return{color:"#6a1a47", weight:1.5, dashArray: "5 5"}
+         }
+        }
+      },
+      maxZoom: 18,
+      pane: "rail"
+    });
+    railLayers[n].addTo(railLayerGroups[n]);
+  }
 }
 
 function stationRedraw(n){
   stationLayers[n].clearLayers();
-  if(maps[n].getZoom() >= 10){
-    filter(stationJson, n).features.forEach(function(f){
-      let marker = L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
-        radius: 3,
-        fillColor: "#5d5d5d",
-        weight: 0,
-        fillOpacity: 0.8,
-        interactive: false
-      });
-      stationLayers[n].addLayer(marker);
-      if(maps[n].getZoom() >= 12){
-        let divIcon = new L.DivIcon({
-          className: 'labelClass',
-          html: '<div>' + (f.properties.Name) + '</div>',
-          iconSize: [(f.properties.Name).length*12, 12],
-          iconAnchor: [-4, 8]
-        });
-        let label = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
-          icon: divIcon,
+  if(date[n].getFullYear() >= 1950){
+    if(maps[n].getZoom() >= 10){
+      itemFilter(stationJson, n, true).features.forEach(function(f){
+        let marker = L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+          radius: 3,
+          fillColor: "#5d5d5d",
+          weight: 0,
+          fillOpacity: 0.8,
           interactive: false
         });
-        stationLayers[n].addLayer(label);
-      }
-    });
-    stationLayers[n].addTo(railLayerGroups[n]);
+        stationLayers[n].addLayer(marker);
+        if(maps[n].getZoom() >= 12){
+          let divIcon = new L.DivIcon({
+            className: 'labelClassStation',
+            html: '<div>' + (f.properties.Name) + '</div>',
+            iconSize: [(f.properties.Name).length*12, 20],
+            iconAnchor: [-5, 8]
+          });
+          let label = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+            icon: divIcon,
+            interactive: false
+          });
+          stationLayers[n].addLayer(label);
+        }
+      });
+      stationLayers[n].addTo(railLayerGroups[n]);
+    }
   }
 }
 
 function polygonRedraw(n){
-  polygonLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  polygonLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
         //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
@@ -402,22 +499,25 @@ function polygonRedraw(n){
       return n + "_" + f.properties.uid;
     },
     pane: "polygon"
-  }).bindPopup(function(e){
-    let start = e.properties.START;
-    if(start == "1889/04/01"){start = "-";}
-    let end = e.properties.END;
-    if(end == "2999/12/31"){end = "-";}
-    let name = (e.properties.NAME ?? e.properties.TYPE);
-    if(e.properties.CODE5 === "01223X"){name = name + "(歯舞群島)";}
-    return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
   }).on("click", function(e){
+    let prop = e.sourceTarget.properties;
+    L.popup(e.latlng, {content: ()=>{
+      let start = prop.START;
+      if(start == "1889/04/01"){start = "-";}
+      let end = prop.END;
+      if(end == "2999/12/31"){end = "-";}
+      let name = (prop.NAME ?? prop.TYPE);
+      if(prop.CODE5 === "01223X"){name = name + "(歯舞群島)";}
+      return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (prop.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (prop.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (prop.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
+    }}).openOn(maps[n]);
+    //polygonLayers[n].setFeatureStyle(n + "_" + prop.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
     clickEvent(e, n);
   });
   polygonLayers[n].addTo(maps[n]);
 }
 
 function typeColoredRedraw(n){
-  typeColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  typeColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
         switch(properties.TYPE){
@@ -437,7 +537,7 @@ function typeColoredRedraw(n){
 }
 
 function gunColoredRedraw(n){
-  gunColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  gunColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
          let op = 0.25;
@@ -461,27 +561,39 @@ function gunColoredRedraw(n){
   gunColoredLayers[n].addTo(gunColoredLayerGroups[n]);
 }
 
+function didRedraw(n){
+  didLayers[n] = L.vectorGrid.slicer(itemFilter(didJson, n), {
+    vectorTileLayerStyles: {
+      sliced: {fill: true, fillColor:"#ff6aba" ,fillOpacity:0.4, opacity:0}
+    },
+    maxZoom: 18,
+    pane: "did"
+  });
+  didLayers[n].addTo(didLayerGroups[n]);
+}
+
 function labelRedraw(n){
   //マーカーを全消去
   labelLayers[n].clearLayers();
   //レイヤ再描画はz>=10の時のみ
   if(maps[n].getZoom() >= 10){
-    filter(nameJson, n).features.forEach(function(f){
-      let nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
+    itemFilter(nameCsv, n, true).forEach(function(f){
+      let nameLength = (f.name ?? f.type).length;
       let className;
-      switch(f.properties.TYPE){
+      switch(f.type){
+        case '村': className = 'labelClassMura'; break;
         case '町': className = 'labelClassMachi'; break;
         case '市': className = 'labelClassShi'; break;
-        case '区': className = 'labelClassKu'; break;
-        case '特別区': className = 'labelClassShi'; break;
+        case '政令区': className = 'labelClassKu'; break;
+        case '特別区': className = 'labelClassTokubetsuku'; break;
         default: className = 'labelClass';
       }
       let icon = new L.DivIcon({
         className: className,
-        html: '<div>' + (f.properties.NAME ?? f.properties.TYPE) + '</div>',
+        html: '<div>' + (f.name ?? f.type) + '</div>',
         iconSize: [nameLength*30, 30]
       });
-      let marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+      let marker = L.marker([f.y, f.x], {
         icon: icon,
         interactive: false
       });
@@ -492,24 +604,51 @@ function labelRedraw(n){
 }
 
 //JSONの日付フィルター
-function filter(json, n){
-  let features = json.features;
-  let newFeatures = features.filter(function(f){
-    return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) & new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
-  });
-
-  //画面内にあるものを取得(暫定的)
-  if(json.name === "name" || json.name === "KSJrailroad_point"){
-    let view = maps[n].getBounds();
-    newFeatures = newFeatures.filter(function(f){
-      return f.geometry.coordinates[0] >= view.getWest() & f.geometry.coordinates[0] <= view.getEast() & f.geometry.coordinates[1] >= view.getSouth() & f.geometry.coordinates[1] <= view.getNorth()
-    });
+function itemFilter(item, n, point = false){
+  //JSON or CSV
+  let itemType;
+  let features;
+  if(Array.isArray(item)){
+    itemType = "csv";
+    features = item;
+  }else{
+    itemType = "json";
+    features = item.features;
   }
 
-  let newJson = Object.assign({}, json);
-  newJson.features = newFeatures;
-  return newJson;
+  let newFeatures;
+  if(itemType === "json"){
+    newFeatures = features.filter(function(f){
+      return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) && new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
+    });
+
+    //画面内にあるものを取得
+    if(point){
+      let view = maps[n].getBounds();
+      newFeatures = newFeatures.filter(function(f){
+        return f.geometry.coordinates[0] >= view.getWest() && f.geometry.coordinates[0] <= view.getEast() && f.geometry.coordinates[1] >= view.getSouth() && f.geometry.coordinates[1] <= view.getNorth()
+      });
+    }
+
+    let newJson = Object.assign({}, item);
+    newJson.features = newFeatures;
+    return newJson;
+
+  }else{
+    newFeatures = features.filter(function(f){
+      return new Date(f.start.replaceAll("-", "/")) <= (date[n]) && ( new Date(f.end.replaceAll("-", "/")) > (date[n]) || f.end === "0000-00-00")
+    });
+
+    //画面内にあるものを取得
+    let view = maps[n].getBounds();
+    newFeatures = newFeatures.filter(function(f){
+      return f.x >= view.getWest() & f.x <= view.getEast() && f.y >= view.getSouth() && f.y <= view.getNorth()
+    });
+
+    return newFeatures;
+  }
 }
+
 
 function buttonClick(e){
   let n = e.data.n;
@@ -520,20 +659,36 @@ function buttonClick(e){
   }
 
   date[n] = dateSelectors[n].commit();
-  railLayerGroups[n].removeLayer(railLayers[n]);
   typeColoredLayerGroups[n].removeLayer(typeColoredLayers[n]);
   gunColoredLayerGroups[n].removeLayer(gunColoredLayers[n]);
   maps[n].removeLayer(lineLayers[n]);
   maps[n].removeLayer(polygonLayers[n]);
   labelLayerGroups[n].removeLayer(labelLayers[n]);
+  
 
   typeColoredRedraw(n);
   gunColoredRedraw(n);
   polygonRedraw(n);
   lineRedraw(n);
-  railRedraw(n);
-  stationRedraw(n);
   labelRedraw(n);
+
+  //鉄道データが読み込み済みの場合、鉄道レイヤのデータ更新
+  if(railJson){
+    if(railLayerGroups[n].hasLayer(railLayers[n])){
+      railLayerGroups[n].removeLayer(railLayers[n]);
+    }
+    railRedraw(n);
+    stationRedraw(n);
+  }
+  if(didJson){
+    if(didLayerGroups[n].hasLayer(didLayers[n])){
+      didLayerGroups[n].removeLayer(didLayers[n]);
+    }
+    didRedraw(n);
+  }
+
+  setUrlParam();
+
   if(n === 0){
     $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
   }else{
@@ -541,60 +696,63 @@ function buttonClick(e){
   }
 }
 
- let clickedObj
 
- function clickEvent(e, n){
-   //前回クリックしたオブジェクトのハイライトを消去
-   if(clickedObj){
-     //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
-     polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
-   }
 
-   //クリックしたオブジェクトをハイライト
-   polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
-   clickedObj = n + "_" + e.layer.properties.uid;
- }
+function clickEvent(e, n){
+  //前回クリックしたオブジェクトのハイライトを消去
+  if(clickedObj){
+    //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
+    polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
+  }
 
- //画面の向きを検出
- function checkOrientation(mediaQ){
-   if(mediaQ.matches){
-     orient = "portrait";
-   }else{
-     orient = "landscape";
-   }
-   changeDisplay();
- }
+  //クリックしたオブジェクトをハイライト
+  polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
+  clickedObj = n + "_" + e.layer.properties.uid;
 
- function changeDisplay(){
-    if(dualChkbx.checked){  //二画面表示
-      switch (orient) {
-        case "portrait":
-          containerA.style.width = "100%";
-          mapA.style.height = "41vh";
-        break;
-        case "landscape":
-          containerA.style.width = "50%";
-          mapA.style.height = "82vh";
-      }
-      containerB.style.display = "block";
-      maps[0]._onResize();
-    }else{  //一画面表示
-      switch (orient) {
-        case "portrait":
-          containerA.style.width = "100%";
-          mapA.style.height = "82vh";
-        break;
-        case "landscape":
-          containerA.style.width = "100%";
-          mapA.style.height = "82vh";
-      }
-      containerA.style.width = "100%";
-      containerB.style.display = "none";
-      maps[0]._onResize();
+  //mapクリックイベントを呼び出さないようにする
+  clickedOnFeature = true;
+}
+
+//画面の向きを検出
+function checkOrientation(mediaQ){
+  if(mediaQ.matches){
+    orient = "portrait";
+  }else{
+    orient = "landscape";
+  }
+  changeDisplay();
+}
+
+function changeDisplay(){
+  if(dualChkbx.checked){  //二画面表示
+    switch (orient) {
+      case "portrait":
+        containerA.style.width = "100%";
+        mapA.style.height = "41vh";
+      break;
+      case "landscape":
+        containerA.style.width = "50%";
+        mapA.style.height = "82vh";
     }
- }
+    containerB.style.display = "block";
+    maps[0]._onResize();
+  }else{  //一画面表示
+    switch (orient) {
+      case "portrait":
+        containerA.style.width = "100%";
+        mapA.style.height = "82vh";
+      break;
+      case "landscape":
+        containerA.style.width = "100%";
+        mapA.style.height = "82vh";
+    }
+    containerA.style.width = "100%";
+    containerB.style.display = "none";
+    maps[0]._onResize();
+  }
+}
 
- function getCookieArray(){
+function getCookieArray(){
   let arr = new Array();
   if(document.cookie != ''){
       let tmp = document.cookie.split('; ');
@@ -604,4 +762,31 @@ function buttonClick(e){
       }
   }
   return arr;
+}
+
+function setUrlParam(){
+  function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
+  let statusParams = {
+    "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
+    "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
+    "z" : maps[0].getZoom(),
+    "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
+    "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
+    "base0" : baseLayerNames[0],
+    "base1" : baseLayerNames[1],
+    "label0" : maps[0].hasLayer(labelLayerGroups[0]),
+    "label1" : maps[1].hasLayer(labelLayerGroups[1]),
+    "color0" : color(0),
+    "color1" : color(1),
+    "rail0" : maps[0].hasLayer(railLayerGroups[0]),
+    "rail1" : maps[1].hasLayer(railLayerGroups[1]),
+    "did0" : maps[0].hasLayer(didLayerGroups[0]),
+    "did1" : maps[1].hasLayer(didLayerGroups[1]),
+    "dual" : dualChkbx.checked
+  }
+  for(let key in statusParams){
+    let val = statusParams[key];
+    document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
+  }
+  history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&did0=" + statusParams.did0 + "&did1=" + statusParams.did1 + "&dual=" + statusParams.dual);
 }

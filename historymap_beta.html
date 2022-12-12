@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="robots" content="noindex">
-  <title>市区町村境界時系列マップ</title>
+  <meta name="description" content="合併などで変化した過去の市区町村の境界線を表示できる地図です。平成の大合併・昭和の大合併(一部地域)に対応。">
+  <link rel="icon" href="favicon.ico" />
+  <title>むかしの市町村境界マップ</title>
   <link rel="canonical" href="https://hanishina.github.io/maps/historymap.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
@@ -19,12 +21,8 @@
   <link href="loader.css" rel="stylesheet" type="text/css">
   <link href="dateselector.css" rel="stylesheet" type="text/css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
   <script src="./Plugins/L.Map.Sync.js"></script>
   <script src="./Plugins/Leaflet.VectorGrid.bundled.js"></script>
   <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js"></script>
@@ -38,7 +36,7 @@
 
 <body onload="init()">
   <div class="header">
-    <div class="title">市区町村境界時系列マップ(仮)</div>
+    <div class="title">むかしの市町村境界マップ</div>
     <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./about.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
   </div>
 
