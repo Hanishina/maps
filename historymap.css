@@ -160,10 +160,6 @@ ul.mylist li:before{
   padding: 50px 5px;
 }
 
-#dialogButtons{
-
-}
-
 .dialogBtn{
   background-color: #ddd;
   border: solid 2px #77f;
@@ -312,37 +308,49 @@ div.labelClass{
   font-size: 12px;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
-              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0 -1px 0 #FFF,
-              -1px 0 0 #FFF, 1px 0 0 #FFF;
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
+}
+
+div.labelClassMura{
+  color: #3d1f6d;
+  font-size: 12px;
+  text-align: center;
+  text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
 }
 
 div.labelClassMachi{
+  color: #004b0a;
   font-size: 16px;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
-              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0 -1px 0 #FFF,
-              -1px 0 0 #FFF, 1px 0 0 #FFF;
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
 }
 
 div.labelClassShi{
+  color: #724e00;
   font-size: 18px;
   font-weight: bold;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
-              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0 -1px 0 #FFF,
-              -1px 0 0 #FFF, 1px 0 0 #FFF;
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
+}
+
+div.labelClassTokubetsuku{
+  color: #640026;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
 }
 
 div.labelClassKu{
+  color: #640026;
   font-size: 12px;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
-              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0 -1px 0 #FFF,
-              -1px 0 0 #FFF, 1px 0 0 #FFF;
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
 }
 
 div.labelClassStation{
@@ -350,9 +358,7 @@ div.labelClassStation{
   font-size: 12px;
   text-align: center;
   text-shadow:1px 1px 0 #FFF, -1px -1px 0 #FFF,
-              -1px 1px 0 #FFF, 1px -1px 0 #FFF,
-              0px 1px 0 #FFF,  0 -1px 0 #FFF,
-              -1px 0 0 #FFF, 1px 0 0 #FFF;
+              -1px 1px 0 #FFF, 1px -1px 0 #FFF;
 }
 
 

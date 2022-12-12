@@ -19,7 +19,9 @@ let dateSelectors = [];
 let polygonJson;
 let lineJson;
 let nameJson;
+let nameCsv;
 let railJson;
+let stationJson;
 let didJson;
 
 let mediaQ = matchMedia("screen and (orientation: portrait)");
@@ -64,13 +66,31 @@ async function getResources(name){
   });
 }
 
+async function getCsv(name){
+  let path = "./csv/" + name;
+  csvText = await $.get(path);
+  let tempArr = csvText.split(/\r\n|\r|\n/g);
+  let csvArr = [];
+  let columnNames;
+  tempArr.forEach((item, i)=>{
+    if(i == 0){
+      columnNames = item.split(",");
+    }else if(item){
+      let obj = {};
+      item.split(",").forEach((val, j)=>{
+        obj[columnNames[j]] = val;
+      });
+      csvArr.push(obj);
+    }
+  });
+  return csvArr;
+}
+
 async function init(){
   polygonJson = await getResources("polygon.geojson");
   lineJson = await getResources("line.geojson");
   nameJson = await getResources("name.geojson");
-  railJson = await getResources("KSJrailroad_line.geojson");
-  stationJson = await getResources("KSJrailroad_point.geojson");
-  didJson = await getResources("DIDall.geojson");
+  nameCsv = await getCsv("shichosonname.csv");
 
   cookies = getCookieArray();
   urlParams = new URL(window.location.href).searchParams;
@@ -112,7 +132,7 @@ async function init(){
   $(formElemB).find(".date").val(date[1].getDate());
   dateSelectors[1].sync();
 
-  maps.forEach(function(map, n){
+  maps.forEach(async function(map, n){
     map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
     map.setMinZoom(5);
     map.createPane("base").style.zIndex = 100;
@@ -238,10 +258,11 @@ async function init(){
 
     map.on("baselayerchange", function(e){
       baseLayerNames[n] = baseMapNames[e.name];
+      setUrlParam();
     });
 
 
-    map.on("overlayadd", (e)=>{
+    map.on("overlayadd", async(e)=>{
       //レイヤー削除時に遅延処理が必要(leafletのバグ？)
       if(e.name === "色分け(市・町・村)" && map.hasLayer(gunColoredLayerGroups[n])){
         setTimeout(()=>{
@@ -253,6 +274,59 @@ async function init(){
           map.removeLayer(typeColoredLayerGroups[n]);
         }, 10);
       }
+
+      if(e.name === "鉄道路線(1950年～)[年単位]"){
+        //データ読み込み処理
+        if(!railJson){
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
+          }
+
+          railJson = await getResources("KSJrailroad_line.geojson");
+          stationJson = await getResources("KSJrailroad_point.geojson");
+          
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+          }
+        }
+        if(!railLayerGroups[n].hasLayer(railLayers[n])){
+          railRedraw(n);
+          stationRedraw(n);
+        }
+      }
+
+      if(e.name === "人口集中地区(1960年～)[5年単位]"){
+        //データ読み込み処理
+        if(!didJson){
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
+          }
+
+          didJson = await getResources("DIDall.geojson");
+          didRedraw(n);
+        
+          if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+          }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+          }
+        }
+        if(!didLayerGroups[n].hasLayer(didLayers[n])){
+          didRedraw(n);
+        }
+      }
+
+      setUrlParam();
+    });
+
+    map.on("overlayremove", (e)=>{
+      setUrlParam();
     });
 
 
@@ -260,10 +334,25 @@ async function init(){
     gunColoredRedraw(n);
     polygonRedraw(n);
     lineRedraw(n);
-    railRedraw(n);
-    stationRedraw(n);
-    didRedraw(n);
     labelRedraw(n);
+
+    if(map.hasLayer(railLayerGroups[n])){
+      //データ読み込み処理
+      if(!railJson){
+        railJson = await getResources("KSJrailroad_line.geojson");
+        stationJson = await getResources("KSJrailroad_point.geojson");
+        railRedraw(n);
+        stationRedraw(n);
+      }
+    }
+    if(map.hasLayer(didLayerGroups[n])){
+      //データ読み込み処理
+      if(!didJson){
+        didJson = await getResources("DIDall.geojson");
+        didRedraw(n);
+      }
+    }
+
 
     if(!("GUNCOLOR" in polygonJson.features[0].properties)){
       console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
@@ -294,34 +383,12 @@ async function init(){
   maps[0].on("moveend", function(){
     labelRedraw(0);
     labelRedraw(1);
-    stationRedraw(0);
-    stationRedraw(1);
+    if(stationJson){
+      stationRedraw(0);
+      stationRedraw(1);
+    }
 
-    //urlパラメータ生成
-    function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
-    let statusParams = {
-      "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
-      "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
-      "z" : maps[0].getZoom(),
-      "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
-      "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
-      "base0" : baseLayerNames[0],
-      "base1" : baseLayerNames[1],
-      "label0" : maps[0].hasLayer(labelLayerGroups[0]),
-      "label1" : maps[1].hasLayer(labelLayerGroups[1]),
-      "color0" : color(0),
-      "color1" : color(1),
-      "rail0" : maps[0].hasLayer(railLayerGroups[0]),
-      "rail1" : maps[1].hasLayer(railLayerGroups[1]),
-      "did0" : maps[0].hasLayer(didLayerGroups[0]),
-      "did1" : maps[1].hasLayer(didLayerGroups[1]),
-      "dual" : dualChkbx.checked
-    }
-    for(let key in statusParams){
-      let val = statusParams[key];
-      document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
-    }
-    history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&did0=" + statusParams.did0 + "&did1=" + statusParams.did1 + "&dual=" + statusParams.dual);
+    setUrlParam();
   });
 
   checkOrientation(mediaQ);
@@ -330,7 +397,7 @@ async function init(){
 }
 
 function lineRedraw(n){
-  lineLayers[n] = L.vectorGrid.slicer(filter(lineJson, n), {
+  lineLayers[n] = L.vectorGrid.slicer(itemFilter(lineJson, n), {
     vectorTileLayerStyles: {
       sliced: function(properties){
           switch(properties.TYPE){
@@ -353,7 +420,7 @@ function lineRedraw(n){
 
 function railRedraw(n){
   if(date[n].getFullYear() >= 1950){
-    railLayers[n] = L.vectorGrid.slicer(filter(railJson, n), {
+    railLayers[n] = L.vectorGrid.slicer(itemFilter(railJson, n), {
       vectorTileLayerStyles: {
         sliced: function(properties){
           switch(properties.JigyoshaType){
@@ -376,7 +443,7 @@ function stationRedraw(n){
   stationLayers[n].clearLayers();
   if(date[n].getFullYear() >= 1950){
     if(maps[n].getZoom() >= 10){
-      filter(stationJson, n).features.forEach(function(f){
+      itemFilter(stationJson, n, true).features.forEach(function(f){
         let marker = L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
           radius: 3,
           fillColor: "#5d5d5d",
@@ -405,7 +472,7 @@ function stationRedraw(n){
 }
 
 function polygonRedraw(n){
-  polygonLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  polygonLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
         //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
@@ -441,7 +508,7 @@ function polygonRedraw(n){
 }
 
 function typeColoredRedraw(n){
-  typeColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  typeColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
         switch(properties.TYPE){
@@ -461,7 +528,7 @@ function typeColoredRedraw(n){
 }
 
 function gunColoredRedraw(n){
-  gunColoredLayers[n] = L.vectorGrid.slicer(filter(polygonJson, n), {
+  gunColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
     vectorTileLayerStyles: {
       sliced:function(properties){
          let op = 0.25;
@@ -486,7 +553,7 @@ function gunColoredRedraw(n){
 }
 
 function didRedraw(n){
-  didLayers[n] = L.vectorGrid.slicer(filter(didJson, n), {
+  didLayers[n] = L.vectorGrid.slicer(itemFilter(didJson, n), {
     vectorTileLayerStyles: {
       sliced: {fill: true, fillColor:"#ff6aba" ,fillOpacity:0.4, opacity:0}
     },
@@ -501,22 +568,23 @@ function labelRedraw(n){
   labelLayers[n].clearLayers();
   //レイヤ再描画はz>=10の時のみ
   if(maps[n].getZoom() >= 10){
-    filter(nameJson, n).features.forEach(function(f){
-      let nameLength = (f.properties.NAME ?? f.properties.TYPE).length;
+    itemFilter(nameCsv, n, true).forEach(function(f){
+      let nameLength = (f.name ?? f.type).length;
       let className;
-      switch(f.properties.TYPE){
+      switch(f.type){
+        case '村': className = 'labelClassMura'; break;
         case '町': className = 'labelClassMachi'; break;
         case '市': className = 'labelClassShi'; break;
-        case '区': className = 'labelClassKu'; break;
-        case '特別区': className = 'labelClassShi'; break;
+        case '政令区': className = 'labelClassKu'; break;
+        case '特別区': className = 'labelClassTokubetsuku'; break;
         default: className = 'labelClass';
       }
       let icon = new L.DivIcon({
         className: className,
-        html: '<div>' + (f.properties.NAME ?? f.properties.TYPE) + '</div>',
+        html: '<div>' + (f.name ?? f.type) + '</div>',
         iconSize: [nameLength*30, 30]
       });
-      let marker = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
+      let marker = L.marker([f.y, f.x], {
         icon: icon,
         interactive: false
       });
@@ -527,24 +595,51 @@ function labelRedraw(n){
 }
 
 //JSONの日付フィルター
-function filter(json, n){
-  let features = json.features;
-  let newFeatures = features.filter(function(f){
-    return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) & new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
-  });
-
-  //画面内にあるものを取得(暫定的)
-  if(json.name === "name" || json.name === "KSJrailroad_point"){
-    let view = maps[n].getBounds();
-    newFeatures = newFeatures.filter(function(f){
-      return f.geometry.coordinates[0] >= view.getWest() & f.geometry.coordinates[0] <= view.getEast() & f.geometry.coordinates[1] >= view.getSouth() & f.geometry.coordinates[1] <= view.getNorth()
-    });
+function itemFilter(item, n, point = false){
+  //JSON or CSV
+  let itemType;
+  let features;
+  if(Array.isArray(item)){
+    itemType = "csv";
+    features = item;
+  }else{
+    itemType = "json";
+    features = item.features;
   }
 
-  let newJson = Object.assign({}, json);
-  newJson.features = newFeatures;
-  return newJson;
+  let newFeatures;
+  if(itemType === "json"){
+    newFeatures = features.filter(function(f){
+      return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) && new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
+    });
+
+    //画面内にあるものを取得
+    if(point){
+      let view = maps[n].getBounds();
+      newFeatures = newFeatures.filter(function(f){
+        return f.geometry.coordinates[0] >= view.getWest() && f.geometry.coordinates[0] <= view.getEast() && f.geometry.coordinates[1] >= view.getSouth() && f.geometry.coordinates[1] <= view.getNorth()
+      });
+    }
+
+    let newJson = Object.assign({}, item);
+    newJson.features = newFeatures;
+    return newJson;
+
+  }else{
+    newFeatures = features.filter(function(f){
+      return new Date(f.start.replaceAll("-", "/")) <= (date[n]) && ( new Date(f.end.replaceAll("-", "/")) > (date[n]) || f.end === "0000-00-00")
+    });
+
+    //画面内にあるものを取得
+    let view = maps[n].getBounds();
+    newFeatures = newFeatures.filter(function(f){
+      return f.x >= view.getWest() & f.x <= view.getEast() && f.y >= view.getSouth() && f.y <= view.getNorth()
+    });
+
+    return newFeatures;
+  }
 }
+
 
 function buttonClick(e){
   let n = e.data.n;
@@ -555,22 +650,32 @@ function buttonClick(e){
   }
 
   date[n] = dateSelectors[n].commit();
-  railLayerGroups[n].removeLayer(railLayers[n]);
   typeColoredLayerGroups[n].removeLayer(typeColoredLayers[n]);
   gunColoredLayerGroups[n].removeLayer(gunColoredLayers[n]);
   maps[n].removeLayer(lineLayers[n]);
   maps[n].removeLayer(polygonLayers[n]);
   labelLayerGroups[n].removeLayer(labelLayers[n]);
-  didLayerGroups[n].removeLayer(didLayers[n]);
+  
 
   typeColoredRedraw(n);
   gunColoredRedraw(n);
   polygonRedraw(n);
   lineRedraw(n);
-  railRedraw(n);
-  stationRedraw(n);
-  didRedraw(n);
   labelRedraw(n);
+
+  //鉄道データが読み込み済みの場合、鉄道レイヤのデータ更新
+  if(railJson){
+    railLayerGroups[n].removeLayer(railLayers[n]);
+    railRedraw(n);
+    stationRedraw(n);
+  }
+  if(didJson){
+    didLayerGroups[n].removeLayer(didLayers[n]);
+    didRedraw(n);
+  }
+
+  setUrlParam();
+
   if(n === 0){
     $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
   }else{
@@ -578,60 +683,60 @@ function buttonClick(e){
   }
 }
 
- let clickedObj
+let clickedObj
 
- function clickEvent(e, n){
-   //前回クリックしたオブジェクトのハイライトを消去
-   if(clickedObj){
-     //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
-     polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
-   }
+function clickEvent(e, n){
+  //前回クリックしたオブジェクトのハイライトを消去
+  if(clickedObj){
+    //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
+    polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
+  }
 
-   //クリックしたオブジェクトをハイライト
-   polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
-   clickedObj = n + "_" + e.layer.properties.uid;
- }
+  //クリックしたオブジェクトをハイライト
+  polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
+  clickedObj = n + "_" + e.layer.properties.uid;
+}
 
- //画面の向きを検出
- function checkOrientation(mediaQ){
-   if(mediaQ.matches){
-     orient = "portrait";
-   }else{
-     orient = "landscape";
-   }
-   changeDisplay();
- }
+//画面の向きを検出
+function checkOrientation(mediaQ){
+  if(mediaQ.matches){
+    orient = "portrait";
+  }else{
+    orient = "landscape";
+  }
+  changeDisplay();
+}
 
- function changeDisplay(){
-    if(dualChkbx.checked){  //二画面表示
-      switch (orient) {
-        case "portrait":
-          containerA.style.width = "100%";
-          mapA.style.height = "41vh";
-        break;
-        case "landscape":
-          containerA.style.width = "50%";
-          mapA.style.height = "82vh";
-      }
-      containerB.style.display = "block";
-      maps[0]._onResize();
-    }else{  //一画面表示
-      switch (orient) {
-        case "portrait":
-          containerA.style.width = "100%";
-          mapA.style.height = "82vh";
-        break;
-        case "landscape":
-          containerA.style.width = "100%";
-          mapA.style.height = "82vh";
-      }
-      containerA.style.width = "100%";
-      containerB.style.display = "none";
-      maps[0]._onResize();
+function changeDisplay(){
+  if(dualChkbx.checked){  //二画面表示
+    switch (orient) {
+      case "portrait":
+        containerA.style.width = "100%";
+        mapA.style.height = "41vh";
+      break;
+      case "landscape":
+        containerA.style.width = "50%";
+        mapA.style.height = "82vh";
     }
- }
+    containerB.style.display = "block";
+    maps[0]._onResize();
+  }else{  //一画面表示
+    switch (orient) {
+      case "portrait":
+        containerA.style.width = "100%";
+        mapA.style.height = "82vh";
+      break;
+      case "landscape":
+        containerA.style.width = "100%";
+        mapA.style.height = "82vh";
+    }
+    containerA.style.width = "100%";
+    containerB.style.display = "none";
+    maps[0]._onResize();
+  }
+}
 
- function getCookieArray(){
+function getCookieArray(){
   let arr = new Array();
   if(document.cookie != ''){
       let tmp = document.cookie.split('; ');
@@ -641,4 +746,31 @@ function buttonClick(e){
       }
   }
   return arr;
+}
+
+function setUrlParam(){
+  function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
+  let statusParams = {
+    "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
+    "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
+    "z" : maps[0].getZoom(),
+    "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
+    "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
+    "base0" : baseLayerNames[0],
+    "base1" : baseLayerNames[1],
+    "label0" : maps[0].hasLayer(labelLayerGroups[0]),
+    "label1" : maps[1].hasLayer(labelLayerGroups[1]),
+    "color0" : color(0),
+    "color1" : color(1),
+    "rail0" : maps[0].hasLayer(railLayerGroups[0]),
+    "rail1" : maps[1].hasLayer(railLayerGroups[1]),
+    "did0" : maps[0].hasLayer(didLayerGroups[0]),
+    "did1" : maps[1].hasLayer(didLayerGroups[1]),
+    "dual" : dualChkbx.checked
+  }
+  for(let key in statusParams){
+    let val = statusParams[key];
+    document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
+  }
+  history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&did0=" + statusParams.did0 + "&did1=" + statusParams.did1 + "&dual=" + statusParams.dual);
 }
