@@ -665,12 +665,16 @@ function buttonClick(e){
 
   //鉄道データが読み込み済みの場合、鉄道レイヤのデータ更新
   if(railJson){
-    railLayerGroups[n].removeLayer(railLayers[n]);
+    if(railLayerGroups[n].hasLayer(railLayers[n])){
+      railLayerGroups[n].removeLayer(railLayers[n]);
+    }
     railRedraw(n);
     stationRedraw(n);
   }
   if(didJson){
-    didLayerGroups[n].removeLayer(didLayers[n]);
+    if(didLayerGroups[n].hasLayer(didLayers[n])){
+      didLayerGroups[n].removeLayer(didLayers[n]);
+    }
     didRedraw(n);
   }
 
