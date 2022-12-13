@@ -389,11 +389,13 @@ function polygonRedraw(json){
       return f.properties.uid;
     },
     pane: "polygon"
-  }).on("mouseup", obj => {
+  }).on("mouseup touchup", obj => {
+    console.log(obj);
     if(!dragging){
       clickEvent(obj);
     }
-  }).on("mouseover mousedown", obj => {
+  }).on("mouseover touchdown", obj => {
+    console.log(obj);
     cursorObj = obj.layer.properties;
     rewriteCursorTable(cursorObj);
     if(currentDataset.fromto){
