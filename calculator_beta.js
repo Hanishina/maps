@@ -138,7 +138,7 @@ async function init(){
 
   /*--- mapの初期化処理 ---*/
 
-  map = L.map("map", {zoomControl: false});
+  map = L.map("map", {zoomControl: false, tapHold: false});
   map.setView([35, 137], 8);
   map.setMinZoom(5);
   map.setMaxBounds([[10, 100], [60, 180]]);
@@ -147,7 +147,8 @@ async function init(){
   map.createPane("polygon").style.zindex = 150;
   map.createPane("line").style.zindex = 400;
 
-  //ドラッグ時にクリックイベントを呼び出さないようにする(iOS用)
+
+  //ドラッグ時にクリックイベントを呼び出さないようにする
   map.on("mousedown", function(e){
     dragging = false;
     dragStart.x = e.originalEvent.clientX;
@@ -389,13 +390,11 @@ function polygonRedraw(json){
       return f.properties.uid;
     },
     pane: "polygon"
-  }).on("mouseup touchup", obj => {
-    console.log(obj);
+  }).on("mouseup", obj => {
     if(!dragging){
       clickEvent(obj);
     }
-  }).on("mouseover touchdown", obj => {
-    console.log(obj);
+  }).on("mouseover mousedown", obj => {
     cursorObj = obj.layer.properties;
     rewriteCursorTable(cursorObj);
     if(currentDataset.fromto){
