@@ -138,7 +138,7 @@ async function init(){
 
   /*--- mapの初期化処理 ---*/
 
-  map = L.map("map", {zoomControl: false, tapHold: false});
+  map = L.map("map", {zoomControl: false, doubleClickZoom: false});
   map.setView([35, 137], 8);
   map.setMinZoom(5);
   map.setMaxBounds([[10, 100], [60, 180]]);
@@ -390,12 +390,12 @@ function polygonRedraw(json){
       return f.properties.uid;
     },
     pane: "polygon"
-  }).on("mouseup", obj => {
+  }).on("mouseup", (e)=>{
     if(!dragging){
-      clickEvent(obj);
+      clickEvent(e);
     }
-  }).on("mouseover mousedown", obj => {
-    cursorObj = obj.layer.properties;
+  }).on("mouseover mousedown", (e)=>{
+    cursorObj = e.layer.properties;
     rewriteCursorTable(cursorObj);
     if(currentDataset.fromto){
       rewriteFromtoTable();
