@@ -32,6 +32,9 @@ let containerB;
 
 let layerControl = [];
 
+let clickedObj;
+let clickedOnFeature = false;
+
 let cookies;
 let urlParams;
 
@@ -135,6 +138,7 @@ async function init(){
   maps.forEach(async function(map, n){
     map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
     map.setMinZoom(5);
+    map.setMaxBounds([[10, 100], [60, 180]]);
     map.createPane("base").style.zIndex = 100;
     map.createPane("polygon").style.zIndex = 250;
     map.createPane("colored").style.zIndex = 230;
@@ -150,6 +154,7 @@ async function init(){
     railLayers[n] = new L.LayerGroup();
     stationLayers[n] = new L.LayerGroup();
     didLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
+    didLayers[n] = new L.LayerGroup();
 
 
     let paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
@@ -250,10 +255,11 @@ async function init(){
     L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
 
     //マップ(地物が存在しない部分)クリック時にハイライト消去
-    map.on("click", function(){
-      if(clickedObj){
+    map.on("click", function(e){
+      if(!clickedOnFeature && clickedObj){
         polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
       }
+      clickedOnFeature = false;
     });
 
     map.on("baselayerchange", function(e){
@@ -287,6 +293,7 @@ async function init(){
           railJson = await getResources("KSJrailroad_line.geojson");
           stationJson = await getResources("KSJrailroad_point.geojson");
           
+          
           if(n === 0){
             $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
           }else{
@@ -309,7 +316,6 @@ async function init(){
           }
 
           didJson = await getResources("DIDall.geojson");
-          didRedraw(n);
         
           if(n === 0){
             $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
@@ -476,7 +482,9 @@ function polygonRedraw(n){
     vectorTileLayerStyles: {
       sliced:function(properties){
         //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
-        if(date[n].getFullYear() < 1970){
+        if(date[n] < new Date("1947/05/03")){
+          return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
+        }else if(date[n] < new Date("1970/04/01")){
           if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"].some(e => e === properties.KEN)){
             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
           }else{
@@ -493,15 +501,17 @@ function polygonRedraw(n){
       return n + "_" + f.properties.uid;
     },
     pane: "polygon"
-  }).bindPopup(function(e){
-    let start = e.properties.START;
-    if(start == "1889/04/01"){start = "-";}
-    let end = e.properties.END;
-    if(end == "2999/12/31"){end = "-";}
-    let name = (e.properties.NAME ?? e.properties.TYPE);
-    if(e.properties.CODE5 === "01223X"){name = name + "(歯舞群島)";}
-    return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
   }).on("click", function(e){
+    let prop = e.sourceTarget.properties;
+    L.popup(e.latlng, {content: ()=>{
+      let start = prop.START;
+      if(start == "1889/04/01"){start = "-";}
+      let end = prop.END;
+      if(end == "2999/12/31"){end = "-";}
+      let name = (prop.NAME ?? prop.TYPE);
+      if(prop.CODE5 === "01223X"){name = name + "(歯舞群島)";}
+      return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (prop.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (prop.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (prop.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
+    }}).openOn(maps[n]);
     clickEvent(e, n);
   });
   polygonLayers[n].addTo(maps[n]);
@@ -687,7 +697,7 @@ function buttonClick(e){
   }
 }
 
-let clickedObj
+
 
 function clickEvent(e, n){
   //前回クリックしたオブジェクトのハイライトを消去
@@ -699,6 +709,9 @@ function clickEvent(e, n){
   //クリックしたオブジェクトをハイライト
   polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
   clickedObj = n + "_" + e.layer.properties.uid;
+
+  //mapクリックイベントを呼び出さないようにする
+  clickedOnFeature = true;
 }
 
 //画面の向きを検出
