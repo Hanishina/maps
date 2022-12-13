@@ -17,8 +17,7 @@ let currentDataset; //選択中のデータセット(国勢調査2015など)[obj
 let currentCategory; //選択中のサブデータセット(DID人口など)[obj]
 let currentGroup = 0; //選択中のグループ
 let currentColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
-
-let csvFields = []; //csvのフィールド名一覧。func:customの時用いる
+let currentSelectFromto = {A: "cursor", B: "cursor"};
 
 let cursorObj;
 let dragging = false;
@@ -91,10 +90,48 @@ async function getJson(name, date){
   });
 }
 
-async function getCsv(name){
-  let path = "./csv/" + name;
+async function getCsv(filename, idcolumn="CODE"){
+  let path = "./csv/" + filename;
   let csvText = await $.get(path);
-  return $.csv.toObjects(csvText);
+  let tempArr = csvText.split(/\r\n|\r|\n/g);
+  let csvArr = [];
+  tempArr.forEach((item, i)=>{
+    csvArr[i] = item.split(",");
+  });
+
+  let mainObj = {};
+  let idIndex = csvArr[0].indexOf(idcolumn)
+  mainObj.header = csvArr[0].filter((i)=>{return i != idcolumn});
+
+  let indexCol = new Set(); //インデックスの重複チェック用
+  csvArr.forEach((row, i)=>{
+    if((i > 0) && row[idIndex]){
+      if(indexCol.has(row[idIndex])){
+        console.log("注意：インデックス列に重複を検知しました。");
+        console.log("行:"+ i + " 値:" + row[idIndex]);
+      }
+      indexCol.add(row[idIndex]);
+
+      mainObj[row[idIndex]] = row;
+      mainObj[row[idIndex]].splice(idIndex, 1);
+    }
+  });
+
+  return mainObj;
+}
+
+function getCsvData(mainObj, index, ignoreZero = false){
+  let returnObj = {};
+  mainObj.header.forEach((col, i)=>{
+    if(mainObj[index]){
+      if(!ignoreZero || Number(mainObj[index][i])){
+        returnObj[col] = mainObj[index][i];
+      }
+    }else{
+      returnObj[col] = "-";
+    }
+  });
+  return returnObj;
 }
 
 async function init(){
@@ -104,6 +141,7 @@ async function init(){
   map = L.map("map", {zoomControl: false});
   map.setView([35, 137], 8);
   map.setMinZoom(5);
+  map.setMaxBounds([[10, 100], [60, 180]]);
   L.control.zoom({position: "topright"}).addTo(map);
   map.createPane("base").style.zIndex = 100;
   map.createPane("polygon").style.zindex = 150;
@@ -189,9 +227,9 @@ async function init(){
 
   /*--- ダイアログ初期化処理 ---*/
 
-  dialog_reset = new Dialog;
-  dialog_delete = new Dialog;
-  dialog_changeDataset = new Dialog;
+  dialog_reset = new Dialog();
+  dialog_delete = new Dialog();
+  dialog_changeDataset = new Dialog();
 
   /*--- データセット・カテゴリの初期化処理 ---*/
 
@@ -262,6 +300,31 @@ async function init(){
   currentColumn = currentCategory.data[0];
   $("#group0").trigger("click"); //groupSelectを実行
 
+  /*--- fromtoテーブル ---*/
+  $("#selectFrom").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
+  $("#selectFrom").append($("<option>").attr({value: "0"}).text("グループ1"));
+  $("#selectTo").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
+  $("#selectTo").append($("<option>").attr({value: "0"}).text("グループ1"));
+
+  /*let tableColumn = currentDataset.category.find((f)=>{return f.name === "fromto"});
+  tableColumn.data.forEach((f, i)=>{
+    let tr = $("<tr>");
+    $(tr).append($("<th>").attr({class: "fromtoCol_name" + i}).text(f.label));
+    $(tr).append($("<td>").attr({class: "fromtoCol_data" + i}));
+    $(tr).appendTo(".fromtoTable");
+  });*/
+
+  $("#selectFrom").on("change", ()=>{
+    currentSelectFromto.A = $("#selectFrom").val();
+    rewriteFromtoTable();
+  });
+  $("#selectTo").on("change", ()=>{
+    currentSelectFromto.B = $("#selectTo").val();
+    rewriteFromtoTable();
+  });
+
+  //$("#fromto").show();
+
   /*--- モーダルウィンドウ初期化処理 ---*/
 
   $('.inline').modaal({
@@ -305,9 +368,6 @@ async function init(){
   polygonRedraw(geojsonFiles.polygon2020);
   lineRedraw(geojsonFiles.line2020);
 
-  //フィールド一覧を取得
-  csvFields = Object.keys(csvObjs.kokusei2020[0]);
-
   $(".loader, .loaderBG, .loaderCover").css("display", "none");
 
 }
@@ -336,6 +396,9 @@ function polygonRedraw(json){
   }).on("mouseover mousedown", obj => {
     cursorObj = obj.layer.properties;
     rewriteCursorTable(cursorObj);
+    if(currentDataset.fromto){
+      rewriteFromtoTable();
+    }
   });
 
   polygonLayer.addTo(map);
@@ -385,6 +448,23 @@ function lineRedraw(json){
   lineLayer.addTo(map);
 }
 
+//fromtoテーブルのセレクタリセット
+function fromtoSelectorSet(){
+  $("#selectFrom").empty();
+  $("#selectTo").empty();
+
+  $("#selectFrom").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
+  $("#selectTo").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
+
+  groupNames.forEach((name, i)=>{
+    $("#selectFrom").append($("<option>").attr({value: i}).text(name));
+    $("#selectTo").append($("<option>").attr({value: i}).text(name));
+  });
+
+  $("#selectFrom").val(currentSelectFromto.A);
+  $("#selectTo").val(currentSelectFromto.B);
+}
+
 //地物クリック時の処理
 function clickEvent(obj){
   if(selectedFeatures[currentGroup].some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が選択済みの場合(クリックした地物を削除)
@@ -406,16 +486,24 @@ function clickEvent(obj){
     rewriteSumTable(locA);
 
     let feature = obj.layer.properties;
-    let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+    let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
+    if(currentDataset.fromto){
+      let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (feature.CODE || feature.CODE5), true);
+      csvData.FROMTO = fromtoData;
+    }
     //polygonのデータとcsvのデータを合体
     Object.assign(feature, csvData);
     selectedFeatures[currentGroup].push(feature);
     polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
 
   }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
-    if(!obj.layer.properties.NODATA){
+    if(!obj.layer.properties.NODATA){  //NODATAはクリック不可
       let feature = obj.layer.properties;
-      let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+      let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
+      if(currentDataset.fromto){
+        let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (feature.CODE || feature.CODE5), true);
+        csvData.FROMTO = fromtoData;
+      }
       //polygonのデータとcsvのデータを合体
       Object.assign(feature, csvData);
       selectedFeatures[currentGroup].push(feature);
@@ -424,13 +512,20 @@ function clickEvent(obj){
   }
 
   rewriteSumTable(currentGroup);
+  if(currentDataset.fromto){
+    rewriteFromtoTable();
+  }
 
 }
 
 //カーソル位置の地物情報表示
 function rewriteCursorTable(obj){
   if(obj){
-    let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (obj.CODE || obj.CODE5);})[0];
+    let csvData = getCsvData(csvObjs[currentDataset.csvObj], (obj.CODE || obj.CODE5));
+    if(currentDataset.fromto){
+      let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (obj.CODE || obj.CODE5), true);
+      csvData.FROMTO = fromtoData;
+    }
     //polygonのデータとcsvのデータを合体
     Object.assign(obj, csvData);
 
@@ -448,7 +543,8 @@ function rewriteCursorTable(obj){
 
     if(!obj.NODATA){
       if(!currentCategory.pie){
-        currentCategory.data.forEach(function(f, i){
+        let categories = currentCategory.data.filter(item => !item.groupOnly);
+        categories.forEach(function(f, i){
           $("#mouseCol_data" + i).text(calc(obj, f.func, f.prec, f.args));
           //按分の有無判定
           if(f.args && currentDataset.estimate){
@@ -496,6 +592,41 @@ function rewriteCursorTable(obj){
   }
 }
 
+//fromtoテーブル再描画
+function rewriteFromtoTable(){
+  let objA, objB;
+  if(currentSelectFromto.A === "cursor"){
+    objA = cursorObj;
+  }else{
+    objA = selectedFeatures[currentSelectFromto.A];
+  }
+  if(currentSelectFromto.B === "cursor"){
+    objB = cursorObj;
+  }else{
+    objB = selectedFeatures[currentSelectFromto.B];
+  }
+
+
+  if(objA && objB){
+    let move = calcFromto(objA, objB);
+    let revMove = calcFromto(objB, objA);
+
+    let tableColumn = currentDataset.category.find((f)=>{return f.name === "fromto"});
+    tableColumn.data.forEach(function(data, i){
+      let feature;
+      if(data.ab === "A"){
+        feature = objA;
+      }else{
+        feature = objB;
+      }
+      let args = data.args.replaceAll("\move", move).replaceAll("\revMove", revMove);
+      $(".fromtoCol_data" + i).text(calc(feature, "custom", data.prec, args));
+    });
+  }else{ //NODATA
+    $(".fromtoCol_data" + i).text();
+  }
+
+}
 
 //グループの値合計用
 function sum(arr, key){
@@ -567,14 +698,23 @@ function calc(features, func, prec = 0, args){
     });
     return (total - nonOther).toFixed(prec);
   }else if(func === "custom"){
+    //argsは配列でも文字列でも可
+    let argsArr
+    if(Array.isArray(args)){
+      argsArr = args;
+    }else{
+      argsArr = args.split(",");
+    }
     let expression = "";
-    args.forEach((arg)=>{
+    argsArr.forEach((arg)=>{
       if(["+", "-", "*", "/", "(", ")"].includes(arg)){
         expression = expression + arg;
       }else if(!isNaN(arg)){
         expression = expression + String(arg);
-      }else if(csvFields.includes(arg)){
+      }else if(csvObjs[currentDataset.csvObj].header.includes(arg)){
         expression = expression + "sum(features, '" + arg + "')";
+      }else if(arg === "\domestic"){
+        expression = expression + calcFromto(features, features);
       }else{
         expression = expression + "0";
       }
@@ -591,6 +731,25 @@ function calc(features, func, prec = 0, args){
     }
   }else{ //空白
     return "";
+  }
+}
+
+//domesticの計算(選択地物変更時に呼び出し)
+function calcFromto(featuresA, featuresB){
+  if(!Array.isArray(featuresA)){
+    featuresA = [featuresA];
+  }
+  if(!Array.isArray(featuresB)){
+    featuresB = [featuresB];
+  }
+  if(currentDataset.fromto){
+    let result = 0;
+    featuresA.forEach((featureA)=>{
+      featuresB.forEach((featureB)=>{
+        result = result + (Number(featureA.FROMTO[featureB.CODE || featureB.CODE5]) || 0);
+      });
+    });
+    return result
   }
 }
 
@@ -670,6 +829,9 @@ function addGroup(){
   groupColors.push(colorPicker[newId].getHexColor());
   $("#group" + newId).find(".columnName").val(currentColumn.name);
   rewriteSumTable(newId);
+  if(currentDataset.fromto){
+    fromtoSelectorSet();
+  }
   $("#group" + newId).trigger("click");
 }
 
@@ -753,6 +915,9 @@ function changeGroupName(){
     if($("input[name='groupName']").val()){
       groupNames[n] = $("input[name='groupName']").val();
     }
+    if(currentDataset.fromto){
+      fromtoSelectorSet();
+    }
     let nameArea = $("#group" + n).find(".groupName");
     $(nameArea).empty();
     $(nameArea).text(groupNames[n]);
@@ -812,6 +977,9 @@ function deleteGroup(){
       colorPicker[n].updateColor(112);
       groupColors[n] = "#cc0000";
       rewriteSumTable(n);
+      if(currentDataset.fromto){
+        fromtoSelectorSet();
+      }
     }else{
       selectedFeatures.splice(n, 1);
       groupNames.splice(n, 1);
@@ -826,6 +994,16 @@ function deleteGroup(){
 
       if(selectedFeatures.length <= n){ //最後のグループを削除した場合
         currentGroup--;
+      }
+
+      if(currentDataset.fromto){
+        if(n <= currentSelectFromto.A && currentSelectFromto.A != 0){
+          currentSelectFromto.A --;
+        }
+        if(n <= currentSelectFromto.B && currentSelectFromto.B != 0){
+          currentSelectFromto.B --;
+        }
+        fromtoSelectorSet();
       }
 
       $("#group" + currentGroup).trigger("click");
@@ -851,12 +1029,13 @@ function categoryChange(e){
     while (mouseTable.rows[0]) {
       mouseTable.deleteRow(0);
     }
-    for(i=0; i<currentCategory.data.length/2; i++){
+    let categories = currentCategory.data.filter(item => !item.groupOnly);
+    for(i=0; i<categories.length/2; i++){
       let tr = document.createElement("tr");
       for(j=0; j<2; j++){
         let th = document.createElement("th");
         th.id = "mouseCol_name" + (i*2+j);
-        th.innerText = currentCategory.data[i*2+j].label || "";
+        th.innerText = categories[i*2+j].label || "";
         tr.appendChild(th);
         let td = document.createElement("td");
         td.id = "mouseCol_data" + (i*2+j);
@@ -880,6 +1059,31 @@ function categoryChange(e){
     rewriteCursorTable(cursorObj);
   }
 
+  //fromtoテーブルの書き換え
+  if(currentDataset.fromto){
+    $("fromto").show();
+    $(".fromtoTable").empty();
+    let catFromto = currentDataset.category.find(item => item.name == "fromto").data;
+    for(i=0; i<catFromto.length; i++){
+      let th = $("<th>").attr("class", "fromtoCol_name" + i);
+      $(th).text(catFromto[i].label || "");
+      if(catFromto[i].desc !== undefined){ //ツールチップを付加
+        let div = $("<div>", {class: "tooltip"});
+        $("<i>", {class: "fas fa-question-circle", style: "color:#0f5f91;"}).appendTo(div);
+        $("<div>", {class: "description"}).text(catFromto[i].desc).appendTo(div);
+        $(th).append(div);
+      }
+      let td = $("<td>").attr("class", "fromtoCol_data" + i);
+      $(td).text("");
+      $(".fromtoTable").append($("<tr>").append(th, td));
+    }
+
+    fromtoSelectorSet();
+    rewriteFromtoTable();
+  }else{
+    $("#fromto").hide();
+  }
+
   //グループの書き換え
   selectedFeatures.forEach((group, groupIdx) => {
     if(!currentCategory.pie){ //円グラフ以外
@@ -889,7 +1093,7 @@ function categoryChange(e){
       $(groupTable).empty();
       for(i=0; i<currentCategory.data.length; i++){
         let th = $("<th>").attr("class", "groupCol_name" + i);
-        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum"){ //currentCategory.data[i]が空でない場合
+        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
           $(th).text(currentCategory.data[i].label || "");
           if(currentCategory.data[i].desc !== undefined){ //ツールチップを付加
             let div = $("<div>", {class: "tooltip"});
@@ -901,7 +1105,7 @@ function categoryChange(e){
           $(th).css({display: "none"});
         }
         let td = $("<td>").attr("class", "groupCol_data" + i);
-        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum"){ //currentCategory.data[i]が空でない場合
+        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
           $(td).text("");
         }else{
           $(td).css({display: "none"});
@@ -926,7 +1130,7 @@ function categoryChange(e){
     $(columnSelector).empty();
     currentCategory.data.forEach(e => {
       let option = $("<option>");
-      if(Object.keys(e).length){
+      if(Object.keys(e).length && !e.groupOnly){
         $(option).attr({value: e.name}).text(e.label).appendTo(columnSelector);
       }else{
         //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
@@ -960,9 +1164,9 @@ function datasetChange(e){
     if(!csvObjs[currentDataset.csvObj]){ //csvデータの取得が済んでいない場合
       csvObjs[currentDataset.csvObj] = await getCsv(currentDataset.csvFile);
     }
-
-    //フィールド一覧を取得
-    csvFields = Object.keys(csvObjs[currentDataset.csvObj][0]);
+    if(currentDataset.fromto && !csvObjs[currentDataset.fromtoObj]){ //fromtoテーブルの取得
+      csvObjs[currentDataset.fromtoObj] = await getCsv(currentDataset.fromtoFile);
+    }
 
     //---以下、選択地物保持の場合のみ実行---
     if(formerFeatures){
@@ -972,7 +1176,11 @@ function datasetChange(e){
         });
         if(match){
           let feature = match.properties;
-          let csvData = csvObjs[currentDataset.csvObj].filter(f=>{return (f.CODE || f.CODE5) === (feature.CODE || feature.CODE5);})[0];
+          let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
+          if(currentDataset.fromto){
+            let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (feature.CODE || feature.CODE5), true);
+            csvData.FROMTO = fromtoData;
+          }
           //polygonのデータとcsvのデータを合体
           Object.assign(feature, csvData);
           if(!feature.NODATA){
@@ -992,15 +1200,17 @@ function datasetChange(e){
     while (categorySelector.firstChild) {
       categorySelector.removeChild(categorySelector.firstChild);
     }
+    let catCnt = 0;
     currentDataset.category.forEach(f => {
-      if(f.name !== "csv"){ //csv用のカテゴリセットは除く
+      if(f.name !== "csv" && f.name !== "fromto"){ //csv用のカテゴリセットは除く
         let option = document.createElement("option");
         option.value = f.name;
         option.innerText = f.label;
         categorySelector.appendChild(option);
+        catCnt++;
       }
     });
-    if(currentDataset.category.length === 2){
+    if(catCnt <= 1){
       categorySelector.disabled = true;
     }else{
       categorySelector.disabled = false;
@@ -1019,10 +1229,17 @@ function datasetChange(e){
       if(currentDataset.attr[i+1]){$("#attribution").append("、");}
     });
 
-    //グループの再描画
+    //カーソル位置テーブルの再描画
     let event = new Event("change");
     categorySelector.dispatchEvent(event);
     rewriteCursorTable();
+
+    //fromtoテーブル
+    if(currentDataset.fromto){
+      $("#fromto").show();
+    }else{
+      $("#fromto").hide();
+    }
 
     $(".loader, .loaderBG, .loaderCover").css("display", "none");
   }
@@ -1063,6 +1280,7 @@ function datasetChange(e){
     groupNames = ["グループ1"];
     groupColors = ["#cc0000"];
     colorPicker[0].updateColor(112);
+    currentSelectFromto = {A: "cursor", B: "cursor"};
 
     await common();
 
@@ -1076,8 +1294,17 @@ function datasetChange(e){
 
 //csv生成用テーブルを開く
 function openTable(){
+  if(!currentDataset.fromto){
+    $("input[value='intergroup']").parent().hide();
+    if($('input[name="tableType"]:checked').val() === "intergroup"){
+      $("input[name='tableType']").val(["all"]);
+    }
+  }else{
+    $("input[value='intergroup']").parent().show();
+  }
   let tableType = $('input[name="tableType"]:checked').val();
-  let csvCate = currentDataset.category.slice(-1)[0].data; //categoryの最後の要素
+  if(tableType == "all" || tableType == "group"){
+    let csvCate = currentDataset.category.find(i=>{return i.name=="csv"}).data;
   $("#csvTableHeader").text("データ: " + currentDataset.label);
   //表一行目
   let tr1 = $("<tr>");
@@ -1146,6 +1373,24 @@ function openTable(){
     }
   });
 
+}else if(tableType == "intergroup"){ //グループ間クロス表
+  $("#csvTableHeader").text("データ: " + currentDataset.label);
+  let tr1 = $("<tr>");
+  $("#csvTable").append(tr1);
+  $("<th>").text("A ＼ B").appendTo(tr1);
+  groupNames.forEach((gName, i)=>{
+    $("<th>").text(gName).appendTo(tr1);
+  });
+
+  groupNames.forEach((gName, i)=>{
+    tr2 = $("<tr>").appendTo("#csvTable");
+    $("<td>").append($("<b>").text(gName)).appendTo(tr2);
+    selectedFeatures.forEach((g, j)=>{
+      let value = calcFromto(selectedFeatures[i], selectedFeatures[j]);
+      $("<td>", {text: value, css:{textAlign: "right"}}).appendTo(tr2);
+    });
+  });
+}
 
 }
 

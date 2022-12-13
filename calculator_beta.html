@@ -2,9 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="user-scalable=no">
   <meta name="robots" content="noindex">
+  <meta name="viewport" content="user-scalable=no">
   <meta name="description" content="市区町村を地図上で選んで、人口・面積など様々なデータの合計値を算出できるツールです。">
+  <link rel="icon" href="favicon.ico" />
   <title>人口計算機</title>
   <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -25,13 +26,8 @@
   <link href="./Plugins/toastr.min.css" rel="stylesheet"  type="text/css"/>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="./Plugins/jquery.csv.min.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
   <script src="./Plugins/Leaflet.VectorGrid.bundled.js"></script>
   <script src="./Plugins/eight-bit-color-picker.min.js"></script>
   <script src="./Plugins/leaflet-sidebar.js"></script>
@@ -54,7 +50,7 @@
   <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。</div>
 
   <div class="border">
-    <div>
+    <div style="position: relative;">
       使用データ・年次の切り替え：<select id="dataset">
       </select>
       <span class="attribution" id="attribution">データ出典:<a href="https://www.stat.go.jp/data/kokusei/2020/index.html" target="_blank">令和2年国勢調査</a></span>
@@ -94,6 +90,12 @@
                 <canvas id="mouseChart"></canvas>
               </div>
             </details>
+            <div id="fromto" class="fromto" style="display: none;">
+              <div class="h3">グループ間分析</div>
+              A:<select id="selectFrom"></select> B:<select id="selectTo"></select><br>
+              <table class="fromtoTable">
+              </table>
+            </div>
             <div id="groupsContainer" ontouchstart="">
               <div id="group0" class="group">
                 <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span>
@@ -134,7 +136,7 @@
 
   <div id="inline" style="display:none;">
     <div><a id="download"><input type="button" value="csvファイルとして保存" onclick="downloadCsv()"/></a><input type="button" value="クリップボードにコピー" onclick="copyTable()"/></div>
-    <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label></div>
+    <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label><label><input type="radio" name="tableType" value="intergroup">グループ間クロス表</label></div>
     <div id="csvTableHeader"></div>
     <div style="overflow: scroll; height: 60vh">
 	     <table id="csvTable" class="csv"></table>
