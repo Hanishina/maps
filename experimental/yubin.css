@@ -1,0 +1,108 @@
+.table{
+    text-align: center;
+    width: 100%;
+    max-width: 60em;
+    cursor: default;
+}
+
+.title{
+    background-color: #c5e1fd;
+    font-weight: bold;
+}
+
+.row{
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5e5e5e;
+}
+
+.region{
+    background-color: #f2deff;
+}
+.region:hover{
+    background-color: #cdaee2;
+}
+
+.area{
+    background-color: #fce3e3;
+}
+.area:hover{
+    background-color: #e7b2b2;
+}
+
+.address{
+    background-color: #ebfce3;
+}
+.address:hover{
+    background-color: #c1e2b2;
+}
+
+.iconimg{
+    width: 100%;
+    max-width: 1.5em;
+}
+
+.item{
+    border-style: solid;
+    border-width: 0px 1px;
+    border-color: #a7a7a7;
+    padding: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon{
+    padding: 0px;
+    width: 4%;
+}
+
+.code{
+    width: 12%;
+}
+
+.regionName{
+    width: 50%;
+}
+
+.kubun{
+    width: 34%;
+}
+
+.areaName{
+    width: 38%;
+}
+
+.childCount{
+    width: 8%;
+}
+
+.ken{
+    width: 8%;
+}
+
+.shi{
+    width: 14%;
+}
+
+.addressName{
+    width: 48%;
+}
+
+.shuhai{
+    width: 14%;
+}
+
+#up{
+    width: fit-content;
+    cursor: default;
+    border-style: solid;
+    border-width: 1.5px;
+    background-color: #e0ffec;
+    border-radius: 8px;
+    padding: 4px;
+}
+#up:hover{
+    background-color: #b8e0c7;
+}

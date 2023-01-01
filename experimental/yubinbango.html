@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>郵便番号</title>
+  <meta name="viewport" content="width=device-width">
+  <link href="./yubin.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    let xmlData;
+    let current;
+    let shuhaiException;
+    $.ajax({
+        url: "./generatedTree.xml",
+        type: "GET",
+        dataType: "XML",
+        cache: false,
+        success: disp,
+        error: function(err){console.log(err);}
+    });
+    $.getJSON("./shuhaiException.json", null, function(data){shuhaiException = data});
+    function init(){
+        $("#up").on("click", function(){
+            if(current[0].nodeName !== "root"){
+                current = current.parent();
+                newTable();
+            }
+        });
+    }
+    function disp(xml){
+        xmlData = xml;
+        let root = $(xml).find("root");
+        current = root;
+        newTable();
+    }
+    function itemClick(e){
+        let code = $(e.currentTarget).attr("code").replaceAll("/", "\\/");
+        let clickedElement = $(current).find("[code=" + code + "]")
+        if(clickedElement[0].nodeName !== "address"){
+            current = $(current).find("[code=" + code + "]");
+            newTable();
+            $(window).scrollTop(0);
+        }
+    }
+    function newTable(){
+        let regTbl = $("#regionTable");
+        let areTbl = $("#areaTable");
+        let addTbl = $("#addressTable");
+        //clear table
+        regTbl.children().not(".title").remove();
+        regTbl.hide();
+        areTbl.children().not(".title").remove();
+        areTbl.hide();
+        addTbl.children().not(".title").remove();
+        addTbl.hide();
+        $("#mes").empty();
+
+        //make table
+        $(current).children().each((i, item)=>{
+            let row;
+            if(item.nodeName === "region"){
+                regTbl.show();
+                row = $("<div>").attr({class: "row region", code: $(item).attr("code")}).on("click", itemClick);
+                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./folder.png", class: "iconimg"})).appendTo(row);
+                $("<div>").attr({class: "item code"}).html($(item).attr("code").replaceAll("/", "<br>")).appendTo(row);
+                $("<div>").attr({class: "item regionName"}).text($(item).attr("name")).appendTo(row);
+                $("<div>").attr({class: "item kubun"}).text($(item).attr("kubun")).appendTo(row);
+                regTbl.append(row);
+            }else if(item.nodeName === "area"){
+                areTbl.show();
+                row = $("<div>").attr({class: "row area", code: $(item).attr("code")}).on("click", itemClick);
+                let shuhai = $(item).attr("shuhai") ?? $(item).attr("name")
+                if($(item).attr("name") === "(鉄道郵便局)"){
+                    shuhai = "";
+                }
+                if($(item).attr("delete")){
+                    row.css({backgroundColor: "#eeeeee"});
+                    row.hover((e)=>{$(e.currentTarget).css({backgroundColor: "#cccccc"});}, (e)=>{$(e.currentTarget).css({backgroundColor: "#eeeeee"});});
+                    shuhai = "";
+                }
+                let childCount = $(item).children("area").not("[delete=1]").length;
+                if(childCount == 0){childCount = ""};
+                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./yubin.png", class: "iconimg"})).appendTo(row);
+                $("<div>").attr({class: "item code"}).html($(item).attr("code").replaceAll("〒", "").replaceAll("/", "<br>")).appendTo(row);
+                $("<div>").attr({class: "item areaName"}).text($(item).attr("name")).appendTo(row);  
+                $("<div>").attr({class: "item areaName"}).text(shuhai).appendTo(row);
+                $("<div>").attr({class: "item childCount"}).text(childCount).appendTo(row);
+                areTbl.append(row);
+            }else if(item.nodeName === "address"){
+                addTbl.show();
+                let shuhai = $(item).parent().attr("shuhai") || $(item).parent().attr("name");
+                if($(current).attr("default")){
+                    let match = shuhaiException.filter((x)=>{return x.code === $(item).attr("code").replaceAll("〒", "") || x.code === $(item).attr("code").replaceAll("〒", "").substr(0, 5)});
+                    if(match.length){
+                        shuhai = match[0].shuhai;
+                        shuhaiColor = "#123456";
+                    }else{
+                        shuhai = $(current).attr("default");
+                    }
+                }
+                row = $("<div>").attr({class: "row address", code: $(item).attr("code")}).on("click", itemClick);
+                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./point.png", class: "iconimg"})).appendTo(row);
+                $("<div>").attr({class: "item code"}).text($(item).attr("code").replaceAll("〒", "")).appendTo(row);
+                $("<div>").attr({class: "item ken"}).text($(item).attr("ken")).appendTo(row);
+                $("<div>").attr({class: "item shi"}).text($(item).attr("shikuchoson")).appendTo(row);
+                $("<div>").attr({class: "item addressName"}).text($(item).attr("name")).appendTo(row);
+                $("<div>").attr({class: "item shuhai"}).text(shuhai).appendTo(row);  
+                addTbl.append(row);
+            }
+        });
+        
+
+        if(!current.children().length){
+            $("#mes").text(current.text());
+        }
+
+        //write path
+        let text = "";
+        if(current.attr("name")){
+            text = " >" + current.attr("code").replaceAll("〒", "") + " " + current.attr("name");
+        }
+        current.parents().each((i, el)=>{
+            if($(el).attr("name")){
+                text = " >" + $(el).attr("code").replaceAll("〒", "") + " " + $(el).attr("name") + text;
+            }
+        });
+        text = "root" + text;
+        $("#path").text(text);
+    }
+  </script>
+</head>
+<body onload="init()">
+    <div id="path">root</div>
+    <div id="up">上の階層へ</div>
+    <div id="regionTable" class="table">
+        <div class="row title">
+            <div class="item icon"></div><div class="item code">〒地域番号</div><div class="item regionName">地域名</div><div class="item kubun">地域区分局</div>
+        </div>
+    </div>
+    <div id="areaTable" class="table" style="display: none;">
+        <div class="row title">
+            <div class="item icon"></div><div class="item code">〒郵便番号</div><div class="item areaName">旧集配局名</div><div class="item areaName">現行集配局</div><div class="item childCount">下位区数</div>
+        </div>
+    </div>
+    <div id="addressTable" class="table" style="display: none;">
+        <div class="row title">
+            <div class="item icon"></div><div class="item code">〒郵便番号</div><div class="item ken">都道府県</div><div class="item shi">市区町村</div><div class="item addressName">町域名</div><div class="item shuhai">担当集配局</div>
+        </div>
+    </div>
+    <div id="mes"></div>
+</body>
