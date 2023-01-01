@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <title>郵便番号</title>
   <meta name="viewport" content="width=device-width">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZC2WPE0KKJ');
+    </script>
+  <link href="../historymap.css" rel="stylesheet" type="text/css">
   <link href="./yubin.css" rel="stylesheet" type="text/css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
@@ -47,11 +57,11 @@
         let areTbl = $("#areaTable");
         let addTbl = $("#addressTable");
         //clear table
-        regTbl.children().not(".title").remove();
+        regTbl.find("tr").not(".tHeader").remove();
         regTbl.hide();
-        areTbl.children().not(".title").remove();
+        areTbl.find("tr").not(".tHeader").remove();
         areTbl.hide();
-        addTbl.children().not(".title").remove();
+        addTbl.find("tr").not(".tHeader").remove();
         addTbl.hide();
         $("#mes").empty();
 
@@ -60,15 +70,15 @@
             let row;
             if(item.nodeName === "region"){
                 regTbl.show();
-                row = $("<div>").attr({class: "row region", code: $(item).attr("code")}).on("click", itemClick);
-                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./folder.png", class: "iconimg"})).appendTo(row);
-                $("<div>").attr({class: "item code"}).html($(item).attr("code").replaceAll("/", "<br>")).appendTo(row);
-                $("<div>").attr({class: "item regionName"}).text($(item).attr("name")).appendTo(row);
-                $("<div>").attr({class: "item kubun"}).text($(item).attr("kubun")).appendTo(row);
+                row = $("<tr>").attr({class: "row region", code: $(item).attr("code")}).on("click", itemClick);
+                $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/folder.png", class: "iconimg"})).appendTo(row);
+                $("<td>").attr({class: "item code"}).html($(item).attr("code").replaceAll("/", "<br>")).appendTo(row);
+                $("<td>").attr({class: "item regionName"}).text($(item).attr("name")).appendTo(row);
+                $("<td>").attr({class: "item kubun"}).text($(item).attr("kubun")).appendTo(row);
                 regTbl.append(row);
             }else if(item.nodeName === "area"){
                 areTbl.show();
-                row = $("<div>").attr({class: "row area", code: $(item).attr("code")}).on("click", itemClick);
+                row = $("<tr>").attr({class: "row area", code: $(item).attr("code")}).on("click", itemClick);
                 let shuhai = $(item).attr("shuhai") ?? $(item).attr("name")
                 if($(item).attr("name") === "(鉄道郵便局)"){
                     shuhai = "";
@@ -80,11 +90,11 @@
                 }
                 let childCount = $(item).children("area").not("[delete=1]").length;
                 if(childCount == 0){childCount = ""};
-                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./yubin.png", class: "iconimg"})).appendTo(row);
-                $("<div>").attr({class: "item code"}).html($(item).attr("code").replaceAll("〒", "").replaceAll("/", "<br>")).appendTo(row);
-                $("<div>").attr({class: "item areaName"}).text($(item).attr("name")).appendTo(row);  
-                $("<div>").attr({class: "item areaName"}).text(shuhai).appendTo(row);
-                $("<div>").attr({class: "item childCount"}).text(childCount).appendTo(row);
+                $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/yubin.png", class: "iconimg"})).appendTo(row);
+                $("<td>").attr({class: "item code"}).html($(item).attr("code").replaceAll("〒", "").replaceAll("/", "<br>")).appendTo(row);
+                $("<td>").attr({class: "item areaName"}).text($(item).attr("name")).appendTo(row);  
+                $("<td>").attr({class: "item areaName"}).text(shuhai).appendTo(row);
+                $("<td>").attr({class: "item childCount"}).text(childCount).appendTo(row);
                 areTbl.append(row);
             }else if(item.nodeName === "address"){
                 addTbl.show();
@@ -98,13 +108,13 @@
                         shuhai = $(current).attr("default");
                     }
                 }
-                row = $("<div>").attr({class: "row address", code: $(item).attr("code")}).on("click", itemClick);
-                $("<div>").attr({class: "item icon"}).append($("<img>").attr({src: "./point.png", class: "iconimg"})).appendTo(row);
-                $("<div>").attr({class: "item code"}).text($(item).attr("code").replaceAll("〒", "")).appendTo(row);
-                $("<div>").attr({class: "item ken"}).text($(item).attr("ken")).appendTo(row);
-                $("<div>").attr({class: "item shi"}).text($(item).attr("shikuchoson")).appendTo(row);
-                $("<div>").attr({class: "item addressName"}).text($(item).attr("name")).appendTo(row);
-                $("<div>").attr({class: "item shuhai"}).text(shuhai).appendTo(row);  
+                row = $("<tr>").attr({class: "row address", code: $(item).attr("code")}).on("click", itemClick);
+                $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/point.png", class: "iconimg"})).appendTo(row);
+                $("<td>").attr({class: "item code"}).text($(item).attr("code").replaceAll("〒", "")).appendTo(row);
+                $("<td>").attr({class: "item ken"}).text($(item).attr("ken")).appendTo(row);
+                $("<td>").attr({class: "item shi"}).text($(item).attr("shikuchoson")).appendTo(row);
+                $("<td>").attr({class: "item addressName"}).text($(item).attr("name")).appendTo(row);
+                $("<td>").attr({class: "item shuhai"}).text(shuhai).appendTo(row);  
                 addTbl.append(row);
             }
         });
@@ -130,22 +140,26 @@
   </script>
 </head>
 <body onload="init()">
+    <div class="header">
+        <div class="title">ディレクトリ式郵便番号簿</div><div>(試作版)</div>
+        <!--<div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>-->
+    </div>
     <div id="path">root</div>
     <div id="up">上の階層へ</div>
-    <div id="regionTable" class="table">
-        <div class="row title">
-            <div class="item icon"></div><div class="item code">〒地域番号</div><div class="item regionName">地域名</div><div class="item kubun">地域区分局</div>
-        </div>
-    </div>
-    <div id="areaTable" class="table" style="display: none;">
-        <div class="row title">
-            <div class="item icon"></div><div class="item code">〒郵便番号</div><div class="item areaName">旧集配局名</div><div class="item areaName">現行集配局</div><div class="item childCount">下位区数</div>
-        </div>
-    </div>
-    <div id="addressTable" class="table" style="display: none;">
-        <div class="row title">
-            <div class="item icon"></div><div class="item code">〒郵便番号</div><div class="item ken">都道府県</div><div class="item shi">市区町村</div><div class="item addressName">町域名</div><div class="item shuhai">担当集配局</div>
-        </div>
-    </div>
+    <table id="regionTable" class="table">
+        <tr class="row tHeader">
+            <th class="item icon"></th><th class="item code">〒地域番号</th><th class="item regionName">地域名</th><th class="item kubun">地域区分局</th>
+        </tr>
+    </table>
+    <table id="areaTable" class="table" style="display: none;">
+        <tr class="row tHeader">
+            <th class="item icon"></th><th class="item code">〒郵便番号</th><th class="item areaName">旧集配局名</th><th class="item areaName">現行集配局</th><th class="item childCount">下位区数</th>
+        </tr>
+    </table>
+    <table id="addressTable" class="table" style="display: none;">
+        <tr class="row tHeader">
+            <th class="item icon"></th><th class="item code">〒郵便番号</th><th class="item ken">都道府県</th><th class="item shi">市区町村</th><th class="item addressName">町域名</th><th class="item shuhai">担当集配局</th>
+        </tr>
+    </table>
     <div id="mes"></div>
 </body>

@@ -1,11 +1,12 @@
 .table{
+    font-size: medium;
     text-align: center;
     width: 100%;
     max-width: 60em;
     cursor: default;
 }
 
-.title{
+.tHeader{
     background-color: #c5e1fd;
     font-weight: bold;
 }
