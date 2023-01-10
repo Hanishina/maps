@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>郵便番号</title>
+  <link rel="icon" href="../favicon.ico" />
+  <title>ディレクトリ式郵便番号簿</title>
   <meta name="viewport" content="width=device-width">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
@@ -91,10 +92,13 @@
                 let childCount = $(item).children("area").not("[delete=1]").length;
                 if(childCount == 0){childCount = ""};
                 $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/yubin.png", class: "iconimg"})).appendTo(row);
-                $("<td>").attr({class: "item code"}).html($(item).attr("code").replaceAll("〒", "").replaceAll("/", "<br>")).appendTo(row);
+                $("<td>").attr({class: "item code"}).html($(item).attr("code").replaceAll("/", "")).appendTo(row);
                 $("<td>").attr({class: "item areaName"}).text($(item).attr("name")).appendTo(row);  
                 $("<td>").attr({class: "item areaName"}).text(shuhai).appendTo(row);
                 $("<td>").attr({class: "item childCount"}).text(childCount).appendTo(row);
+                if($(item).attr("name").replaceAll(/\(|\)/g, "") !== shuhai && $(item).attr("name") !== "(鉄道郵便局)"){
+                    row.find("td:nth-child(3)").css("color", "#777777");
+                }
                 areTbl.append(row);
             }else if(item.nodeName === "address"){
                 addTbl.show();
@@ -103,7 +107,6 @@
                     let match = shuhaiException.filter((x)=>{return x.code === $(item).attr("code").replaceAll("〒", "") || x.code === $(item).attr("code").replaceAll("〒", "").substr(0, 5)});
                     if(match.length){
                         shuhai = match[0].shuhai;
-                        shuhaiColor = "#123456";
                     }else{
                         shuhai = $(current).attr("default");
                     }
@@ -127,11 +130,11 @@
         //write path
         let text = "";
         if(current.attr("name")){
-            text = " >" + current.attr("code").replaceAll("〒", "") + " " + current.attr("name");
+            text = " >" + current.attr("code").replaceAll("/", "") + " " + current.attr("name");
         }
         current.parents().each((i, el)=>{
             if($(el).attr("name")){
-                text = " >" + $(el).attr("code").replaceAll("〒", "") + " " + $(el).attr("name") + text;
+                text = " >" + $(el).attr("code").replaceAll("/", "") + " " + $(el).attr("name") + text;
             }
         });
         text = "root" + text;
