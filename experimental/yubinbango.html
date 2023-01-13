@@ -80,6 +80,10 @@
             }else if(item.nodeName === "area"){
                 areTbl.show();
                 row = $("<tr>").attr({class: "row area", code: $(item).attr("code")}).on("click", itemClick);
+                let code = $(item).attr("code").replaceAll("_", "");
+                if(code.length > 4){
+                    code = code.substr(0, 3) + "-" + code.substr(3);
+                }
                 let shuhai = $(item).attr("shuhai") ?? $(item).attr("name")
                 if($(item).attr("name") === "(鉄道郵便局)"){
                     shuhai = "";
@@ -92,7 +96,7 @@
                 let childCount = $(item).children("area").not("[delete=1]").length;
                 if(childCount == 0){childCount = ""};
                 $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/yubin.png", class: "iconimg"})).appendTo(row);
-                $("<td>").attr({class: "item code"}).html($(item).attr("code").replaceAll("/", "")).appendTo(row);
+                $("<td>").attr({class: "item code"}).html(code).appendTo(row);
                 $("<td>").attr({class: "item areaName"}).text($(item).attr("name")).appendTo(row);  
                 $("<td>").attr({class: "item areaName"}).text(shuhai).appendTo(row);
                 $("<td>").attr({class: "item childCount"}).text(childCount).appendTo(row);
@@ -102,6 +106,10 @@
                 areTbl.append(row);
             }else if(item.nodeName === "address"){
                 addTbl.show();
+                let code = $(item).attr("code").replaceAll("_", "");
+                if(code.length > 4){
+                    code = code.substr(0, 3) + "-" + code.substr(3);
+                }
                 let shuhai = $(item).parent().attr("shuhai") || $(item).parent().attr("name");
                 if($(current).attr("default")){
                     let match = shuhaiException.filter((x)=>{return x.code === $(item).attr("code").replaceAll("〒", "") || x.code === $(item).attr("code").replaceAll("〒", "").substr(0, 5)});
@@ -113,7 +121,7 @@
                 }
                 row = $("<tr>").attr({class: "row address", code: $(item).attr("code")}).on("click", itemClick);
                 $("<td>").attr({class: "item icon"}).append($("<img>").attr({src: "./img/point.png", class: "iconimg"})).appendTo(row);
-                $("<td>").attr({class: "item code"}).text($(item).attr("code").replaceAll("〒", "")).appendTo(row);
+                $("<td>").attr({class: "item code"}).text(code).appendTo(row);
                 $("<td>").attr({class: "item ken"}).text($(item).attr("ken")).appendTo(row);
                 $("<td>").attr({class: "item shi"}).text($(item).attr("shikuchoson")).appendTo(row);
                 $("<td>").attr({class: "item addressName"}).text($(item).attr("name")).appendTo(row);
@@ -130,11 +138,11 @@
         //write path
         let text = "";
         if(current.attr("name")){
-            text = " >" + current.attr("code").replaceAll("/", "") + " " + current.attr("name");
+            text = " >" + current.attr("code").replaceAll("_", "") + " " + current.attr("name");
         }
         current.parents().each((i, el)=>{
             if($(el).attr("name")){
-                text = " >" + $(el).attr("code").replaceAll("/", "") + " " + $(el).attr("name") + text;
+                text = " >" + $(el).attr("code").replaceAll("_", "") + " " + $(el).attr("name") + text;
             }
         });
         text = "root" + text;
