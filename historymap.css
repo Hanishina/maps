@@ -133,7 +133,7 @@ ul.mylist li:before{
   height: 100%;
   background-color: #000000;
   opacity: 0.2;
-  z-index: 1010;
+  z-index: 10010;
 }
 
 #dialog{
@@ -146,7 +146,7 @@ ul.mylist li:before{
   font-size: 1em;
   text-align: center;
   border: solid 2px #aaa;
-  z-index: 1012;
+  z-index: 10012;
   box-shadow: 3px 3px 5px 0px #7F7F7F;
   animation: fadeIn 0.2s ease;
 }
@@ -512,6 +512,60 @@ div.chartContainer{
 
 .popupMenu div:hover{
   background-color: #ccc;
+}
+
+.saveloadbtn{
+  border: solid 1px #999999;
+  padding: 5px;
+  margin: 3px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.saveloadbtn:hover{
+  background-color: #ddd;
+}
+
+.saveTable{
+  border: solid 2px #3c708f;
+  height: 45vh;
+  overflow-y: scroll;
+}
+
+.saveTable .slot{
+  border: solid 1px #aaaaaa;
+  position: relative;
+  cursor: pointer;
+  padding: 3px;
+}
+
+#saveTable .slot{
+  background-color: #e9f7ff;
+}
+
+#loadTable .slot{
+  background-color: #e9ffdf;
+}
+
+.saveTable .slot div:nth-child(1){
+  font-weight: bold;
+}
+
+.saveTable .slot div:nth-child(2){
+  font-size: 12px;
+  color: #666666;
+}
+
+.saveTable .slot div:nth-child(3){
+  font-size: 12px;
+  color: #666666;
+}
+
+.saveTable .slot div:nth-child(4){
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #dddddd;
 }
 
 /*ツールチップ(https://www.jungleocean.com/programming/190308tooltip-css)*/

@@ -11,7 +11,6 @@ let dialog_changeDataset;
 let dialog_groupMenu;
 
 let selectedFeatures = [];
-selectedFeatures[0] = [];
 
 let currentDataset; //選択中のデータセット(国勢調査2015など)[obj]
 let currentCategory; //選択中のサブデータセット(DID人口など)[obj]
@@ -23,13 +22,323 @@ let cursorObj;
 let dragging = false;
 let dragStart = {x:0, y:0};
 
-const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
-let newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
-let groupNames = ["グループ1"];
-let groupColors = ["#cc0000"];
+//const DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
+//let newGroupNo = 2; //新規グループ作成時の表示名(indexではない)
+//let groupNames = ["グループ1"];
+//let groupColors = ["#cc0000"];
+
+let saveDataArr = [];
+let currentSave;
 
 let geojsonFiles = {};
 let csvObjs = {};
+
+
+class Group{
+  static groups = [];
+  static newGroupNo = 1;
+  static DefaultColorNo = [112, 138, 149, 115, 76, 199, 98, 238] //red, blue, green, yellow, purple, lightblue, orange, pink
+  static template;
+
+  constructor(option){
+    this.id = Group.groups.length;
+    this.name = "グループ" + Group.newGroupNo;
+    this.colorNo = Group.DefaultColorNo[Group.newGroupNo - 1] || 238;
+    Group.newGroupNo++;
+
+    let newGroup = $(Group.template).clone(false);
+    $(newGroup).attr("id", "group" + this.id);
+    $(newGroup).find(".groupName").text(this.name);
+    $(newGroup).on("click", this.click.bind(this));
+    $(newGroup).find(".columnName").on("change", columnChange);
+    $(newGroup).find(".menuBtn").on("click", this.menuOpen.bind(this));
+    let menu = $(newGroup).find(".popupMenu");
+    $(menu).find(".resetGroup").on("click", function(){
+      //グループ内に選択済みの地物が存在するときのみ発動
+      if(selectedFeatures[this.id].length > 0){
+        dialog_reset.msg = Group.getName(this.id) + "の選択を全て解除しますか？";
+        dialog_reset.buttons = [{id: "determ", text: "OK", onclick: this.reset.bind(this)}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
+        dialog_reset.show();
+      }
+    }.bind(this));
+    $(menu).find(".deleteGroup").on("click", function(){
+      dialog_delete.msg = Group.getName(this.id) + "を削除しますか？";
+      dialog_delete.buttons = [{id: "determ", text: "OK", onclick: this.delete.bind(this)}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
+      dialog_delete.show();
+    }.bind(this));
+    $(menu).find(".changeGroupColor").on("click", function(){
+      colorPicker[this.id].show();
+    }.bind(this));
+    $(menu).find(".changeGroupName").on("click", this.changeName.bind(this));
+    $(newGroup).show();
+
+    $("#groupsContainer").append(newGroup);
+
+    selectedFeatures.push([]);
+    Group.groups.push(this);
+    
+    colorPicker[this.id] = new EightBitColorPicker({el: $(newGroup).find(".colorPicker")[0], color: this.colorNo});
+    //円グラフ初期化処理
+    let labels = currentCategory.data.map(obj => {return obj.label});
+    let colors = currentCategory.data.map(obj => {return obj.color});
+    chart[this.id] = new Chart($(newGroup).find(".groupChart"), {type: "pie", data:{labels: labels, datasets:[{backgroundColor: colors}]}});
+
+    colorPicker[this.id].addEventListener("colorChange", this.colorChanged.bind(this));
+    this.colorCode = (colorPicker[this.id].getHexColor());
+
+    $(newGroup).find(".columnName").val(currentColumn.name);
+    rewriteSumTable(this.id);
+    if(currentDataset.fromto){
+      fromtoSelectorSet();
+    }
+    
+    this.element = $(newGroup);
+    this.click();
+
+    //idチェック
+    if(Group.groups.length - 1 != this.id){
+      console.log("WARNING:グループIDが不正です");
+    }
+  }
+
+  static setTemplate(el){
+    Group.template = el;
+  }
+
+  /*
+  static init(){
+    let g = Group.groups[0];
+    $("#group0").on("click", g.click.bind(g));
+    $("#group0").find(".menuBtn").on("click", g.menuOpen.bind(g));
+    let menu = $("#group0").find(".popupMenu");
+    $(menu).find(".resetGroup").on("click", g.reset.bind(g));
+    $(menu).find(".deleteGroup").on("click", g.delete.bind(g));
+    $(menu).find(".changeGroupColor").on("click", function(){
+      colorPicker[0].show();
+    });
+    $(menu).find(".changeGroupName").on("click", g.changeName.bind(g));
+
+    colorPicker[0] = new EightBitColorPicker({el: $("#group0").find(".colorPicker")[0], color: 112});
+    colorPicker[0].addEventListener("colorChange", e=> selectColor(e));
+    Group.groups[0].colorCode = colorPicker[0].getHexColor();
+    Group.groups[0].element = $("#group0");
+
+    $("#group0").find(".columnName").on("change", columnChange);
+    $("#group0").find(".columnName").val("POPULATION");
+    currentColumn = currentCategory.data[0];
+    $("#group0").trigger("click"); //groupSelectを実行
+  }
+  */
+
+  static getName(n){
+    if(isNaN(n)){
+      return Group.groups.map((g)=>{return g.name});
+    }else{
+      return Group.groups[n].name;
+    }
+  }
+
+  static getColorNo(n){
+    if(isNaN(n)){
+      return Group.groups.map((g)=>{return g.colorNo});
+    }else{
+      return Group.groups[n].colorNo;
+    }
+  }
+
+  static getColor(n){
+    if(isNaN(n)){
+      return Group.groups.map((g)=>{return g.colorCode});
+    }else{
+      return Group.groups[n].colorCode;
+    }
+  }
+
+  static getElement(n){
+    if(isNaN(n)){
+      return Group.groups.map((g)=>{return g.element});
+    }else{
+      return Group.groups[n].element;
+    }
+  }
+
+  static resetAll(){
+    //地図上の色をリセット
+    selectedFeatures.flat().forEach(function(f){
+      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+    });
+    Group.groups.forEach((g)=>{
+      $("#group" + g.id).remove();
+    });
+    Group.groups = [];
+    colorPicker = [];
+    chart = [];
+    selectedFeatures = [];
+    Group.newGroupNo = 1;
+    currentSelectFromto = {A: "cursor", B: "cursor"};
+  }
+
+  click(){
+    //元のグループの枠線を灰色に戻す
+    Group.getElement().forEach((el)=>{
+      $(el).css({border: "3px solid #777", backgroundColor: ""});
+    });
+
+    //クリックされたグループの枠線を赤くする
+    $(this.element).css({border: "3px solid #a00", backgroundColor: "#feffde"});
+    currentGroup = this.id;
+  }
+
+  reset(){
+    let n = this.id;
+    selectedFeatures[n].forEach(function(f){
+      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+    });
+    selectedFeatures[n].splice(0);
+
+    rewriteSumTable(n);
+  }
+
+  delete(){
+    let n = this.id;
+    selectedFeatures[n].forEach(function(f){
+      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
+    });
+
+    selectedFeatures.splice(n, 1);
+    colorPicker.splice(n, 1);
+    chart.splice(n, 1);
+    $(Group.getElement(n)).remove();
+    Group.groups.splice(n, 1);
+    Group.groups.forEach((g, i)=>{g.id = i});
+    //後続のグループのidを変更
+    for(let i=(n+1); i<=selectedFeatures.length; i++){
+      $("#group" + i).attr("id", "group" + (i-1));
+    }
+
+    //全グループを削除した場合
+    if(!Group.groups.length){
+      Group.newGroupNo = 1;
+      new Group;
+    }
+    
+    if(!Group.groups[n]){ //最後のグループを削除した場合
+      currentGroup--;
+    }
+
+    if(currentDataset.fromto){
+      if(n <= currentSelectFromto.A && currentSelectFromto.A != 0){
+        currentSelectFromto.A --;
+      }
+      if(n <= currentSelectFromto.B && currentSelectFromto.B != 0){
+        currentSelectFromto.B --;
+      }
+      fromtoSelectorSet();
+    }
+
+    Group.groups[currentGroup].click();
+
+  }
+
+  changeName(){
+    let nameArea = $(this.element).find(".groupName");
+    $(nameArea).text("");
+    $(nameArea).append($("<input>").attr({type: "text", name: "groupName", placeholder: this.name}).keypress(function(e){
+      if(e.which == 13){
+        $(this).next().click();
+      }
+    }));
+    let submitBtn = $("<input>").attr({type: "button", value: "OK"}).on("click", function(){
+      if($("input[name='groupName']").val()){
+        this.setName($("input[name='groupName']").val());
+      }
+      $("#sidebar").off("click.changeName");
+    }.bind(this));
+    $(nameArea).append(submitBtn);
+    $("input[name='groupName']").focus();
+    
+    //名前変更をキャンセル
+    $("#sidebar").on("click.changeName", function(e){
+      //グループ名表示位置クリック時は作動させない
+      if(!$(e.target).closest(".h3").length){
+        let nameArea = $(this.element).find(".groupName")
+        $(nameArea).empty();
+        $(nameArea).text(this.name);
+        $("#sidebar").off("click.changeName");
+      }
+    }.bind(this));
+  }
+
+  menuOpen(e){
+    //各グループのメニュー・名前変更をリセット
+    Group.getElement().forEach((el, index)=>{
+      $(el).find(".popupMenu").hide();
+      $(el).find(".groupName").empty();
+      $(el).find(".groupName").text(Group.getName(index));
+    });
+    $("#sidebar").off("click.changeName");
+
+    $(this.element).find(".popupMenu").show();
+    $("#sidebar").on("click.groupmenu", (e)=>{
+      //メニューボタンクリック時は作動させない
+      if(!e.target.closest("button") || e.target.closest("button").className !== "menuBtn"){
+        $(".popupMenu").each(function(){
+          $(this).hide();
+        });
+        $("#sidebar").off("click.groupMenu");
+      }
+    });
+  }
+
+
+  colorChanged(){
+    this.colorNo = colorPicker[this.id].get8BitColor();
+    this.colorCode = colorPicker[this.id].getHexColor();
+    if(selectedFeatures[this.id]){
+      let color = this.colorCode;
+      selectedFeatures[this.id].forEach(function(f){
+        polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:color ,fillOpacity:0.4, opacity:0});
+      });
+    }
+  }
+
+  addFeatures(features){
+    //引数は地物コードの配列
+    features.forEach((code)=>{
+      let match = geojsonFiles[currentDataset.polygonObj].features.find((f)=>{
+        return(f.properties.CODE5 === code);
+      });
+      if(match){
+        let feature = match.properties;
+        let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
+        if(currentDataset.fromto){
+          let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (feature.CODE || feature.CODE5), true);
+          csvData.FROMTO = fromtoData;
+        }
+        //polygonのデータとcsvのデータを合体
+        Object.assign(feature, csvData);
+        if(!feature.NODATA){
+          selectedFeatures[this.id].push(feature);
+          polygonLayer.setFeatureStyle(match.properties.uid, {fill: true, fillColor:(Group.getColor(this.id)) ,fillOpacity:0.4, opacity:0});
+        }
+      }
+    });
+  }
+
+  setName(name){
+    this.name = name;
+    if(currentDataset.fromto){
+      fromtoSelectorSet();
+    }
+    let nameArea = $(this.element).find(".groupName");
+    $(nameArea).empty();
+    $(nameArea).text(this.name);
+  }
+
+  setColor(colorNo){
+    colorPicker[this.id].updateColor(colorNo);
+  }
+}
 
 
 async function getJson(name, date){
@@ -248,8 +557,10 @@ async function init(){
   });
   $("#category").val("population");
 
-  $("#dataset").on("change", datasetChange);
+  $("#dataset").on("change", datasetOnchange);
   $("#category").on("change", categoryChange);
+
+  currentColumn = currentCategory.data[0];
 
 
   /*--- chartの初期化処理 ---*/
@@ -272,7 +583,7 @@ async function init(){
       maintainAspectRatio: false,
     }
   });
-  chart[0] = new Chart($("#group0").find(".groupChart"), {
+  chart[0] = new Chart($("#groupTemplate").find(".groupChart"), {
     type: "pie",
     options: {
       maintainAspectRatio: false,
@@ -280,26 +591,8 @@ async function init(){
   });
 
   /*--- グループ内コンテンツの初期化処理 ---*/
-
-  $("#group0").on("click", groupSelect);
-  $("#group0").find(".menuBtn").on("click", groupMenu);
-  let menu = $("#group0").find(".popupMenu");
-  $(menu).find(".resetGroup").on("click", resetGroup);
-  $(menu).find(".deleteGroup").on("click", deleteGroup);
-  $(menu).find(".changeGroupColor").on("click", function(e){
-    let n = $(this).parents(".group").attr("id").substr(5);
-    colorPicker[n].show();
-  });
-  $(menu).find(".changeGroupName").on("click", changeGroupName);
-
-  colorPicker[0] = new EightBitColorPicker({el: $("#group0").find(".colorPicker")[0], color: 112});
-  colorPicker[0].addEventListener("colorChange", e=> selectColor(e));
-
-
-  $("#group0").find(".columnName").on("change", columnChange);
-  $("#group0").find(".columnName").val("POPULATION");
-  currentColumn = currentCategory.data[0];
-  $("#group0").trigger("click"); //groupSelectを実行
+  Group.setTemplate($("#groupTemplate"));
+  Group.groups[0] = new Group();
 
   /*--- fromtoテーブル ---*/
   $("#selectFrom").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
@@ -328,8 +621,8 @@ async function init(){
 
   /*--- モーダルウィンドウ初期化処理 ---*/
 
-  $('.inline').modaal({
-    content_source: '#inline',
+  $('#tableOpen').modaal({
+    content_source: '#csvModal',
     before_open: openTable,
     before_close: closeTable
   });
@@ -337,6 +630,16 @@ async function init(){
   $('input[name="tableType"]').change(function(){
     closeTable();
     openTable();
+  });
+
+  $("#savebtn").modaal({
+    content_source: "#saveModal",
+    before_open: saveOpen
+  });
+
+  $("#loadbtn").modaal({
+    content_source: "#loadModal",
+    before_open: loadOpen
   });
 
   /*--- トースト初期化処理 ---*/
@@ -358,6 +661,61 @@ async function init(){
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   }
+
+  /*--- 保存ウインドウ処理 ---*/
+  if(window.localStorage.getItem("calc_saveData")){
+    saveDataArr = JSON.parse(window.localStorage.getItem("calc_saveData"));
+  }
+  let table = $("#saveTable,#loadTable");
+  saveDataTableRedraw();
+
+  table.on("click", ".slot", e=>{
+    table.children().removeAttr("style selected");
+    $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+  });
+
+  table.on("click", ".slot .delete", e=>{
+    let id = $(e.currentTarget).parent().attr("value");
+    let saveDataName = saveDataArr[id].name;
+    let dialog = new Dialog({msg: "「" + saveDataName + "」を削除しますか？", buttons: [{id: "determ", text: "OK", onclick: function(){
+      saveDataArr.splice(id, 1);
+      window.localStorage.setItem("calc_saveData", JSON.stringify(saveDataArr));
+      saveDataTableRedraw();
+      $("#saveTable").find("[value='" + saveDataArr.length + "']").click();
+    }}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]});
+    dialog.show();
+  });
+
+  $("#saveModal").find("#cancel").on("click", ()=>{
+    $("#savebtn").modaal("close");
+  });
+
+  $("#loadModal").find("#cancel").on("click", ()=>{
+    $("#loadbtn").modaal("close");
+  });
+
+  $("#saveModal").find("#save").on("click", function(){
+    let saveDataName = $("[name='saveDataName']").val();
+    let saveData = makeSavedata(saveDataName);
+    console.log(saveData);
+    let index = $("#saveTable").children("[selected]").attr("value");
+    saveDataArr[index] = saveData;
+    saveDataArr.sort((a, b)=>{return new Date(b.createTime) - new Date(a.createTime)});
+    window.localStorage.setItem("calc_saveData", JSON.stringify(saveDataArr));
+    currentSave = saveData;
+
+    saveDataTableRedraw();
+    $("#saveTable").find("[value='0']").click();
+  });
+
+  $("#loadModal").find("#load").on("click", function(){
+    let index = $("#loadTable").children("[selected]").attr("value");
+    if(!isNaN(index)){
+      currentSave = saveDataArr[index];
+      $("#loadbtn").modaal("close");
+      loadData(currentSave);
+    }
+  });
 
   /*--- 地図データ・統計データ読み込み ---*/
 
@@ -457,7 +815,7 @@ function fromtoSelectorSet(){
   $("#selectFrom").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
   $("#selectTo").append($("<option>").attr({value: "cursor"}).text("カーソル位置"));
 
-  groupNames.forEach((name, i)=>{
+  Group.getName().forEach((name, i)=>{
     $("#selectFrom").append($("<option>").attr({value: i}).text(name));
     $("#selectTo").append($("<option>").attr({value: i}).text(name));
   });
@@ -495,7 +853,7 @@ function clickEvent(obj){
     //polygonのデータとcsvのデータを合体
     Object.assign(feature, csvData);
     selectedFeatures[currentGroup].push(feature);
-    polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
+    polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(Group.getColor(currentGroup)) ,fillOpacity:0.4, opacity:0});
 
   }else{  //クリックした地物が未選択の場合(クリックした地物を追加)
     if(!obj.layer.properties.NODATA){  //NODATAはクリック不可
@@ -508,7 +866,7 @@ function clickEvent(obj){
       //polygonのデータとcsvのデータを合体
       Object.assign(feature, csvData);
       selectedFeatures[currentGroup].push(feature);
-      polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(groupColors[currentGroup]) ,fillOpacity:0.4, opacity:0});
+      polygonLayer.setFeatureStyle(feature.uid, {fill: true, fillColor:(Group.getColor(currentGroup)) ,fillOpacity:0.4, opacity:0});
     }
   }
 
@@ -754,6 +1112,67 @@ function calcFromto(featuresA, featuresB){
   }
 }
 
+function constructGroupTable(n){
+  //nは数字または"Template"
+  if(!currentCategory.pie){ //円グラフ以外
+    $("#group" + n).find(".groupTable").show();
+    $("#group" + n).find(".chartContainer").hide();
+    let groupTable = $("#group" + n).find(".groupTable");
+    $(groupTable).empty();
+    for(i=0; i<currentCategory.data.length; i++){
+      let th = $("<th>").attr("class", "groupCol_name" + i);
+      if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
+        $(th).text(currentCategory.data[i].label || "");
+        if(currentCategory.data[i].desc !== undefined){ //ツールチップを付加
+          let div = $("<div>", {class: "tooltip"});
+          $("<i>", {class: "fas fa-question-circle", style: "color:#0f5f91;"}).appendTo(div);
+          $("<div>", {class: "description"}).text(currentCategory.data[i].desc).appendTo(div);
+          $(th).append(div);
+        }
+      }else{
+        $(th).css({display: "none"});
+      }
+      let td = $("<td>").attr("class", "groupCol_data" + i);
+      if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
+        $(td).text("");
+      }else{
+        $(td).css({display: "none"});
+      }
+      $(groupTable).append($("<tr>").append(th, td));
+    }
+  }else{ //円グラフ
+    $("#group" + n).find(".groupTable").hide();
+    $("#group" + n).find(".chartContainer").show();
+
+    if(!isNaN(n)){
+      let labels = currentCategory.data.map(obj => {return obj.label});
+      let colors = currentCategory.data.map(obj => {return obj.color});
+      chart[n].data.labels = labels;
+      chart[n].data.datasets = [{
+        backgroundColor: colors
+      }];
+      chart[n].update();
+    }
+    
+  }
+
+  //個別地物テーブルの更新
+  let columnSelector = $("#group" + n).find(".columnName");
+  $(columnSelector).empty();
+  currentCategory.data.forEach(e => {
+    let option = $("<option>");
+    if(Object.keys(e).length && !e.groupOnly){
+      $(option).attr({value: e.name}).text(e.label).appendTo(columnSelector);
+    }else{
+      //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
+      $(option).css({display: "none"});
+      $(columnSelector).append($("<span>", {style: "display: none;"}).append(option));
+    }
+  });
+  currentColumn = currentCategory.data[0];
+  
+}
+
 //グループの合計値書き換え
 function rewriteSumTable(n){
   if(!currentCategory.pie){ //テーブルの場合
@@ -812,46 +1231,7 @@ function rewriteSumTable(n){
 
 //グループの追加
 function addGroup(){
-  let newId = selectedFeatures.length;
-  let newGroup = $("#group0").clone(true);
-  $(newGroup).attr("id", "group" + newId);
-  $(newGroup).find(".groupName").text("グループ" + newGroupNo);
-  $("#groupsContainer").append(newGroup);
-  selectedFeatures.push([]);
-  groupNames.push("グループ" + newGroupNo);
-  colorPicker[newId] = new EightBitColorPicker({el: $("#group" + newId).find(".colorPicker")[0], color: (DefaultColorNo[newGroupNo - 1] || 238)});
-  //円グラフ初期化処理
-  let labels = currentCategory.data.map(obj => {return obj.label});
-  let colors = currentCategory.data.map(obj => {return obj.color});
-  chart[newId] = new Chart($("#group" + newId).find(".groupChart"), {type: "pie", data:{labels: labels, datasets:[{backgroundColor: colors}]}});
-
-  newGroupNo++
-  colorPicker[newId].addEventListener("colorChange", e=> selectColor(e));
-  groupColors.push(colorPicker[newId].getHexColor());
-  $("#group" + newId).find(".columnName").val(currentColumn.name);
-  rewriteSumTable(newId);
-  if(currentDataset.fromto){
-    fromtoSelectorSet();
-  }
-  $("#group" + newId).trigger("click");
-}
-
-//グループをクリックしたときの処理
-function groupSelect(){
-  let n = $(this).attr("id").substr(5);
-  //元のグループの枠線を灰色に戻す
-  if(selectedFeatures[currentGroup] !== undefined){
-    $("#group" + currentGroup).css({border: "3px solid #777", backgroundColor: ""});
-  }  //最後のクループをdeleteした場合は実行されない
-
-  //クリックされたグループの枠線を赤くする
-  if(selectedFeatures[n] !== undefined){
-    $("#group" + n).css({border: "3px solid #a00", backgroundColor: "#feffde"});
-    currentGroup = n;
-  }else{ //最後のクループをdeleteした場合
-    $("#group" + (n-1)).css({border: "3px solid #a00", backgroundColor: "#feffde"});
-    currentGroup = (n-1);
-  }
+  g = new Group();
 }
 
 //地物一覧テーブルのカテゴリ変更
@@ -862,161 +1242,6 @@ function columnChange(e){
     $("#group" + i).find(".columnName").val(currentColumn.name);
   }
 }
-
-//色変更時
-function selectColor(e){
-  //グループ番号nを取得(親要素のidから)
-  let n = parseInt($(e.target).parent().parent().attr("id").substr(5));
-  groupColors[n] = colorPicker[n].getHexColor();
-  if(selectedFeatures[n]){
-    selectedFeatures[n].forEach(function(f){
-      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:groupColors[n] ,fillOpacity:0.4, opacity:0});
-    });
-  }
-
-}
-
-//グループメニュー
-function groupMenu(e){
-  $(".popupMenu").each(function(){
-    $(this).hide();
-  });
-  let n = $(this).parents(".group").attr("id").substr(5);
-  $("#group" + n).find(".popupMenu").show();
-  $("#sidebar").on("click", closeGroupMenu);
-}
-
-function closeGroupMenu(e){
-  //メニューボタンクリック時は作動させない
-  if(!e.target.closest("button") || e.target.closest("button").className !== "menuBtn"){
-    $(".popupMenu").each(function(){
-      $(this).hide();
-    });
-    $("#sidebar").off("click", closeGroupMenu);
-  }
-}
-
-//グループの名称変更
-function changeGroupName(){
-  $(".groupName").each(function(){
-    let n = $(this).parents(".group").attr("id").substr(5);
-    $(this).empty();
-    $(this).text(groupNames[n]);
-  });
-  let n = $(this).parents(".group").attr("id").substr(5);
-  let nameArea = $("#group" + n).find(".groupName");
-  $(nameArea).text("");
-  $(nameArea).append($("<input>").attr({type: "text", name: "groupName", placeholder: groupNames[n]}).keypress(function(e){
-    if(e.which == 13){
-      $(this).next().click();
-    }
-  }));
-  let submitBtn = $("<input>").attr({type: "button", value: "OK"}).on("click", function(){
-    let n = $(this).parents(".group").attr("id").substr(5);
-    if($("input[name='groupName']").val()){
-      groupNames[n] = $("input[name='groupName']").val();
-    }
-    if(currentDataset.fromto){
-      fromtoSelectorSet();
-    }
-    let nameArea = $("#group" + n).find(".groupName");
-    $(nameArea).empty();
-    $(nameArea).text(groupNames[n]);
-  });
-  $(nameArea).append(submitBtn);
-  $("input[name='groupName']").focus();
-
-  $("#sidebar").on("click", cancelGroupName);
-
-}
-
-function cancelGroupName(e){
-  //グループ名表示位置クリック時は作動させない
-  if($(e.target).closest(".h3").length == 0){
-    $(".groupName").each(function(){
-      let n = $(this).parents(".group").attr("id").substr(5);
-      $(this).empty();
-      $(this).text(groupNames[n]);
-    });
-    $("#sidebar").off("click", cancelGroupName);
-  }
-}
-
-//リセットボタン処理
-function resetGroup(){
-  let n = $(this).parents(".group").attr("id").substr(5);
-  //グループ内に選択済みの地物が存在するときのみ発動
-  if(selectedFeatures[n].length > 0){
-    function determ(){
-      selectedFeatures[n].forEach(function(f){
-        polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
-      });
-      selectedFeatures[n].splice(0);
-
-      rewriteSumTable(n);
-    }
-
-    dialog_reset.msg = groupNames[n] + "の選択を全て解除しますか？";
-    dialog_reset.buttons = [{id: "determ", text: "OK", onclick: determ}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
-    dialog_reset.show();
-  }
-}
-
-//デリートボタン処理
-function deleteGroup(){
-  let n = parseInt($(this).parents(".group").attr("id").substr(5));
-  function determ(){
-    selectedFeatures[n].forEach(function(f){
-      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
-    });
-    //グループ数が1の場合、そのグループのリセットのみ行う
-    if(selectedFeatures.length === 1){
-      selectedFeatures[n].splice(0);
-      groupNames[n] = "グループ1";
-      $("#group" + n).find(".groupName").text(groupNames[n]);
-      newGroupNo = 2;
-      colorPicker[n].updateColor(112);
-      groupColors[n] = "#cc0000";
-      rewriteSumTable(n);
-      if(currentDataset.fromto){
-        fromtoSelectorSet();
-      }
-    }else{
-      selectedFeatures.splice(n, 1);
-      groupNames.splice(n, 1);
-      groupColors.splice(n, 1);
-      colorPicker.splice(n, 1);
-      chart.splice(n, 1);
-      $("#group" + n).remove();
-      //後続のグループのidを変更
-      for(let i=(n+1); i<=selectedFeatures.length; i++){
-        $("#group" + i).attr("id", "group" + (i-1));
-      }
-
-      if(selectedFeatures.length <= n){ //最後のグループを削除した場合
-        currentGroup--;
-      }
-
-      if(currentDataset.fromto){
-        if(n <= currentSelectFromto.A && currentSelectFromto.A != 0){
-          currentSelectFromto.A --;
-        }
-        if(n <= currentSelectFromto.B && currentSelectFromto.B != 0){
-          currentSelectFromto.B --;
-        }
-        fromtoSelectorSet();
-      }
-
-      $("#group" + currentGroup).trigger("click");
-    }
-  }
-
-  dialog_delete.msg = groupNames[n] + "を削除しますか？";
-  dialog_delete.buttons = [{id: "determ", text: "OK", onclick: determ}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
-  dialog_delete.show();
-
-}
-
 
 //表示カテゴリ変更
 function categoryChange(e){
@@ -1086,204 +1311,35 @@ function categoryChange(e){
   }
 
   //グループの書き換え
-  selectedFeatures.forEach((group, groupIdx) => {
-    if(!currentCategory.pie){ //円グラフ以外
-      $("#group" + groupIdx).find(".groupTable").show();
-      $("#group" + groupIdx).find(".chartContainer").hide();
-      let groupTable = $("#group" + groupIdx).find(".groupTable");
-      $(groupTable).empty();
-      for(i=0; i<currentCategory.data.length; i++){
-        let th = $("<th>").attr("class", "groupCol_name" + i);
-        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
-          $(th).text(currentCategory.data[i].label || "");
-          if(currentCategory.data[i].desc !== undefined){ //ツールチップを付加
-            let div = $("<div>", {class: "tooltip"});
-            $("<i>", {class: "fas fa-question-circle", style: "color:#0f5f91;"}).appendTo(div);
-            $("<div>", {class: "description"}).text(currentCategory.data[i].desc).appendTo(div);
-            $(th).append(div);
-          }
-        }else{
-          $(th).css({display: "none"});
-        }
-        let td = $("<td>").attr("class", "groupCol_data" + i);
-        if(Object.keys(currentCategory.data[i]).length && currentCategory.data[i].func !== "nonsum" && !currentCategory.data[i].singleOnly){ //currentCategory.data[i]が空でない場合
-          $(td).text("");
-        }else{
-          $(td).css({display: "none"});
-        }
-        $(groupTable).append($("<tr>").append(th, td));
-      }
-    }else{ //円グラフ
-      $("#group" + groupIdx).find(".groupTable").hide();
-      $("#group" + groupIdx).find(".chartContainer").show();
-
-      let labels = currentCategory.data.map(obj => {return obj.label});
-      let colors = currentCategory.data.map(obj => {return obj.color});
-      chart[groupIdx].data.labels = labels;
-      chart[groupIdx].data.datasets = [{
-        backgroundColor: colors
-      }];
-      chart[groupIdx].update();
-    }
-
-    //個別地物テーブルの更新
-    let columnSelector = $("#group" + groupIdx).find(".columnName");
-    $(columnSelector).empty();
-    currentCategory.data.forEach(e => {
-      let option = $("<option>");
-      if(Object.keys(e).length && !e.groupOnly){
-        $(option).attr({value: e.name}).text(e.label).appendTo(columnSelector);
-      }else{
-        //iOSではoptionに対してdisplay:noneが効かないので、spanで囲む
-        $(option).css({display: "none"});
-        $(columnSelector).append($("<span>", {style: "display: none;"}).append(option));
-      }
-    });
-    currentColumn = currentCategory.data[0];
-    rewriteSumTable(groupIdx);
-
-
+  constructGroupTable("Template");
+  selectedFeatures.forEach((f,i)=>{
+    constructGroupTable(i);
+    rewriteSumTable(i);
   });
-
+  
 }
 
 //データセット変更
-function datasetChange(e){
-  // データ保持・破棄共通処理
-  async function common(formerFeatures){
-    $(".loader, .loaderBG, .loaderCover").css("display", "inline");
-    polygonLayer.remove();
-    lineLayer.remove();
-    if(!geojsonFiles[currentDataset.polygonObj]){ //ポリゴンデータの取得が済んでいない場合
-      geojsonFiles[currentDataset.polygonObj] = await getJson(currentDataset.polygonFile, currentDataset.date);
-    }
-    polygonRedraw(geojsonFiles[currentDataset.polygonObj]);
-    if(!geojsonFiles[currentDataset.lineObj]){ //ラインデータの取得が済んでいない場合
-      geojsonFiles[currentDataset.lineObj] = await getJson(currentDataset.lineFile, currentDataset.date);
-    }
-    lineRedraw(geojsonFiles[currentDataset.lineObj]);
-    if(!csvObjs[currentDataset.csvObj]){ //csvデータの取得が済んでいない場合
-      csvObjs[currentDataset.csvObj] = await getCsv(currentDataset.csvFile);
-    }
-    if(currentDataset.fromto && !csvObjs[currentDataset.fromtoObj]){ //fromtoテーブルの取得
-      csvObjs[currentDataset.fromtoObj] = await getCsv(currentDataset.fromtoFile);
-    }
-
-    //---以下、選択地物保持の場合のみ実行---
-    if(formerFeatures){
-      formerFeatures.forEach((e)=>{
-        let match = geojsonFiles[currentDataset.polygonObj].features.find((f)=>{
-          return(f.properties.CODE5 === e.code);
-        });
-        if(match){
-          let feature = match.properties;
-          let csvData = getCsvData(csvObjs[currentDataset.csvObj], (feature.CODE || feature.CODE5));
-          if(currentDataset.fromto){
-            let fromtoData = getCsvData(csvObjs[currentDataset.fromtoObj], (feature.CODE || feature.CODE5), true);
-            csvData.FROMTO = fromtoData;
-          }
-          //polygonのデータとcsvのデータを合体
-          Object.assign(feature, csvData);
-          if(!feature.NODATA){
-            selectedFeatures[e.group].push(feature);
-            polygonLayer.setFeatureStyle(match.properties.uid, {fill: true, fillColor:(groupColors[e.group]) ,fillOpacity:0.4, opacity:0});
-          }
-        }
-      });
-    }
-    //---ここまで---
-
-    currentCategory = currentDataset.category[0];
-    currentColumn = currentCategory.data[0];
-
-    //カテゴリ選択部の更新
-    let categorySelector = document.getElementById("category");
-    while (categorySelector.firstChild) {
-      categorySelector.removeChild(categorySelector.firstChild);
-    }
-    let catCnt = 0;
-    currentDataset.category.forEach(f => {
-      if(f.name !== "csv" && f.name !== "fromto"){ //csv用のカテゴリセットは除く
-        let option = document.createElement("option");
-        option.value = f.name;
-        option.innerText = f.label;
-        categorySelector.appendChild(option);
-        catCnt++;
-      }
-    });
-    if(catCnt <= 1){
-      categorySelector.disabled = true;
-    }else{
-      categorySelector.disabled = false;
-    }
-    categorySelector.value = currentCategory.name;
-
-    //データ出典書き換え
-    $("#attribution").empty();
-    $("#attribution").append("データ出典:");
-    currentDataset.attr.forEach((attr, i)=>{
-      if(attr.link){
-        $("<a>", {href: attr.link, text: attr.label, target: "_blank"}).appendTo("#attribution");
-      }else{
-        $("<span>", {text: attr.label}).appendTo("#attribution");
-      }
-      if(currentDataset.attr[i+1]){$("#attribution").append("、");}
-    });
-
-    //カーソル位置テーブルの再描画
-    let event = new Event("change");
-    categorySelector.dispatchEvent(event);
-    rewriteCursorTable();
-
-    //fromtoテーブル
-    if(currentDataset.fromto){
-      $("#fromto").show();
-    }else{
-      $("#fromto").hide();
-    }
-
-    $(".loader, .loaderBG, .loaderCover").css("display", "none");
-  }
+function datasetOnchange(e){
   //「選択地物を保持してデータセット変更」
   async function save(){
     currentDataset = Dataset.find(f => {return f.name === e.target.value});
     //selectedFeaturesをコピー
     let formerFeatures = [];
-    selectedFeatures.forEach((group, groupIdx)=>{
-      group.forEach((feature)=>{
-        formerFeatures.push({code: feature.CODE5, group: groupIdx});
-      });
+    selectedFeatures.forEach((group)=>{
+      formerFeatures.push(group.map((feature)=>{return feature.CODE5}));
+      //selectedFeaturesをリセット
       group.length = 0;
     });
 
-    await common(formerFeatures);
+    await datasetChange(formerFeatures);
   }
   //「選択地物を破棄してデータセット変更」
   async function discard(){
     currentDataset = Dataset.find(f => {return f.name === e.target.value});
-    //地図上の色をリセット
-    selectedFeatures.flat().forEach(function(f){
-      polygonLayer.setFeatureStyle(f.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0});
-    });
-    for(let i=1; i < selectedFeatures.length; i++){
-      $("#group" + i).remove();
-    }
-    colorPicker.splice(1);
-    chart.splice(1);
-    selectedFeatures.splice(1);
-    selectedFeatures[0] = [];
-    $("#group0").find(".groupName").text("グループ1");
-    //group0を再選択
-    $("#group0").css({border: "3px solid #a00", backgroundColor: "#feffde"});
-    currentGroup = 0;
-    //値リセット
-    newGroupNo = 2;
-    groupNames = ["グループ1"];
-    groupColors = ["#cc0000"];
-    colorPicker[0].updateColor(112);
-    currentSelectFromto = {A: "cursor", B: "cursor"};
-
-    await common();
+    Group.resetAll();
+    new Group;
+    await datasetChange();
 
   }
 
@@ -1291,6 +1347,92 @@ function datasetChange(e){
   dialog_changeDataset.cancel = ()=>{$("#dataset").val(currentDataset.name);};
   dialog_changeDataset.buttons = [{id: "save", text: "選択地物を保持して変更", onclick: save}, {id: "discard", text: "選択地物をリセットして変更", onclick: discard}, {id: "cancel", text: "キャンセル", onclick: "cancel"}];
   dialog_changeDataset.show();
+}
+
+async function loadMapData(){
+  polygonLayer.remove();
+  lineLayer.remove();
+  if(!geojsonFiles[currentDataset.polygonObj]){ //ポリゴンデータの取得が済んでいない場合
+    geojsonFiles[currentDataset.polygonObj] = await getJson(currentDataset.polygonFile, currentDataset.date);
+  }
+  polygonRedraw(geojsonFiles[currentDataset.polygonObj]);
+  if(!geojsonFiles[currentDataset.lineObj]){ //ラインデータの取得が済んでいない場合
+    geojsonFiles[currentDataset.lineObj] = await getJson(currentDataset.lineFile, currentDataset.date);
+  }
+  lineRedraw(geojsonFiles[currentDataset.lineObj]);
+  if(!csvObjs[currentDataset.csvObj]){ //csvデータの取得が済んでいない場合
+    csvObjs[currentDataset.csvObj] = await getCsv(currentDataset.csvFile);
+  }
+  if(currentDataset.fromto && !csvObjs[currentDataset.fromtoObj]){ //fromtoテーブルの取得
+    csvObjs[currentDataset.fromtoObj] = await getCsv(currentDataset.fromtoFile);
+  }
+}
+
+async function datasetChange(formerFeatures, categoryRenewal = true){
+  $(".loader, .loaderBG, .loaderCover").css("display", "inline");
+
+  await loadMapData();
+
+  //---以下、選択地物保持の場合のみ実行---
+  if(formerFeatures){
+    formerFeatures.forEach((features, idx)=>{
+      Group.groups[idx].addFeatures(features);
+    });
+  }
+
+  //カテゴリを再設定する場合(デフォルト)
+  if(categoryRenewal){
+    currentCategory = currentDataset.category[0];
+    currentColumn = currentCategory.data[0];
+  }
+
+  //カテゴリ選択部の更新
+  let categorySelector = document.getElementById("category");
+  while (categorySelector.firstChild) {
+    categorySelector.removeChild(categorySelector.firstChild);
+  }
+  let catCnt = 0;
+  currentDataset.category.forEach(f => {
+    if(f.name !== "csv" && f.name !== "fromto"){ //csv用のカテゴリセットは除く
+      let option = document.createElement("option");
+      option.value = f.name;
+      option.innerText = f.label;
+      categorySelector.appendChild(option);
+      catCnt++;
+    }
+  });
+  if(catCnt <= 1){
+    categorySelector.disabled = true;
+  }else{
+    categorySelector.disabled = false;
+  }
+  categorySelector.value = currentCategory.name;
+
+  //データ出典書き換え
+  $("#attribution").empty();
+  $("#attribution").append("データ出典:");
+  currentDataset.attr.forEach((attr, i)=>{
+    if(attr.link){
+      $("<a>", {href: attr.link, text: attr.label, target: "_blank"}).appendTo("#attribution");
+    }else{
+      $("<span>", {text: attr.label}).appendTo("#attribution");
+    }
+    if(currentDataset.attr[i+1]){$("#attribution").append("、");}
+  });
+
+  //カーソル位置テーブルの再描画
+  let event = new Event("change");
+  categorySelector.dispatchEvent(event);
+  rewriteCursorTable();
+
+  //fromtoテーブル
+  if(currentDataset.fromto){
+    $("#fromto").show();
+  }else{
+    $("#fromto").hide();
+  }
+
+  $(".loader, .loaderBG, .loaderCover").css("display", "none");
 }
 
 //csv生成用テーブルを開く
@@ -1350,7 +1492,7 @@ function openTable(){
     $(tr3).css("background-color", "#ddf");
     $("#csvTable").append(tr3);
     $("<td>", {text: "G" + (i + 1)}).appendTo(tr3);
-    $("<td>", {text: groupNames[i]}).appendTo(tr3);
+    $("<td>", {text: Group.getName(i)}).appendTo(tr3);
     if(tableType === "all"){$("<td>").appendTo(tr3);}else{$("<td>", {text: selectedFeatures[i].length}).appendTo(tr3);}
     csvCate.forEach(cate => {
       if(cate.func){
@@ -1379,11 +1521,11 @@ function openTable(){
   let tr1 = $("<tr>");
   $("#csvTable").append(tr1);
   $("<th>").text("A ＼ B").appendTo(tr1);
-  groupNames.forEach((gName, i)=>{
+  Group.getName().forEach((gName, i)=>{
     $("<th>").text(gName).appendTo(tr1);
   });
 
-  groupNames.forEach((gName, i)=>{
+  Group.getName().forEach((gName, i)=>{
     tr2 = $("<tr>").appendTo("#csvTable");
     $("<td>").append($("<b>").text(gName)).appendTo(tr2);
     selectedFeatures.forEach((g, j)=>{
@@ -1441,3 +1583,109 @@ function copyTable(){
   promise.then(() => {toastr["success"]("表をクリップボードにコピーしました。");});
 
 }
+
+function saveOpen(){
+  $("#saveDataGroup").text(Group.groups.map(g=>{return g.name}));
+  if(currentSave){
+    $("[name='saveDataName']").val(currentSave.name);
+    let value = saveDataArr.findIndex(f=>{
+      return f === currentSave;
+    });
+    $("#saveTable").find("[value='" + value + "']").click();
+  }else{
+    $("[name='saveDataName']").val("無題");
+    $("#saveTable").find("[value='" + saveDataArr.length + "']").click();
+  }
+}
+
+function loadOpen(){
+  if(currentSave){
+    let value = saveDataArr.findIndex(f=>{
+      return f === currentSave;
+    });
+    $("#loadTable").find("[value='" + value + "']").click();
+  }else{
+    $("#loadTable").find("[value='0']").click();
+  }
+}
+
+function saveDataTableRedraw(){
+  let table = $("#saveTable");
+  table.empty();
+
+  $("<div>").attr({class: "slot", value: saveDataArr.length}).append($("<div>").html("<i class='far fa-plus-square'></i>新規セーブデータ")).append($("<div>").css({height: "1em"})).append($("<div>").css({height: "1em"})).appendTo(table);
+  saveDataArr.forEach((savedata, i)=>{
+    slot = $("<div>").attr({class: "slot", value: i}).appendTo(table);
+    $("<div>").text(savedata.name).appendTo(slot);
+    $("<div>").text(savedata.groupNames).appendTo(slot);
+    $("<div>").text(dateFormat(new Date(savedata.createTime))).appendTo(slot);
+    $("<div>").html("<i class='fa-solid fa-trash-can'></i>").attr({class: "delete"}).appendTo(slot);
+  });
+
+  table = $("#loadTable");
+  table.empty();
+  saveDataArr.forEach((savedata, i)=>{
+    slot = $("<div>").attr({class: "slot", value: i}).appendTo(table);
+    $("<div>").text(savedata.name).appendTo(slot);
+    $("<div>").text(savedata.groupNames).appendTo(slot);
+    $("<div>").text(dateFormat(new Date(savedata.createTime))).appendTo(slot);
+    $("<div>").html("<i class='fa-solid fa-trash-can'></i>").attr({class: "delete"}).appendTo(slot);
+  });
+}
+
+async function loadData(saveData){
+  $(".loader, .loaderBG, .loaderCover").css("display", "inline");
+
+  Group.resetAll();
+
+  currentDataset = Dataset.find((e)=>{return e.name === (saveData.dataset || "kokusei2020")});
+  currentCategory = (currentDataset.category.find((e)=>{return e.name === saveData.category})) || currentDataset.category[0];
+  currentColumn = currentCategory.data[0];
+  $("#dataset").val(currentDataset.name);
+  await datasetChange(null, false);
+  
+  if(!saveData.features){
+    saveData.features = [[]];
+  }
+  saveData.features.forEach((g, idx)=>{
+    let group = new Group;
+    group.addFeatures(g);
+    group.setName(saveData.groupNames[idx] || ("グループ" + idx));
+    group.setColor(saveData.groupColors[idx] || DefaultColorNo[idx]);
+    rewriteSumTable(idx);
+  })
+
+  let latlon = [35, 137];
+  if(saveData.mapSettings.y && saveData.mapSettings.x){
+    latlon = [saveData.mapSettings.y, saveData.mapSettings.x];
+  }
+  map.setView(latlon, saveData.mapSettings.z || 8);
+
+  $(".loader, .loaderBG, .loaderCover").css("display", "none");
+}
+
+function makeSavedata(name = "セーブデータ1"){
+  let saveData = {
+    name: name,
+    dataset: currentDataset.name,
+    category: currentCategory.name,
+    groupNames: Group.getName(),
+    groupColors: Group.getColorNo(),
+    features: selectedFeatures.map(g => g.map(f => f.CODE || f.CODE5)),
+    mapSettings: {
+      x: Math.round(map.getCenter().lng * 10000)/10000,
+      y: Math.round(map.getCenter().lat * 10000)/10000,
+      z: map.getZoom(),
+      baseMap: ""
+    }
+  };
+  let now = new Date();
+  saveData.createTime = now.toISOString();
+
+  return saveData;
+}
+
+function dateFormat(date){
+  return date.getFullYear() + "/" + (date.getMonth() + 1).toString().padStart(2, "0") + "/" + date.getDate().toString().padStart(2, "0") + " " + date.getHours().toString().padStart(2, "0") + ":" + date.getMinutes().toString().padStart(2, "0");
+}
+
