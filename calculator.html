@@ -66,80 +66,114 @@
     <!-- Nav tabs -->
     <div class="leaflet-sidebar-tabs">
         <ul role="tablist"> <!-- top aligned tabs -->
-            <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+          <li><a href="#home" role="tab"><i class="fa fa-bars active"></i></a></li>
+          <li><a href="#saveload" role="tab"><i class="fa-solid fa-floppy-disk"></i></a></li>
         </ul>
     </div>
 
     <!-- Tab panes -->
     <div class="leaflet-sidebar-content">
-        <div class="leaflet-sidebar-pane" id="home">
-            <h1 class="leaflet-sidebar-header">
-                人口計算機
-            </h1>
-            <div>表示するカテゴリ:<select id="category"></select></div>
-            <details id="mouseContainer" open class="current" style="background-color: #dbfbff">
-              <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
-              <div id="mouse_name" class="current">-</div>
-              <table id="mouseTable" class="current">
-                <tr><th id="mouseCol_name0">人口(人)</th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
-                <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口増加率(%)</th><td id="mouseCol_data3"></td></tr>
-                <tr><th id="mouseCol_name4">人口密度(人/㎢)</th><td id="mouseCol_data4"></td><th id="mouseCol_name5"></th><td id="mouseCol_data5"></td></tr>
-              </table>
-              <div class="chartContainer" id="mouseChartContainer" style="display: none;">
-                <canvas id="mouseChart"></canvas>
-              </div>
-            </details>
-            <div id="fromto" class="fromto" style="display: none;">
-              <div class="h3">グループ間分析</div>
-              A:<select id="selectFrom"></select> B:<select id="selectTo"></select><br>
-              <table class="fromtoTable">
-              </table>
-            </div>
-            <div id="groupsContainer" ontouchstart="">
-              <div id="group0" class="group">
-                <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span>
-                  <span style="margin-left: auto;position: relative;">
-                    <button class="menuBtn"><i class="fa-solid fa-ellipsis-vertical" style="color: #05a"></i></button>
-                    <div class="popupMenu" style="display:none;">
-                      <div class="resetGroup">選択をリセット</div>
-                      <div class="deleteGroup">グループを削除</div>
-                      <div class="changeGroupColor">色を変更</div>
-                      <div class="changeGroupName">名前を変更</div>
-                    </div>
-                  </span>
-                </div>
-                <table class="groupTable">
-                  <tr><th class="groupCol_name0">人口(人)</th><td class="groupCol_data0">0</td></tr>
-                  <tr><th class="groupCol_name1">面積(㎢)</th><td class="groupCol_data1">0.00</td></tr>
-                  <tr><th class="groupCol_name2">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></div></th><td class="groupCol_data2">0</td></tr>
-                  <tr><th class="groupCol_name3">人口増加率(%)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">人口増加数を前回調査時人口で割ったもの。</div></div></th><td class="groupCol_data3">-</td></tr>
-                  <tr><th class="groupCol_name4">人口密度(人/㎢)</th><td class="groupCol_data4">-</td></tr>
-                  <tr><th class="groupCol_name5" style="display: none;"></th><td class="groupCol_data5" style="display: none;">-</td></tr>
-                </table>
-                <div class="chartContainer" style="display: none;">
-                  <canvas class="groupChart"></canvas>
-                </div>
-                <details>
-                  <summary>選択地物数：<span class="sel_count">0</span></summary>
-                  <table class="sel_table">
-                    <tr><th>地物名</th><th><select class="columnName"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="pop_increaseR">人口増加率(%)</option><option value="density">人口密度(人/㎢)</option></select></th><th>構成比(%)</th></tr>
-                  </table>
-                </details>
-              </div>
-            </div>
-            <div class="addGroup" onclick="addGroup()"><i class="far fa-plus-square"></i>新規グループ追加</div>
-            <div><input type="button" value="表形式で表示" class="inline"/></div>
+      <div class="leaflet-sidebar-pane" id="home">
+        <h1 class="leaflet-sidebar-header">
+            人口計算機
+        </h1>
+        <div>表示するカテゴリ:<select id="category"></select></div>
+        <details id="mouseContainer" open class="current" style="background-color: #dbfbff">
+          <summary><span class="h3"><i class="fas fa-mouse-pointer"></i>カーソル位置の地物情報</span></summary>
+          <div id="mouse_name" class="current">-</div>
+          <table id="mouseTable" class="current">
+            <tr><th id="mouseCol_name0">人口(人)</th><td id="mouseCol_data0"></td><th id="mouseCol_name1">面積(㎢)</th><td id="mouseCol_data1"></td></tr>
+            <tr><th id="mouseCol_name2">人口増加数(人)</th><td id="mouseCol_data2"></td><th id="mouseCol_name3">人口増加率(%)</th><td id="mouseCol_data3"></td></tr>
+            <tr><th id="mouseCol_name4">人口密度(人/㎢)</th><td id="mouseCol_data4"></td><th id="mouseCol_name5"></th><td id="mouseCol_data5"></td></tr>
+          </table>
+          <div class="chartContainer" id="mouseChartContainer" style="display: none;">
+            <canvas id="mouseChart"></canvas>
           </div>
+        </details>
+        <div id="fromto" class="fromto" style="display: none;">
+          <div class="h3">グループ間分析</div>
+          A:<select id="selectFrom"></select> B:<select id="selectTo"></select><br>
+          <table class="fromtoTable">
+          </table>
+        </div>
+        <div id="groupsContainer" ontouchstart="">
+          <div id="groupTemplate" class="group" style="display:none;">
+            <div class="h3" style="display: flex;flex-wrap: wrap;"><span class="colorPicker"></span><span class="groupName" style="margin: 0px 2px;">グループ1</span>
+              <span style="margin-left: auto;position: relative;">
+                <button class="menuBtn"><i class="fa-solid fa-ellipsis-vertical" style="color: #05a"></i></button>
+                <div class="popupMenu" style="display:none;">
+                  <div class="resetGroup">選択をリセット</div>
+                  <div class="deleteGroup">グループを削除</div>
+                  <div class="changeGroupColor">色を変更</div>
+                  <div class="changeGroupName">名前を変更</div>
+                </div>
+              </span>
+            </div>
+            <table class="groupTable">
+              <tr><th class="groupCol_name0">人口(人)</th><td class="groupCol_data0">0</td></tr>
+              <tr><th class="groupCol_name1">面積(㎢)</th><td class="groupCol_data1">0.00</td></tr>
+              <tr><th class="groupCol_name2">人口増加数(人)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">前回調査(5年前)からの人口増加数。</div></div></th><td class="groupCol_data2">0</td></tr>
+              <tr><th class="groupCol_name3">人口増加率(%)<div class="tooltip"><i class="fas fa-question-circle" style="color:#0f5f91;"></i><div class="description">人口増加数を前回調査時人口で割ったもの。</div></div></th><td class="groupCol_data3">-</td></tr>
+              <tr><th class="groupCol_name4">人口密度(人/㎢)</th><td class="groupCol_data4">-</td></tr>
+              <tr><th class="groupCol_name5" style="display: none;"></th><td class="groupCol_data5" style="display: none;">-</td></tr>
+            </table>
+            <div class="chartContainer" style="display: none;">
+              <canvas class="groupChart"></canvas>
+            </div>
+            <details>
+              <summary>選択地物数：<span class="sel_count">0</span></summary>
+              <table class="sel_table">
+                <tr><th>地物名</th><th><select class="columnName"><option value="POPULATION">人口(人)</option><option value="AREA">面積(㎢)</option><option value="POP_INCREASE">人口増加数(人)</option><option value="pop_increaseR">人口増加率(%)</option><option value="density">人口密度(人/㎢)</option></select></th><th>構成比(%)</th></tr>
+              </table>
+            </details>
+          </div>
+        </div>
+        <div class="addGroup" onclick="addGroup()"><i class="far fa-plus-square"></i>新規グループ追加</div>
       </div>
+      <div class="leaflet-sidebar-pane" id="saveload">
+        <h1 class="leaflet-sidebar-header">
+          人口計算機
+        </h1>
+        <div class="saveloadbtn" id="savebtn">
+          保存
+        </div>
+        <div class="saveloadbtn" id="loadbtn">
+          読み込み
+        </div>
+        <div class="saveloadbtn" id="tableOpen">
+          表形式で表示(エクスポート)
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="inline" style="display:none;">
+  <div id="csvModal" style="display:none;">
     <div><a id="download"><input type="button" value="csvファイルとして保存" onclick="downloadCsv()"/></a><input type="button" value="クリップボードにコピー" onclick="copyTable()"/></div>
     <div><label><input type="radio" name="tableType" value="all" checked>全ての選択地物を表示</label><label><input type="radio" name="tableType" value="group">グループの合計値のみ表示</label><label><input type="radio" name="tableType" value="intergroup">グループ間クロス表</label></div>
     <div id="csvTableHeader"></div>
     <div style="overflow: scroll; height: 60vh">
 	     <table id="csvTable" class="csv"></table>
     </div>
+  </div>
+
+  <div id="saveModal" style="display:none;">
+    <div class="h3">データを保存する</div>
+    <div id="objDisp" style="border:solid 1px #3c708f; font-size:small">
+      <label for="saveDataName">名前：</label><input name="saveDataName" type="text">
+      <div id="saveDataGroup" style="font-size: 12px; color: #666666;"></div>
+    </div>
+    ▼保存するファイルを選択
+    <div id="saveTable" class="saveTable">
+    </div>
+    <button id="save">選択したファイルに保存</button><button id="cancel">キャンセル</button>
+  </div>
+
+  <div id="loadModal" style="display:none;">
+    <div class="h3">データを読み込む</div>
+    ▼読み込むファイルを選択
+    <div id="loadTable" class="saveTable">
+    </div>
+    <button id="load">選択したファイルを読み込む</button><button id="cancel">キャンセル</button>
   </div>
 
   <div id="dialogCont">
