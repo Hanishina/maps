@@ -858,7 +858,7 @@ function fromtoSelectorSet(){
 function sortFeatures(){
   if(sortCol === "default"){
     selectedFeatures.forEach(g=>{
-      g.sort((a,b)=>{return a.CODE5 > b.CODE5});
+      g.sort((a,b)=>{if(a.CODE5<b.CODE5){return -1}else if(a.CODE5>b.CODE5){return 1}else{return 0}});
     });
   }else{
     selectedFeatures.forEach(g=>{
