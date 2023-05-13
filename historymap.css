@@ -454,6 +454,11 @@ table.csv td{
   width: 95%;
 }
 
+.sortbtn{
+  padding: 10px;
+  cursor: pointer;
+}
+
 .addGroup{
   font-size: 20px;
   font-weight: bold;

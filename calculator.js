@@ -17,6 +17,7 @@ let currentCategory; //選択中のサブデータセット(DID人口など)[obj
 let currentGroup = 0; //選択中のグループ
 let currentColumn; //選択中のカラム(選択済み地物テーブル表示用)[obj]
 let currentSelectFromto = {A: "cursor", B: "cursor"};
+let sortCol = "default";
 
 let cursorObj;
 let dragging = false;
@@ -46,6 +47,26 @@ class Group{
     $(newGroup).find(".groupName").text(this.name);
     $(newGroup).on("click", this.click.bind(this));
     $(newGroup).find(".columnName").on("change", columnChange);
+    if(sortCol === "default"){
+      $(newGroup).find(".sortbtn[value='column']").css({color: "#888888"});
+    }else{
+      $(newGroup).find(".sortbtn[value='default']").css({color: "#888888"});
+    }
+    $(newGroup).find(".sortbtn").on("click", e=>{
+      if($(e.target).attr("value") === "default"){
+        sortCol = "default";
+        $(".sortbtn[value='default']").css({color: ""});
+        $(".sortbtn[value='column']").css({color: "#888888"});
+      }else{
+        sortCol = currentColumn;
+        $(".sortbtn[value='default']").css({color: "#888888"});
+        $(".sortbtn[value='column']").css({color: ""});
+      }
+      sortFeatures(sortCol);
+      Group.groups.forEach(g=>{
+        rewriteSumTable(g.id);
+      });
+    });
     $(newGroup).find(".menuBtn").on("click", this.menuOpen.bind(this));
     let menu = $(newGroup).find(".popupMenu");
     $(menu).find(".resetGroup").on("click", function(){
@@ -677,7 +698,11 @@ async function init(){
       saveDataArr.splice(id, 1);
       window.localStorage.setItem("calc_saveData", JSON.stringify(saveDataArr));
       saveDataTableRedraw();
-      $("#saveTable").find("[value='" + saveDataArr.length + "']").click();
+      if($(e.delegateTarget).attr("id") === "saveTable"){
+        $("#saveTable").find("[value='" + saveDataArr.length + "']").click();
+      }else if($(e.delegateTarget).attr("id") === "loadTable"){
+        $("#loadTable").find("[value='0']").click();
+      }
     }}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]});
     dialog.show();
   });
@@ -690,7 +715,7 @@ async function init(){
     $("#loadbtn").modaal("close");
   });
 
-  $("#saveModal").find("#save").on("click", function(){
+  $("#saveModal").find(".save").on("click", function(){
     function determ(){
       let saveDataName = $("[name='saveDataName']").val();
       let saveData = makeSavedata(saveDataName);
@@ -713,7 +738,7 @@ async function init(){
     
   });
 
-  $("#loadModal").find("#load").on("click", function(){
+  $("#loadModal").find(".load").on("click", function(){
     let index = $("#loadTable").children("[selected]").attr("value");
     if(!isNaN(index)){
       currentSave = saveDataArr[index];
@@ -829,6 +854,19 @@ function fromtoSelectorSet(){
   $("#selectTo").val(currentSelectFromto.B);
 }
 
+//選択地物並び替え
+function sortFeatures(){
+  if(sortCol === "default"){
+    selectedFeatures.forEach(g=>{
+      g.sort((a,b)=>{return a.CODE5 > b.CODE5});
+    });
+  }else{
+    selectedFeatures.forEach(g=>{
+      g.sort((a,b)=>{return calc(b, sortCol.func, sortCol.prec, sortCol.args) - calc(a, sortCol.func, sortCol.prec, sortCol.args)});
+    });
+  }
+}
+
 //地物クリック時の処理
 function clickEvent(obj){
   if(selectedFeatures[currentGroup].some(f => f.uid === obj.layer.properties.uid)){  //クリックした地物が選択済みの場合(クリックした地物を削除)
@@ -875,6 +913,7 @@ function clickEvent(obj){
     }
   }
 
+  sortFeatures();
   rewriteSumTable(currentGroup);
   if(currentDataset.fromto){
     rewriteFromtoTable();
@@ -1242,6 +1281,10 @@ function addGroup(){
 //地物一覧テーブルのカテゴリ変更
 function columnChange(e){
   currentColumn = currentCategory.data.find(f => {return f.name === e.target.value;});
+  if(sortCol !== "default"){
+    sortCol = currentColumn;
+    sortFeatures();
+  }
   for(let i=0; i < selectedFeatures.length; i++){
     rewriteSumTable(i);
     $("#group" + i).find(".columnName").val(currentColumn.name);
@@ -1251,6 +1294,10 @@ function columnChange(e){
 //表示カテゴリ変更
 function categoryChange(e){
   currentCategory = currentDataset.category.find(f => {return f.name === e.target.value;});
+  sortCol = "default";
+  sortFeatures();
+  $(".sortbtn[value='default']").css({color: ""});
+  $(".sortbtn[value='column']").css({color: "#888888"});
 
   //カーソル位置地物情報テーブルの書き換え
   if(!currentCategory.pie){
@@ -1469,7 +1516,7 @@ function openTable(){
   for(i=0; i<selectedFeatures.length; i++){
     //各地物のデータ
     if(tableType === "all"){
-      selectedFeatures[i].forEach(fts => {
+      [...selectedFeatures[i]].sort((a,b)=>{return a.CODE5 > b.CODE5}).forEach(fts => {
         let tr2 = $("<tr>");
         let name = fts.NAME || "-";
         if(fts.TYPE === "政令区"){
@@ -1657,6 +1704,7 @@ async function loadData(saveData){
     group.addFeatures(g);
     group.setName(saveData.groupNames[idx] || ("グループ" + idx));
     group.setColor(saveData.groupColors[idx] || DefaultColorNo[idx]);
+    sortFeatures();
     rewriteSumTable(idx);
   })
 
