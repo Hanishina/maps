@@ -1,0 +1,140 @@
+#result{
+    width: 30%;
+}
+
+#map{
+    width: 80%;
+}
+
+@media screen and (orientation: portrait) {
+    #flexbox{
+        flex-direction: column;
+    }
+    #result{
+        width: 100%;
+        height: 40vh;
+        overflow-y: scroll;
+    }
+    #map{
+        width: 100%;
+        height: 50vh;
+    }
+}
+
+#pointWindow{
+    position: relative;
+    padding: 40px 5px;
+    color: #a00;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#point{
+    width: 100%;
+    font-size: 40px;
+    text-align: center;
+}
+
+#point::after{
+    content: "pt";
+    font-size: 20px;
+    position: relative;
+    left: 20px;
+}
+
+#btnCont{
+    display: flex;
+}
+#btnCont button{
+    width: 25%;
+}
+
+#pop_area{
+    display: flex;
+    color: #555;
+    font-size: 15px;
+    font-weight: normal;
+}
+#pop_area span:nth-child(1){
+    width: 50%;
+}
+#pop_area span:nth-child(2){
+    width: 50%;
+}
+#pop::after{
+    content: "人";
+}
+#area::after{
+    content: "㎢";
+}
+
+#smallWindow{
+    position: relative;
+    z-index: 500;
+    width: 300px;
+    height: 80px;
+    margin: 10px;
+    padding: 5px;
+    background: #fff;
+}
+
+#smallWindow .cityname{
+    font-size: large;
+    font-weight: bold;
+}
+
+#smallWindow .visit_diff{
+    font-size: medium;
+}
+
+#smallWindow .visitor{
+    font-size: medium;
+}
+
+table{
+    width: 100%;
+}
+
+#list_ken td:nth-child(1), #list_level td:nth-child(1){
+    width: 50%;
+}
+#list_ken td:nth-child(2), #list_level td:nth-child(2){
+    width: 50%;
+}
+
+#achieve_ken td:nth-child(1){
+    width: 15%;
+}
+#achieve_ken td:nth-child(2), #achieve_ken td:nth-child(5){
+    width: 12.5%;
+    text-align: end;
+}
+#achieve_ken td:nth-child(3), #achieve_ken td:nth-child(6){
+    width: 12.5%;
+}
+#achieve_ken td:nth-child(4), #achieve_ken td:nth-child(7){
+    width: 12.5%;
+    text-align: end;
+}
+
+#achieve_level{
+    width: 70%
+}
+#achieve_level td:nth-child(1){
+    width: 55%
+}
+#achieve_level td:nth-child(2){
+    width: 15%;
+    text-align: end;
+}
+#achieve_level td:nth-child(3){
+    width: 15%;
+}
+#achieve_level td:nth-child(4){
+    width: 15%;
+    text-align: end;
+}
+
+td{
+    border: none;
+}

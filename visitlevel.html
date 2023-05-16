@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="">
+  <link rel="icon" href="favicon.ico" />
+  <title>市区町村訪問レベル</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/historymap.html"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <link href="visitlevel.css" rel="stylesheet" type="text/css">
+  <link href="loader.css" rel="stylesheet" type="text/css">
+  <link href="./Plugins/modaal.min.css" rel="stylesheet"  type="text/css"/>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+  <script src="./Plugins/Leaflet.VectorGrid.bundled.js"></script>
+  <script src="./Plugins/leaflet.pattern.js"></script>
+  <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA05mQQCiqSlagtiU7Z0NoeX3n1snBdg44" async defer></script>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+  <script src="./Plugins/modaal.min.js"></script>
+  <script src="./dialog.js"></script>
+
+  <script src="./visitlevel.js"></script>
+</head>
+<body onload="init()">
+    <div class="header">
+        <div class="title">市区町村訪問ポイント</div>
+        <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./about.html" target="_blank">このページについて</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+    </div>
+    <div>あなたが行ったことのある市区町村をクリックしてください。「訪問ポイント」を算出します。</div>
+    <div id="flexbox" style="display: flex;">
+      <div id="result">
+        <div id="pointWindow">
+          <div id="btnCont"><button id="savebtn">保存</button><button id="loadbtn">読み込み</button><button id="sharebtn">共有</button><button id="resetbtn">リセット</button></div>
+          あなたの市区町村訪問ポイントは
+          <div id="point">0</div>
+          <div id="pop_area"><span>総人口:<span id="pop">0</span></span>  <span>総面積:<span id="area">0.00</span></span></div>
+        </div>
+        <details>
+          <summary>訪問した市区町村一覧</summary>
+          <label><input type="radio" name="listtype" value="ken">都道府県順</label><label><input type="radio" name="listtype" value="level">難易度順</label>
+          <div style="max-height: 300px; overflow-y: scroll;"><table id="list_ken"></table></div>
+          <div style="max-height: 300px; overflow-y: scroll; display: none;"><table id="list_level"></table></div>
+        </details>
+        <details>
+          <summary>達成率</summary>
+          <label><input type="radio" name="tabletype" value="ken">都道府県別<span style="font-size: small;">(市区町村数・pt)</span></label><br>
+          <label><input type="radio" name="tabletype" value="level">難易度別<span style="font-size: small;">(市区町村数)</span></label>
+          <div style="max-height: 300px; overflow-y: scroll;"><table id="achieve_ken"></table></div>
+          <div style="max-height: 300px; overflow-y: scroll; display: none;"><table id="achieve_level"></table></div>
+        </details>
+      </div>
+      <div id="map"><div id="smallWindow"><div class="cityname">-</div><div class="visit_diff">訪問難易度： </div><div class="visitor">滞在者数： </div></div></div>
+    </div>
+
+    <div id="saveModal" style="display:none;">
+      <div class="h3">データを保存する</div>
+      <div id="objDisp" style="border:solid 1px #3c708f; font-size:small">
+        <label for="saveDataName">名前：</label><input name="saveDataName" type="text">
+        <div id="saveDataGroup" style="font-size: 12px; color: #666666;"></div>
+      </div>
+      ▼保存するファイルを選択
+      <div id="saveTable" class="saveTable">
+      </div>
+      <button class="save">選択したファイルに保存</button><button class="cancel">キャンセル</button>
+    </div>
+  
+    <div id="loadModal" style="display:none;">
+      <div class="h3">データを読み込む</div>
+      ▼読み込むファイルを選択
+      <div id="loadTable" class="saveTable">
+      </div>
+      <button class="load">選択したファイルを読み込む</button><button class="cancel">キャンセル</button>
+    </div>
+
+    <div id="shareModal" style="display:none;">
+      <div class="h3">訪問ポイントを共有する</div>
+      <textarea id="shareContent" rows="10" style="width:100%;"></textarea>
+      <button class="btn_twitter">ツイッターで共有</button><button class="btn_facebook">フェイスブックで共有</button>
+    </div>
+
+    <div id="dialogCont">
+      <div id="dialogBG"></div>
+      <div id="dialog">
+        <div id="dialogMsg"></div>
+        <div id="dialogButtons"><input type="button"/><input type="button"/></div>
+      </div>
+    </div>
+
+</body>
+</html>
