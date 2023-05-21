@@ -2,8 +2,14 @@
     width: 30%;
 }
 
-#map{
+#mapContainer{
+    position: relative;
     width: 80%;
+    height: 80vh;
+}
+
+#map{
+    height: 100%;
 }
 
 @media screen and (orientation: portrait) {
@@ -12,12 +18,12 @@
     }
     #result{
         width: 100%;
-        height: 40vh;
+        height: 30vh;
         overflow-y: scroll;
     }
-    #map{
+    #mapContainer{
         width: 100%;
-        height: 50vh;
+        height: 60vh;
     }
 }
 
@@ -47,6 +53,22 @@
 }
 #btnCont button{
     width: 25%;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#savebtn{
+    background-color: #e9f7ff;
+}
+#loadbtn{
+    background-color: #e9ffdf;
+}
+#sharebtn{
+    background-color: #1d9bf0;
+    color: #fff;
+}
+#resetbtn{
+    background-color: #bb3838;
+    color: #fff;
 }
 
 #pop_area{

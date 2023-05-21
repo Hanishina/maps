@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="favicon.ico" />
+  <title>市区町村訪問ポイントについて</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <link href="visitlevel.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div><a  class="title" href="./visitlevel.html">市区町村訪問ポイント</a></div>
+    <h2>市区町村訪問ポイントについて</h2>
+    <div>
+        あなたが今までに行ったことのある市区町村を地図から選択してください。<br>
+        訪問した市区町村の一覧から「訪問ポイント」を算出します。<br>
+        訪問ポイントは、訪問する難易度が高い市区町村に行くほど高くなります。<br>
+        たとえば、東京都千代田区は訪問難易度が1→訪問すると1ポイントが加算されます。<br>
+        東京都青ヶ島村は訪問難易度が10→訪問すると10ポイントが加算されます。
+    </div>
+
+    <h2>使い方</h2>
+    <div>
+        地図画面上で市区町村をクリックすると、その市区町村が選択状態になります。<br>
+        もう一度クリックすると選択から外れます。<br>
+        選択されたすべての市区町村の「訪問難易度」を合計した「訪問ポイント」が画面左(または上)に表示されます。<br>
+
+        地図画面左上には現在カーソルがある位置の市区町村の訪問難易度と滞在者数のデータが表示されています。<br>
+        地図画面右上のメニューから、ベースマップの選択と、ラベルの表示有無・選択市区町村の表示有無・難易度別色分けの表示有無の選択ができます。<br>
+        選択した市区町村は、難易度別色分け表示がONの時は黒のストライプで、難易度別色分け表示がOFFの時は赤で表示されます。
+    </div>
+
+    <h2>保存と共有</h2>
+    <div>
+        ポイント表示の上のメニューから保存や共有の操作が行えます。<br>
+        「保存」メニューをクリックし、「新規セーブデータ」を選択するか、既存のセーブデータ(上書き保存)を選択すると選んだ市区町村の情報が保存できます。<br>
+        「読み込み」メニューをクリックし、セーブデータを選択して読み込むと保存された市区町村の選択情報を読み込めます。<br>
+        ※データはブラウザに保存されます。異なるブラウザや異なる端末間のデータの移動はできません。また、ブラウザのプライベートモード等を使用している場合は保存できないことがあります。<br>
+        <br>
+        「共有」をクリックすると、あなたの市区町村訪問ポイントをSNSに貼り付けられます。共有されるURLにはあなたの訪問ポイントの情報は記録されません。<br>
+        ※現在、Twitterのみ共有可能です。その他のSNS等に投稿したい場合は、表示されている文字列をコピーして自身で投稿操作を行ってください。<br>
+        なお、当サイトのスクリーンショットはSNSで自由に利用可能です。<br>
+        <br>
+        「リセット」をクリックすると選択をリセットします。
+    </div>
+
+    <h2>訪問難易度について</h2>
+    <div>
+        このサイトでは、各市区町村に「訪問難易度」を設定しています。<br>
+        訪問難易度は、「その市区町村に行った人が少ないほど難易度が高くなる」ように設定しています。<br>
+        <br>
+        まず、市区町村の訪問者数は国土交通省提供の「<a href="https://www.geospatial.jp/ckan/dataset/mlit-1km-fromto" target="_blank">全国の人流オープンデータ(市区町村単位発地別)</a>」を利用しました。<br>
+        スマートフォンから収集した位置情報データを基に、ある時点において各市区町村に滞在している人の数を推計したデータです。<br>
+        このデータセットから、各市区町村の「終日(昼夜の区分なし)」「全日(平休日の区分なし)」「各月」のデータを取得し、1年間の平均(各月の合計値を12で割ったもの)の「当該市区町村外からの訪問者数」を算出しました。<br>
+        集計年は2019年です。(コロナウイルスによる影響を無視するため)<br>
+        <br>
+        この「訪問者数」を基に、以下の数式で「訪問難易度」を算出します。<br>
+        <br>
+        <math style="font-size: x-large"><mi>訪問難易度</mi><mo>=</mo><msub><mi>log</mi><mi>e</mi></msub><mfrac><mn>1000000</mn><mi>訪問者数</mi></mfrac><mo>+</mo><mn>1</mn></math><br>
+        <br>
+        この計算により、各市区町村に1～10までの訪問難易度が割り当てられます。
+    </div>
+
+    <h2>「訪問」の定義</h2>
+    <div>
+        訪問ポイントの算出は「訪問した」市区町村を対象とし、単に「通過した」場合は訪問とは見なさないこととします。<br>
+        何をもってその市区町村を「訪問した」と見なすかは、各利用者の判断に委ねます。<br>
+        ただ、一応以下の通り参考基準を示しますので、判断の目安としてください。<br>
+        <br>
+        ・訪問の目的は問わない(観光・仕事・買い物・遊び等)。居住地や職場・学校所在地も訪問したものとする。<br>
+        ・交通機関の乗り換えや、小休憩のための立ち寄りは訪問とは見なさない。ただし、以下のような場合は訪問したものとする。<br>
+        　→移動が目的でない交通機関に乗り換えた場合(アトラクションや遊覧船など)<br>
+        　→立ち寄り地で何か(チケット類を除く)を購入した、または食事をした場合
+    </div>
+
+    <h2>使用データ</h2>
+    <div>
+        <a href="https://www.geospatial.jp/ckan/dataset/mlit-1km-fromto" target="_blank">G空間情報センター「全国の人流オープンデータ」</a>(国土交通省提供、Agoop社の収集データに基づく)<br>
+        <a href="https://www.e-stat.go.jp/stat-search/database?page=1&toukei=00200521&tstat=000001136464" target="_blank">e-Stat「令和2年国勢調査」</a>(総務省統計局)<br>
+        ベースマップの提供元は、地図画面右下の情報をご覧ください。
+    </div>
+
+    <h2>免責等</h2>
+    <div>
+        このツールは、はにしなが個人で作成しているものです。<br>
+        このツールを使用したことによって生じた不利益に関して、当方は一切の責任を負いかねます。<br>
+        <br>
+        はにしな　<a href="https://twitter.com/hanishina?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @hanishina</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> <br>
+    </div>
+</body>
+</html>

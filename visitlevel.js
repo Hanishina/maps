@@ -29,7 +29,7 @@ async function init(){
     map.createPane("click").style.zindex = 200;
     map.createPane("line").style.zindex = 400;
 
-    pattern = new L.StripePattern({weight: 2, spaceWeight: 4, color: "#555555", angle: 45});
+    pattern = new L.StripePattern({weight: 2, height: 5, opacity:0.8, color: "#555555", angle: 45});
     pattern.addTo(map);
 
     geojsonFiles.polygon2020 = await getJson("polygon.geojson", "2020-10-01");
@@ -354,6 +354,8 @@ async function init(){
         let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent($("#shareContent").html())
         window.open(path, "_blank");
     });
+
+    $(".loader, .loaderBG, .loaderCover").css("display", "none");
 }
 
 function featureClick(e){

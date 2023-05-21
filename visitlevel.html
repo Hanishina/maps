@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
+<head prefix="og: https://ogp.me/ns#">
   <meta charset="UTF-8">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="あなたが訪問した市区町村から「訪問ポイント」を算出します。"/>
+  <meta name="viewport" content="width=device-width"/>
+
+  <meta property="og:title" content="市区町村訪問ポイント"/>
+  <meta property="og:description" content="あなたが訪問した市区町村から「訪問ポイント」を算出します。"/>
+  <meta property="og:image" content="https://hanishina.github.io/maps/img/visitlevel.png"/>
+  <meta property="og:url" content="https://hanishina.github.io/maps/visitlevel.html"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="地図地理Sandbox"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:site" content="@hanishina"/>
+
   <link rel="icon" href="favicon.ico" />
-  <title>市区町村訪問レベル</title>
-  <link rel="canonical" href="https://hanishina.github.io/maps/historymap.html"/>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <title>市区町村訪問ポイント</title>
+  <link rel="canonical" href="https://hanishina.github.io/maps/visitlevel.html"/>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -37,13 +48,13 @@
 <body onload="init()">
     <div class="header">
         <div class="title">市区町村訪問ポイント</div>
-        <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./about.html" target="_blank">このページについて</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+        <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./visitlevel_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
     </div>
     <div>あなたが行ったことのある市区町村をクリックしてください。「訪問ポイント」を算出します。</div>
     <div id="flexbox" style="display: flex;">
       <div id="result">
         <div id="pointWindow">
-          <div id="btnCont"><button id="savebtn">保存</button><button id="loadbtn">読み込み</button><button id="sharebtn">共有</button><button id="resetbtn">リセット</button></div>
+          <div id="btnCont"><button id="savebtn">保存</button><button id="loadbtn">読み込み</button><button id="sharebtn">結果を共有</button><button id="resetbtn">リセット</button></div>
           あなたの市区町村訪問ポイントは
           <div id="point">0</div>
           <div id="pop_area"><span>総人口:<span id="pop">0</span></span>  <span>総面積:<span id="area">0.00</span></span></div>
@@ -62,7 +73,12 @@
           <div style="max-height: 300px; overflow-y: scroll; display: none;"><table id="achieve_level"></table></div>
         </details>
       </div>
-      <div id="map"><div id="smallWindow"><div class="cityname">-</div><div class="visit_diff">訪問難易度： </div><div class="visitor">滞在者数： </div></div></div>
+      <div id="mapContainer">
+        <div class="loaderCover"></div>
+        <div class="loaderBG"></div>
+        <div class="loader"></div>
+        <div id="map"><div id="smallWindow"><div class="cityname">-</div><div class="visit_diff">訪問難易度： </div><div class="visitor">訪問者数： </div></div></div>
+      </div>
     </div>
 
     <div id="saveModal" style="display:none;">
@@ -87,8 +103,9 @@
 
     <div id="shareModal" style="display:none;">
       <div class="h3">訪問ポイントを共有する</div>
+      <div>「結果をツイートする」ボタンを押すか、下のメッセージをコピーしてSNSの投稿画面に貼り付けてください。</div>
       <textarea id="shareContent" rows="10" style="width:100%;"></textarea>
-      <button class="btn_twitter">ツイッターで共有</button><button class="btn_facebook">フェイスブックで共有</button>
+      <button class="btn_twitter"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイートする</button>
     </div>
 
     <div id="dialogCont">
