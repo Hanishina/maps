@@ -126,11 +126,11 @@ async function init(){
         }
         $("#smallWindow").find(".cityname").text(text);
         $("#smallWindow").find(".visit_diff").text("訪問難易度：　" + e.layer.properties.visit_diff);
-        $("#smallWindow").find(".visitor").text("滞在者数：　" + e.layer.properties.visitor);
+        $("#smallWindow").find(".visitor").text("訪問者数：　" + e.layer.properties.visitor);
     }).on("mouseout", (e)=>{
         $("#smallWindow").find(".cityname").text("-");
         $("#smallWindow").find(".visit_diff").text("訪問難易度：　");
-        $("#smallWindow").find(".visitor").text("滞在者数：　");
+        $("#smallWindow").find(".visitor").text("訪問者数：　");
     });
     clickLayer.addTo(map);
 
