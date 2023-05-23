@@ -141,7 +141,8 @@ ul.mylist li:before{
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 75%;
+  max-width: 500px;
   background-color: #fff;
   font-size: 1em;
   text-align: center;
@@ -211,6 +212,16 @@ div.calcImg{
   width: 800px;
   height: 500px;
   background: url("./img/calc.jpg");
+  background-size: cover;
+  background-position: 50% 50%;
+  box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
+}
+
+div.visitlevelImg{
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: url("./img/visitlevel.png");
   background-size: cover;
   background-position: 50% 50%;
   box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
