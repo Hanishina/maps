@@ -97,7 +97,7 @@ function codecomp_encode(input){
                     if(parseInt(code.slice(2,4)) < 56){
                         output += String.fromCodePoint(0x41 + parseInt(code.slice(2,4)) - 30);
                     }else if(parseInt(code.slice(2,4)) < 82){
-                        output += String.fromCodePoint(0x41 + parseInt(code.slice(2,4)) - 56);
+                        output += String.fromCodePoint(0x61 + parseInt(code.slice(2,4)) - 56);
                     }else{
                         throw new Error("invalid code: " + code);
                     }
