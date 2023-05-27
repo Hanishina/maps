@@ -7,7 +7,6 @@ let labelLayer;
 let geojsonFiles = {};
 let csv;
 let pointjson;
-let codecompcsv;
 let kokusei2020;
 let selectedFeatures = [];
 let currentSave;
@@ -36,7 +35,6 @@ async function init(){
     geojsonFiles.line2020 = await getJson("line.geojson", "2020-10-01");
     csv = await getCsv("jinryu.csv");
     pointjson = await getJson("point.geojson");
-    codecompcsv = await getCsv("自治体コード圧縮形.csv");
     kokusei2020 = await getCsv("2020kokusei.csv");
     pointjson.features.forEach(row=>{
         let match = csv.find(f=>{return f.citycode === row.properties.CODE5});
@@ -80,10 +78,6 @@ async function init(){
         if(match){
             f.properties.population = match.POPULATION;
             f.properties.area = match.AREA;
-        }
-        match = codecompcsv.find(f2=>{return f2["5keta"] === f.properties.CODE5});
-        if(match){
-            f.properties.CODE3 = match["3keta"];
         }
     });
     geojsonFiles.polygon2020.features = geojsonFiles.polygon2020.features.filter(f=>{return f.properties.visit_diff});
@@ -283,6 +277,16 @@ async function init(){
         new Dialog({msg: "すべての選択をリセットしますか？", buttons: [{id: "determ", text: "OK", onclick: function(){reset()}}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]}).show()
     });
 
+    $("#listbtn").modaal({
+        content_source: "#listModal",
+        before_open: listTableRedraw
+    });
+
+    $("#achievebtn").modaal({
+        content_source: "#achieveModal",
+        before_open: achieveTableRedraw
+    });
+
     if(window.localStorage.getItem("visitlevel_saveData")){
         saveDataArr = JSON.parse(window.localStorage.getItem("visitlevel_saveData"));
     }
@@ -350,10 +354,30 @@ async function init(){
         }
     });
 
+
+    $("input[value='withcode']").prop("checked", false);
+    $("input[value='withcode']").on("click", function(){
+        if($("input[value='withcode']").prop("checked")){
+            $("#withcodeDesc").css("color", "#000");
+        }else{
+            $("#withcodeDesc").css("color", "#ebfdff");
+        }
+        shareModal();
+    });
+
     $("#shareModal").find(".btn_twitter").on("click", function(){
         let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent($("#shareContent").html())
         window.open(path, "_blank");
     });
+
+    urlParams = new URL(window.location.href).searchParams;
+    if(urlParams.get("list")){
+        $("#ifUrlParams").show();
+        let arr = codecomp_decode(urlParams.get("list"));
+        if(arr.length){
+            loadData({list: arr});
+        }
+    }
 
     $(".loader, .loaderBG, .loaderCover").css("display", "none");
 }
@@ -367,7 +391,7 @@ function featureClick(e){
             clickLayerChange("red");
         }
     }
-    if(!selectedFeatures.some(f=>{return f.CODE5 === e.layer.properties.CODE5})){
+    if(!selectedFeatures.map(f=>{return f.CODE5}).includes(e.layer.properties.CODE5)){
         let newStyle;
         if(clickLayerType === "black"){
             newStyle = {fill: true, fillPattern: pattern ,fillOpacity:1, opacity:0};
@@ -389,6 +413,9 @@ function tableRedraw(){
     $("#point").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.visit_diff)}, 0));
     $("#pop").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.population)}, 0));
     $("#area").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.area)}, 0).toFixed(2));
+}
+
+function listTableRedraw(){
     $("#list_ken").empty();
     $("#list_level").empty();
     selectedFeatures.forEach(f=>{
@@ -413,6 +440,9 @@ function tableRedraw(){
         tr.append([$("<td>").text(text), $("<td>").text(f.visit_diff + " pt")]);
         tr.appendTo($("#list_level"));
     });
+}
+
+function achieveTableRedraw(){
     $("#achieve_ken tr .count").first().text(selectedFeatures.length);
     $("#achieve_ken tr .point").first().text(selectedFeatures.reduce((pre, cur)=>{return pre+Number(cur.visit_diff)}, 0));
     $("#achieve_level tr .count").first().text(selectedFeatures.length);
@@ -426,7 +456,6 @@ function tableRedraw(){
     $(".percent").each(function(i){
         $(this).text("(" + (Number($(this).prev().prev().text().replace(/[^0-9]/g, "")) / Number($(this).prev().text().replace(/[^0-9]/g, "")) * 100).toFixed() + "%)");
     });
-    
 }
 
 function clickLayerChange(type){
@@ -543,52 +572,6 @@ function makeSaveData(saveDataName){
     return save;
 }
 
-function makeCodeComp(){
-    let text = "";
-    let current = "";
-    selectedFeatures.map(f=>{return f.CODE3}).forEach(f=>{
-        if(f.substring(0, 1) !== current){
-            current = f.substring(0, 1);
-            text += f.substring(0, 1) + "_"
-        }
-        text += f.substring(1, 3)
-    });
-    return text;
-}
-
-function comparison(){
-    console.log(makeCodeComp());
-    console.log(selectedFeatures.reduce((pre, cur)=>{return pre + cur.CODE3}, ""));
-    console.log(selectedFeatures.reduce((pre, cur)=>{return pre + cur.CODE5}, ""));
-}
-
-function decode(code){
-    let arr2 = code.match(/.{2}/g);
-    let arr3 = [];
-    let prefix;
-    arr2.forEach(r=>{
-        if(r.substring(1) === "_"){
-            prefix = r.substring(0, 1);
-        }else{
-            arr3.push(prefix + r);
-        }
-    });
-    return arr3.map(c3=>{return codecompcsv.find(r=>{return r["3keta"] === c3})["5keta"]});
-}
-
-function initialComp(){
-    let exp = [];
-    let cur;
-    selectedFeatures.forEach(f=>{
-        if(f.CODE5.substring(0, 2) !== cur){
-            cur = f.CODE5.substring(0, 2);
-            exp.push("0" + f.CODE5.substring(0, 2));
-        }
-        exp.push(f.CODE5.substring(2, 5));
-    });
-    return exp.join("");
-}
-
 function loadData(save){
     reset();
     save.list.forEach(f=>{
@@ -610,7 +593,12 @@ function loadData(save){
 
 function shareModal(){
     let point = selectedFeatures.reduce((sum, f)=>{return sum+Number(f.visit_diff)}, 0);
-    $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n\n#市区町村訪問ポイント\nhttps://hanishina.github.io/maps/visitlevel.html")
+    if($("input[value='withcode']").prop("checked")){
+        let code = codecomp_encode(selectedFeatures.map(f=>{return f.CODE5}));
+        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n(リンクから訪問市区町村の一覧を確認できます。)\n\n#市区町村訪問ポイント\nhttps://hanishina.github.io/maps/visitlevel.html?list=" + code);
+    }else{
+        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n\n#市区町村訪問ポイント\nhttps://hanishina.github.io/maps/visitlevel.html");
+    }
 }
 
 async function getJson(name, date){
@@ -692,4 +680,10 @@ function whiter(color){
     g = Math.round(g + (1-g/255)/2*255);
     b = Math.round(b + (1-b/255)/2*255);
     return "#" + r.toString(16).padStart(2, "0") + g.toString(16).padStart(2, "0") + b.toString(16).padStart(2, "0")
+}
+
+//↓experimental
+function selectAll(){
+    codeArr = csv.map(r=>{return r.citycode});
+    loadData({list: codeArr});
 }

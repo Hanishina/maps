@@ -2,7 +2,6 @@
 <html lang="ja">
 <head prefix="og: https://ogp.me/ns#">
   <meta charset="UTF-8">
-  <meta name="robots" content="noindex">
   <meta name="description" content="あなたが訪問した市区町村から「訪問ポイント」を算出します。"/>
   <meta name="viewport" content="width=device-width"/>
 
@@ -42,6 +41,7 @@
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
   <script src="./Plugins/modaal.min.js"></script>
   <script src="./dialog.js"></script>
+  <script src="./codecomp.js"></script>
 
   <script src="./visitlevel.js"></script>
 </head>
@@ -50,7 +50,10 @@
         <div class="title">市区町村訪問ポイント</div>
         <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./visitlevel_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
     </div>
-    <div>あなたが行ったことのある市区町村をクリックしてください。「訪問ポイント」を算出します。</div>
+    <div>
+      あなたが行ったことのある市区町村をクリックしてください。「訪問ポイント」を算出します。<br>
+      <span id="ifUrlParams" style="display:none; color:#800">(他の人の訪問ポイントが表示されている場合は、「リセット」ボタンをクリックしてからあなたの訪問市区町村を選択してください。)</span>
+    </div>
     <div id="flexbox" style="display: flex;">
       <div id="result">
         <div id="pointWindow">
@@ -59,19 +62,8 @@
           <div id="point">0</div>
           <div id="pop_area"><span>総人口:<span id="pop">0</span></span>  <span>総面積:<span id="area">0.00</span></span></div>
         </div>
-        <details>
-          <summary>訪問した市区町村一覧</summary>
-          <label><input type="radio" name="listtype" value="ken">都道府県順</label><label><input type="radio" name="listtype" value="level">難易度順</label>
-          <div style="max-height: 300px; overflow-y: scroll;"><table id="list_ken"></table></div>
-          <div style="max-height: 300px; overflow-y: scroll; display: none;"><table id="list_level"></table></div>
-        </details>
-        <details>
-          <summary>達成率</summary>
-          <label><input type="radio" name="tabletype" value="ken">都道府県別<span style="font-size: small;">(市区町村数・pt)</span></label><br>
-          <label><input type="radio" name="tabletype" value="level">難易度別<span style="font-size: small;">(市区町村数)</span></label>
-          <div style="max-height: 300px; overflow-y: scroll;"><table id="achieve_ken"></table></div>
-          <div style="max-height: 300px; overflow-y: scroll; display: none;"><table id="achieve_level"></table></div>
-        </details>
+        <div id="listbtn">選択した市区町村一覧を見る</div>
+        <div id="achievebtn">達成率を見る</div>
       </div>
       <div id="mapContainer">
         <div class="loaderCover"></div>
@@ -79,6 +71,21 @@
         <div class="loader"></div>
         <div id="map"><div id="smallWindow"><div class="cityname">-</div><div class="visit_diff">訪問難易度： </div><div class="visitor">訪問者数： </div></div></div>
       </div>
+    </div>
+
+    <div id="listModal" style="display:none;">
+      <div class="h3">訪問した市区町村一覧</div>
+      <label><input type="radio" name="listtype" value="ken">都道府県順</label><label><input type="radio" name="listtype" value="level">難易度順</label>
+      <div style="max-height: 500px; overflow-y: scroll;"><table id="list_ken"></table></div>
+      <div style="max-height: 500px; overflow-y: scroll; display: none;"><table id="list_level"></table></div>
+    </div>
+
+    <div id="achieveModal" style="display:none;">
+      <div class="h3">達成率</div>
+      <label><input type="radio" name="tabletype" value="ken">都道府県別<span style="font-size: small;">(市区町村数・pt)</span></label><br>
+      <label><input type="radio" name="tabletype" value="level">難易度別<span style="font-size: small;">(市区町村数)</span></label>
+      <div style="max-height: 500px; overflow-y: scroll;"><table id="achieve_ken"></table></div>
+      <div style="max-height: 500px; overflow-y: scroll; display: none;"><table id="achieve_level"></table></div>
     </div>
 
     <div id="saveModal" style="display:none;">
@@ -92,7 +99,7 @@
       </div>
       <button class="save">選択したファイルに保存</button><button class="cancel">キャンセル</button>
     </div>
-  
+
     <div id="loadModal" style="display:none;">
       <div class="h3">データを読み込む</div>
       ▼読み込むファイルを選択
@@ -103,7 +110,8 @@
 
     <div id="shareModal" style="display:none;">
       <div class="h3">訪問ポイントを共有する</div>
-      <div>「結果をツイートする」ボタンを押すか、下のメッセージをコピーしてSNSの投稿画面に貼り付けてください。</div>
+      <div style="background-color: #ebfdff;"><label><input type="checkbox" value="withcode">URLに選択した市区町村の情報を含める</input></label><br><span id="withcodeDesc" style="color: #ebfdff;font-size: small;">リンクからあなたが選択した市区町村の一覧を誰でも見ることができます。(保存されているデータが他人に改変されることはありません)</span></div>
+      <div style="color: #555">「結果をツイートする」ボタンを押すか、下のメッセージをコピーしてSNSの投稿画面に貼り付けてください。</div>
       <textarea id="shareContent" rows="10" style="width:100%;"></textarea>
       <button class="btn_twitter"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイートする</button>
     </div>

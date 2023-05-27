@@ -113,8 +113,19 @@
     font-size: medium;
 }
 
+#listbtn, #achievebtn{
+    border: #555 1px solid;
+    margin: 2px;
+    cursor: pointer;
+    background-color: #eee;
+}
+#listbtn:hover, #achievebtn:hover{
+    background-color: #bbb;
+}
+
 table{
     width: 100%;
+    max-width: 400px;
 }
 
 #list_ken td:nth-child(1), #list_level td:nth-child(1){
