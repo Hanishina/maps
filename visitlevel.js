@@ -411,6 +411,7 @@ function featureClick(e){
 
 function tableRedraw(){
     $("#point").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.visit_diff)}, 0));
+    $("#count").text(selectedFeatures.length);
     $("#pop").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.population)}, 0));
     $("#area").text(selectedFeatures.reduce((sum, f)=>{return sum+Number(f.area)}, 0).toFixed(2));
 }
@@ -686,4 +687,25 @@ function whiter(color){
 function selectAll(){
     codeArr = csv.map(r=>{return r.citycode});
     loadData({list: codeArr});
+}
+
+function compare(){
+    let a = selectedFeatures.map(f=>{return f.CODE5});
+    console.log(a);
+    let oldc = codecomp_encode_old(a);
+    let newc = codecomp_encode(a);
+    console.log(oldc);
+    console.log(newc);
+    let olda = codecomp_decode(oldc);
+    let newa = codecomp_decode(newc);
+    a.forEach((e1, i)=>{
+        if(e1 !== olda[i]){
+            console.log("old code wrong!!! " + olda[i]);
+            console.log(olda);
+        }
+        if(e1 !== newa[i]){
+            console.log("new code wrong!!! " + newa[i]);
+            console.log(newa);
+        }
+    });
 }

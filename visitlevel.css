@@ -71,6 +71,11 @@
     color: #fff;
 }
 
+#count_div{
+    color: #555;
+    font-size: 15px;
+    font-weight: normal;
+}
 #pop_area{
     display: flex;
     color: #555;
