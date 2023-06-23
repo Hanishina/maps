@@ -485,7 +485,7 @@ function polygonRedraw(n){
         if(date[n] < new Date("1947/05/03")){
           return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
         }else if(date[n] < new Date("1970/04/01")){
-          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"].some(e => e === properties.KEN)){
+          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "岡山県"].some(e => e === properties.KEN)){
             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
           }else{
             return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
@@ -505,9 +505,9 @@ function polygonRedraw(n){
     let prop = e.sourceTarget.properties;
     L.popup(e.latlng, {content: ()=>{
       let start = prop.START;
-      if(start == "1889/04/01"){start = "-";}
+      if(start == "1889-04-01"){start = "-";}
       let end = prop.END;
-      if(end == "2999/12/31"){end = "-";}
+      if(end == "2999-12-31"){end = "-";}
       let name = (prop.NAME ?? prop.TYPE);
       if(prop.CODE5 === "01223X"){name = name + "(歯舞群島)";}
       return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (prop.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (prop.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (prop.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
