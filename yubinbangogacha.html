@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <!--<meta name="description" content="">-->
+    <link rel="icon" href="favicon.ico" />
+    <title>郵便番号ガチャ</title>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZC2WPE0KKJ');
+    </script>
+
+    <link href="./Plugins/modaal.min.css" rel="stylesheet"  type="text/css"/>
+    <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./Plugins/modaal.min.js"></script>
+    <link href="historymap.css" rel="stylesheet" type="text/css">
+    <style>
+        .maintable{
+            width: 400px;
+            text-align: center;
+            border: 2px solid #555;
+        }
+        .maintable>div{
+            border: 1px solid #555;
+        }
+    </style>
+    <script>
+        let csv;
+        let csvf;
+        let hist = [];
+
+        let startFlg = false;
+        let reserved;
+        let rouletteId;
+        async function onload(){
+            csv = await getCsv("郵便番号.csv");
+            csvf = csv.filter(e=>{return e["alias"] == ""});
+
+            $("#btn").on("click", e=>{
+                if(startFlg){
+                    stopRoulette();
+                }else{
+                    roulette();
+                }
+                
+            });
+            $("#aboutBtn").modaal({
+                content_source: "#aboutMod"
+            });
+            $("#histBtn").modaal({
+                content_source: "#histMod",
+                before_open: histTable
+            });
+        }
+
+        async function getCsv(name){
+            let path = "./csv/" + name;
+            csvText = await $.get(path);
+            let tempArr = csvText.split(/\r\n|\r|\n/g);
+            let csvArr = [];
+            let columnNames;
+            tempArr.forEach((item, i)=>{
+                if(i == 0){
+                columnNames = item.split(",");
+                }else if(item){
+                let obj = {};
+                item.split(",").forEach((val, j)=>{
+                    obj[columnNames[j]] = val;
+                });
+                csvArr.push(obj);
+                }
+            });
+            return csvArr;
+        }
+
+        function set(bango){
+            stopRoulette(bango);
+        }
+
+        function reserve(bango){
+            reserved = csv.filter(e=>{return e["code"] == bango})[0];
+            if(reserved["alias"]){
+                reserved = csvf.filter(e=>{return e["code"] == reserved["alias"]})[0];
+            }
+        }
+
+        function roulette(){
+            $("#mapImg").attr({src: ""}).hide();
+            $("#btn").text("STOP!");
+            startFlg = true;
+            rouletteId = setInterval(()=>{
+                let selection = csvf[Math.floor(Math.random()*csvf.length)];
+
+                let codes = selection["fullcode"].split("/");
+                $("#bango").text("");
+                codes.forEach(c=>{
+                    if($("#bango").text()){
+                        $("#bango").html($("#bango").html() + "<br>" + c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                    }else{
+                        $("#bango").html(c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                    }
+                    
+                });
+                //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+                $("#yubinku").text(selection["name"] + "(" + selection["ken"] + ")");
+                $("#area").text(selection["area"]);
+            }, 50);
+        }
+
+        function stopRoulette(bango){
+            clearInterval(rouletteId);
+            $("#btn").text("START");
+            startFlg = false;
+            let selection = csvf[Math.floor(Math.random()*csvf.length)];
+            if(bango){
+                selection = csv.filter(e=>{return e["code"] == bango})[0];
+                if(selection["alias"]){
+                    selection = csvf.filter(e=>{return e["code"] == selection["alias"]})[0];
+                }
+            }else if(reserved){
+                selection = reserved;
+                reserved = "";
+            }
+            console.log(selection);
+
+            let codes = selection["fullcode"].split("/");
+            $("#bango").text("");
+            codes.forEach(c=>{
+                if($("#bango").text()){
+                    $("#bango").html($("#bango").html() + "<br>" + c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                }else{
+                    $("#bango").html(c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                }
+                
+            });
+            //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+            $("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
+            $("#area").text(selection["area"]);
+            $("#mapImg").attr({src: "./img/yubin/yubinku/" + selection["code"] + ".png"});
+            $("#mapImg").show();
+            hist.push(selection);
+        }
+
+        function histTable(){
+            let tbl = $("#histTable");
+            tbl.empty();
+            tbl.html("<tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>");
+            hist.forEach(data=>{
+                let tr = $("<tr>");
+                $("<td>").text(data["fullcode"]).appendTo(tr);
+                $("<td>").text(data["name"]).appendTo(tr);
+                $("<td>").text(data["area"]).appendTo(tr);
+                tr.appendTo(tbl);
+            });
+        }
+
+        function ken(...kenArr){
+            if(kenArr.length == 0){
+                csvf = csv.filter(e=>{return e["alias"] == ""});
+            }else{
+                csvf = csv.filter(e=>{return e["alias"] == "" && kenArr.includes(e["ken"])});
+            } 
+        }
+
+    </script>
+</head>
+<body onload="onload()">
+    <div class="header">
+        <div class="title">郵便番号ガチャ</div>
+        <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a>　関連：<a href="./yubin_kenbetsu.html">都道府県別郵便番号地図</a></div>
+    </div>
+    <div>
+        <button id="btn" style="font-size: x-large; margin: 3px;">START</button>
+    </div>
+    <div class="maintable">
+        <div style="background-color: #cbd3ff;">郵便番号</div>
+        <div id="bango" style="font-size: xx-large; font-weight: bold; color: #770000;">　</div>
+        <div style="background-color: #cbd3ff;">郵便区名</div>
+        <div id="yubinku" style="font-weight: bold;">　</div>
+        <div style="background-color: #cbd3ff;">地域</div>
+        <div id="area">　</div>
+    </div>
+    <div><img id="mapImg" style="width: 500px; max-width: 100vw; display: none;"></div>
+    <div><button id="aboutBtn">説明</button><button id="confBtn">設定</button><button id="histBtn">履歴</button></div>
+
+    <div id="aboutMod" style="display: none;">
+        <div>
+            全国を郵便番号により区分した郵便区からランダムでひとつ表示します。<br>
+            <b>START</b>ボタンを押すとルーレットを開始します。<b>STOP!</b>ボタンで止まります。<br>
+            「郵便区」は、ここでは「郵便番号上5桁が同じ地域」を指すものとします。ただし、いくつかの地域に関しては郵便番号上5桁が異なる複数の地域をひとつにまとめています。
+        </div>
+        <div>
+            <h3>郵便番号</h3>
+            該当地域の郵便番号上5桁。複数の郵便番号をまとめて表示する場合もあります。<br>
+            ※町域に振られる番号のみ。建物に対して振られる番号(高層ビル用番号、個別事業所番号、集配郵便局の番号など)は対象外。
+        </div>
+        <div>
+            <h3>郵便区名</h3>
+            該当地域の名前。原則として、その地域の集配を担当する(担当していた)集配局の名前としています。<br>
+            ※現在の集配局とは異なる場合がある。現在の集配局については「<a href="./yubin_kenbetsu.html">都道府県別郵便番号地図</a>」を参照。
+        </div>
+        <div>
+            <h3>地域</h3>
+            該当する地域。市町村名の後に[]がつくものは、その市町村の一部。[]がないものはその市町村の全域が該当します。
+        </div>
+        <div>
+            <h3>地図</h3>
+            該当地域が赤色で表示されます。
+        </div>
+    </div>
+
+    <div id="histMod" style="display: none;">
+        <div style="overflow-y: scroll; max-height: 80vh;"><table id="histTable">
+            <tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>
+        </table></div>
+    </div>
+</body>
+</html>
