@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
+    <!-- 削除すること 
+    ---------------------------------------------------- -->
+    <meta name="robots" content="noindex">
+    <!-- ----------------------------------------------------
+    削除すること -->
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <!--<meta name="description" content="">-->
@@ -25,14 +32,22 @@
     <style>
         .maintable{
             width: 400px;
+            max-width: 95vw;
             text-align: center;
             border: 2px solid #555;
         }
         .maintable>div{
             border: 1px solid #555;
         }
+        #histTable tr td{
+            cursor: pointer;
+        }
+        #histTable tr:hover td{
+            background-color: #eee;
+        }
     </style>
     <script>
+        const KenCode = [{"ken" : "北海道", "code" : 1}, {"ken" : "青森県", "code" : 2}, {"ken" : "岩手県", "code" : 3}, {"ken" : "宮城県", "code" : 4}, {"ken" : "秋田県", "code" : 5}, {"ken" : "山形県", "code" : 6}, {"ken" : "福島県", "code" : 7}, {"ken" : "茨城県", "code" : 8}, {"ken" : "栃木県", "code" : 9}, {"ken" : "群馬県", "code" : 10}, {"ken" : "埼玉県", "code" : 11}, {"ken" : "千葉県", "code" : 12}, {"ken" : "東京都", "code" : 13}, {"ken" : "神奈川県", "code" : 14}, {"ken" : "新潟県", "code" : 15}, {"ken" : "富山県", "code" : 16}, {"ken" : "石川県", "code" : 17}, {"ken" : "福井県", "code" : 18}, {"ken" : "山梨県", "code" : 19}, {"ken" : "長野県", "code" : 20}, {"ken" : "岐阜県", "code" : 21}, {"ken" : "静岡県", "code" : 22}, {"ken" : "愛知県", "code" : 23}, {"ken" : "三重県", "code" : 24}, {"ken" : "滋賀県", "code" : 25}, {"ken" : "京都府", "code" : 26}, {"ken" : "大阪府", "code" : 27}, {"ken" : "兵庫県", "code" : 28}, {"ken" : "奈良県", "code" : 29}, {"ken" : "和歌山県", "code" : 30}, {"ken" : "鳥取県", "code" : 31}, {"ken" : "島根県", "code" : 32}, {"ken" : "岡山県", "code" : 33}, {"ken" : "広島県", "code" : 34}, {"ken" : "山口県", "code" : 35}, {"ken" : "徳島県", "code" : 36}, {"ken" : "香川県", "code" : 37}, {"ken" : "愛媛県", "code" : 38}, {"ken" : "高知県", "code" : 39}, {"ken" : "福岡県", "code" : 40}, {"ken" : "佐賀県", "code" : 41}, {"ken" : "長崎県", "code" : 42}, {"ken" : "熊本県", "code" : 43}, {"ken" : "大分県", "code" : 44}, {"ken" : "宮崎県", "code" : 45}, {"ken" : "鹿児島県", "code" : 46}, {"ken" : "沖縄県", "code" : 47}];
         let csv;
         let csvf;
         let hist = [];
@@ -52,12 +67,28 @@
                 }
                 
             });
+            $("#twBtn").on("click", e=>{
+                if(hist.length>0){
+                    let bango = hist[hist.length-1]["fullcode"].split("/").map(e=>{return e.substring(0,3) + "-" + e.substring(3,5) + "XX"}).join(",");
+                    let yubinku = hist[hist.length-1]["name"] + "(" + hist[hist.length-1]["ken"] + ")";
+                    let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("【郵便番号ガチャ】\n〒"+bango+"\n郵便区名："+yubinku+"\n地域："+hist[hist.length-1]["area"]+"\n\nhttps://hanishina.github.io/maps/yubinbangogacha.html");
+                    window.open(path, "_blank");
+                }
+            });
             $("#aboutBtn").modaal({
                 content_source: "#aboutMod"
+            });
+            $("#confBtn").modaal({
+                content_source: "#confMod",
+                before_close: kenChecked
             });
             $("#histBtn").modaal({
                 content_source: "#histMod",
                 before_open: histTable
+            });
+
+            KenCode.forEach(obj=>{
+                $("<div>").css({margin: "5px"}).append($("<label>").append($("<input>").attr({type: "checkbox", name: "ken", value: obj["ken"]})).append(obj["ken"])).appendTo("#kenInputs")
             });
         }
 
@@ -81,8 +112,8 @@
             return csvArr;
         }
 
-        function set(bango){
-            stopRoulette(bango);
+        function set(bango, addHistory=true){
+            stopRoulette(bango, addHistory);
         }
 
         function reserve(bango){
@@ -115,7 +146,7 @@
             }, 50);
         }
 
-        function stopRoulette(bango){
+        function stopRoulette(bango, addHistory=true){
             clearInterval(rouletteId);
             $("#btn").text("START");
             startFlg = false;
@@ -144,9 +175,11 @@
             //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
             $("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
             $("#area").text(selection["area"]);
-            $("#mapImg").attr({src: "./img/yubin/yubinku/" + selection["code"] + ".png"});
+            $("#mapImg").attr({src: "./img/yubin/yubinku/" + selection["code"] + ".jpg"});
             $("#mapImg").show();
-            hist.push(selection);
+            if(addHistory){
+                hist.push(selection);
+            }
         }
 
         function histTable(){
@@ -154,11 +187,14 @@
             tbl.empty();
             tbl.html("<tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>");
             hist.forEach(data=>{
-                let tr = $("<tr>");
+                let tr = $("<tr>").attr({code: data["code"]});
                 $("<td>").text(data["fullcode"]).appendTo(tr);
-                $("<td>").text(data["name"]).appendTo(tr);
+                $("<td>").text(data["name"] + "(" + data["ken"] + ")").appendTo(tr);
                 $("<td>").text(data["area"]).appendTo(tr);
                 tr.appendTo(tbl);
+                tr.on("click", e=>{
+                    set($(e.currentTarget).attr("code"), false);
+                });
             });
         }
 
@@ -170,6 +206,19 @@
             } 
         }
 
+        function kenChecked(){
+            let checked = $(":checkbox[name='ken']:checked");
+            if(checked.length == 0 || checked.length == 47){
+                ken();
+            }else{
+                let kenArr = [];
+                checked.each(function(){
+                    kenArr.push($(this).val());
+                });
+                ken(...kenArr);
+            }
+        }
+
     </script>
 </head>
 <body onload="onload()">
@@ -177,8 +226,8 @@
         <div class="title">郵便番号ガチャ</div>
         <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a>　関連：<a href="./yubin_kenbetsu.html">都道府県別郵便番号地図</a></div>
     </div>
-    <div>
-        <button id="btn" style="font-size: x-large; margin: 3px;">START</button>
+    <div style="width: 400px; max-width: 95vw; position: relative;">
+        <button id="btn" style="font-size: x-large; margin: 3px;">START</button><button id="twBtn" style="position: absolute; right: 0; bottom: 0;"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイート</button>
     </div>
     <div class="maintable">
         <div style="background-color: #cbd3ff;">郵便番号</div>
@@ -215,6 +264,11 @@
             <h3>地図</h3>
             該当地域が赤色で表示されます。
         </div>
+    </div>
+
+    <div id="confMod" style="display: none;">
+        <div>対象になる都道府県を選択できます。全てのチェックを外すか全てにチェックを入れると全都道府県が対象になります。</div>
+        <div id="kenInputs" style="display: flex; flex-wrap: wrap"></div>
     </div>
 
     <div id="histMod" style="display: none;">
