@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex">
     <!-- ----------------------------------------------------
     削除すること -->
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <!--<meta name="description" content="">-->
@@ -51,6 +51,7 @@
         let csv;
         let csvf;
         let hist = [];
+        let twObj;
 
         let startFlg = false;
         let reserved;
@@ -68,10 +69,10 @@
                 
             });
             $("#twBtn").on("click", e=>{
-                if(hist.length>0){
-                    let bango = hist[hist.length-1]["fullcode"].split("/").map(e=>{return e.substring(0,3) + "-" + e.substring(3,5) + "XX"}).join(",");
-                    let yubinku = hist[hist.length-1]["name"] + "(" + hist[hist.length-1]["ken"] + ")";
-                    let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("【郵便番号ガチャ】\n〒"+bango+"\n郵便区名："+yubinku+"\n地域："+hist[hist.length-1]["area"]+"\n\nhttps://hanishina.github.io/maps/yubinbangogacha.html");
+                if(twObj){
+                    let bango = twObj["fullcode"].split("/").map(e=>{return e.substring(0,3) + "-" + e.substring(3,5) + "XX"}).join(",");
+                    let yubinku = twObj["name"] + "(" + twObj["ken"] + ")";
+                    let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("【郵便番号ガチャ】\n〒"+bango+"\n郵便区名："+yubinku+"\n地域："+twObj["area"]+"\n\nhttps://hanishina.github.io/maps/yubinbangogacha.html");
                     window.open(path, "_blank");
                 }
             });
@@ -175,11 +176,12 @@
             //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
             $("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
             $("#area").text(selection["area"]);
-            $("#mapImg").attr({src: "./img/yubin/yubinku/" + selection["code"] + ".jpg"});
+            $("#mapImg").attr({src: "http://hanishina.net/maps/img/yubinku/" + selection["code"] + ".jpg"});
             $("#mapImg").show();
             if(addHistory){
                 hist.push(selection);
             }
+            twObj = selection;
         }
 
         function histTable(){
@@ -226,7 +228,7 @@
         <div class="title">郵便番号ガチャ</div>
         <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a>　関連：<a href="./yubin_kenbetsu.html">都道府県別郵便番号地図</a></div>
     </div>
-    <div style="width: 400px; max-width: 95vw; position: relative;">
+    <div style="width: 400px; max-width: 100%; position: relative;">
         <button id="btn" style="font-size: x-large; margin: 3px;">START</button><button id="twBtn" style="position: absolute; right: 0; bottom: 0;"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイート</button>
     </div>
     <div class="maintable">
@@ -237,19 +239,19 @@
         <div style="background-color: #cbd3ff;">地域</div>
         <div id="area">　</div>
     </div>
-    <div><img id="mapImg" style="width: 500px; max-width: 100vw; display: none;"></div>
-    <div><button id="aboutBtn">説明</button><button id="confBtn">設定</button><button id="histBtn">履歴</button></div>
+    <div><img id="mapImg" style="width: 500px; max-width: 100%; display: none;"></div>
+    <div style="width: 400px; max-width: 100%;"><button id="aboutBtn" style="width: 30%; margin: 5px;">説明</button><button id="confBtn" style="width: 30%; margin: 5px;">設定</button><button id="histBtn" style="width: 30%; margin: 5px;">履歴</button></div>
 
     <div id="aboutMod" style="display: none;">
         <div>
             全国を郵便番号により区分した郵便区からランダムでひとつ表示します。<br>
             <b>START</b>ボタンを押すとルーレットを開始します。<b>STOP!</b>ボタンで止まります。<br>
-            「郵便区」は、ここでは「郵便番号上5桁が同じ地域」を指すものとします。ただし、いくつかの地域に関しては郵便番号上5桁が異なる複数の地域をひとつにまとめています。
+            「郵便区」は、ここでは「郵便番号の上5桁が同じ地域」を指すものとします。ただし、いくつかの地域に関しては郵便番号上5桁が異なる複数の地域をひとつにまとめています。
         </div>
         <div>
             <h3>郵便番号</h3>
             該当地域の郵便番号上5桁。複数の郵便番号をまとめて表示する場合もあります。<br>
-            ※町域に振られる番号のみ。建物に対して振られる番号(高層ビル用番号、個別事業所番号、集配郵便局の番号など)は対象外。
+            ※町域に振られる番号のみ。建物に対して振られる番号(高層ビル用番号、事業所個別番号、集配郵便局の番号など)は対象外。
         </div>
         <div>
             <h3>郵便区名</h3>
