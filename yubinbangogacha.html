@@ -64,7 +64,7 @@
             $("#twBtn").on("click", e=>{
                 if(twObj){
                     let bango = twObj["fullcode"].split("/").map(e=>{return e.substring(0,3) + "-" + e.substring(3,5) + "XX"}).join(",");
-                    let yubinku = twObj["name"] + "(" + twObj["ken"] + ")";
+                    let yubinku = twObj["name"] + "<" + twObj["yomi"] + ">" + "(" + twObj["ken"] + ")";
                     let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("【郵便番号ガチャ】\n〒"+bango+"\n郵便区名："+yubinku+"\n地域："+twObj["area"]+"\n\nhttps://hanishina.github.io/maps/yubinbangogacha.html");
                     window.open(path, "_blank");
                 }
@@ -84,6 +84,8 @@
             KenCode.forEach(obj=>{
                 $("<div>").css({margin: "5px"}).append($("<label>").append($("<input>").attr({type: "checkbox", name: "ken", value: obj["ken"]})).append(obj["ken"])).appendTo("#kenInputs")
             });
+
+            console.info("隠しコマンド(コンソール上で実行可能)：\n「set('10000')」のように入力すると、指定した番号を表示します。\n「reserve('10000')」のように入力すると、次にSTOPボタンを押したときに指定した番号が必ず出ます。");
         }
 
         async function getCsv(name){
@@ -134,8 +136,8 @@
                     }
                     
                 });
-                //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
-                $("#yubinku").text(selection["name"] + "(" + selection["ken"] + ")");
+                $("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["yomi"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+                //$("#yubinku").text(selection["name"] + "(" + selection["ken"] + ")");
                 $("#area").text(selection["area"]);
             }, 50);
         }
@@ -166,8 +168,8 @@
                 }
                 
             });
-            //$("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["code"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
-            $("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
+            $("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["yomi"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+            //$("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
             $("#area").text(selection["area"]);
             $("#mapImg").attr({src: "https://hanishina.net/maps/img/yubinku/" + selection["code"] + ".jpg"});
             $("#mapImg").show();
@@ -228,7 +230,7 @@
         <div style="background-color: #cbd3ff;">郵便番号</div>
         <div id="bango" style="font-size: xx-large; font-weight: bold; color: #770000;">　</div>
         <div style="background-color: #cbd3ff;">郵便区名</div>
-        <div id="yubinku" style="font-weight: bold;">　</div>
+        <div id="yubinku" style="font-weight: bold;"><ruby>　<rt>　</rt></ruby></div>
         <div style="background-color: #cbd3ff;">地域</div>
         <div id="area">　</div>
     </div>
