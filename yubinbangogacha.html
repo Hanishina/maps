@@ -45,6 +45,7 @@
         let csvf;
         let hist = [];
         let twObj;
+        let buffer;
 
         let startFlg = false;
         let reserved;
@@ -79,6 +80,10 @@
             $("#histBtn").modaal({
                 content_source: "#histMod",
                 before_open: histTable
+            });
+            $("#areaListBtn").modaal({
+                content_source: "#areaListMod",
+                before_open: areaListTable
             });
 
             KenCode.forEach(obj=>{
@@ -121,8 +126,10 @@
 
         function roulette(){
             $("#mapImg").attr({src: ""}).hide();
+            $("#areaListBtn").hide();
             $("#btn").text("STOP!");
             startFlg = true;
+            buffer = null;
             rouletteId = setInterval(()=>{
                 let selection = csvf[Math.floor(Math.random()*csvf.length)];
 
@@ -145,7 +152,9 @@
         function stopRoulette(bango, addHistory=true){
             clearInterval(rouletteId);
             $("#btn").text("START");
+            $("#areaListBtn").show();
             startFlg = false;
+            buffer = null;
             let selection = csvf[Math.floor(Math.random()*csvf.length)];
             if(bango){
                 selection = csv.filter(e=>{return e["code"] == bango})[0];
@@ -195,6 +204,35 @@
             });
         }
 
+        async function areaListTable(){
+            $("#areaListTable").empty();
+            $("#areaListMsg").text("読み込み中…").show();
+            if(!buffer){
+                buffer = await $.getJSON("https://hanishina.net/maps/php/yubinbangoapi.php?f=" + twObj["fullcode"]);
+            }
+            $("#areaListMsg").hide()
+            if(buffer){
+                let tr = $("<tr>");
+                $("<th>").text("郵便番号").appendTo(tr);
+                $("<th>").text("都道府県").appendTo(tr);
+                $("<th>").text("市区町村").appendTo(tr);
+                $("<th>").text("町域").appendTo(tr);
+                tr.appendTo($("#areaListTable"));
+                buffer.sort((a,b)=>{return a["bango"] - b["bango"]});
+                buffer.forEach(r=>{
+                    let tr = $("<tr>");
+                    $("<td>").text(r["bango"].substring(0,3) + "-" + r["bango"].substring(3,7)).appendTo(tr);
+                    $("<td>").text(r["ken"]).attr({title: r["ken_kana"]}).appendTo(tr);
+                    $("<td>").text(r["shi"]).attr({title: r["shi_kana"]}).appendTo(tr);
+                    $("<td>").text(r["choiki"]).attr({title: r["choiki_kana"]}).appendTo(tr);
+                    tr.appendTo($("#areaListTable"));
+                });
+            }else{
+                $("#areaListMsg").text("データを読み込めませんでした。");
+                console.log(buffer);
+            }
+        }
+
         function ken(...kenArr){
             if(kenArr.length == 0){
                 csvf = csv.filter(e=>{return e["alias"] == ""});
@@ -231,7 +269,7 @@
         <div id="bango" style="font-size: xx-large; font-weight: bold; color: #770000;">　</div>
         <div style="background-color: #cbd3ff;">郵便区名</div>
         <div id="yubinku" style="font-weight: bold;"><ruby>　<rt>　</rt></ruby></div>
-        <div style="background-color: #cbd3ff;">地域</div>
+        <div style="background-color: #cbd3ff; position:relative;">地域<button id="areaListBtn" style="position: absolute; right: 0; display: none;">町域一覧</button></div>
         <div id="area">　</div>
     </div>
     <div><img id="mapImg" style="width: 500px; max-width: 100%; display: none;"></div>
@@ -255,7 +293,8 @@
         </div>
         <div>
             <h3>地域</h3>
-            該当する地域。市町村名の後に[]がつくものは、その市町村の一部。[]がないものはその市町村の全域が該当します。
+            該当する地域。市町村名の後に[]がつくものは、その市町村の一部。[]がないものはその市町村の全域が該当します。<br>
+            「町域一覧」ボタンをクリックすると該当する町域の一覧表が表示されます。
         </div>
         <div>
             <h3>地図</h3>
@@ -271,6 +310,12 @@
     <div id="histMod" style="display: none;">
         <div style="overflow-y: scroll; max-height: 80vh;"><table id="histTable">
             <tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>
+        </table></div>
+    </div>
+
+    <div id="areaListMod" style="display: none;">
+        <div style="color: #555; font-size: small;"><a href="https://www.post.japanpost.jp/zipcode/dl/utf-zip.html" target="_blank">日本郵便HP:郵便番号データ</a>(2023/07/31現在)を使用しています</div>
+        <div style="overflow-y: scroll; max-height: 80vh;"><div id="areaListMsg" style="display: none;"></div><table id="areaListTable">
         </table></div>
     </div>
 </body>
