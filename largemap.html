@@ -58,8 +58,9 @@
         fileName = "lambert_" + y + "_mono_nogrid_nolabel.png";
       }
       var download = document.createElement("a");
-      download.href = "https://hanishina.net/maps/img/largemap/" + fileName;
+      download.href = "./img/largemap/" + fileName;
       download.download = fileName;
+      console.log(download);
       download.click();
     }
   </script>
@@ -77,9 +78,9 @@
     </div>
     <div>
       <div>元画像ダウンロード(ファイルサイズの大きい画像をダウンロードします。)</div>
-      <div>1970年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('1970', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('1970', 'mono')"></input>
-      <div>2000年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('2000', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('2000', 'mono')"></input>
-      <div>2020年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)" onclick="download('2020', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)" onclick="download('2020', 'mono')"></input>
+      <div>1970年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)(50.5MB)" onclick="download('1970', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)(11.6MB)" onclick="download('1970', 'mono')"></input>
+      <div>2000年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)(50.4MB)" onclick="download('2000', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)(11.5MB)" onclick="download('2000', 'mono')"></input>
+      <div>2020年<input type="button" value="色付き(経緯線・市区町村名ラベルあり)(47.6MB)" onclick="download('2020', 'color')"></input><input type="button" value="白地図(経緯線・市区町村名ラベルなし)(9.87MB)" onclick="download('2020', 'mono')"></input>
     </div>
   </div>
 </body>
