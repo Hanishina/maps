@@ -22,8 +22,8 @@
         <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
     </div>
     <div>
-        <img src="./img/yubindl1.png"></img>
-        <img src="./img/yubindl2.png"></img>
+        <img src="./img/yubindl1.png" style="max-height: 60vh"></img>
+        <img src="./img/yubindl2.png" style="max-height: 60vh"></img>
     </div>
     <div>
         <h2>このデータについて</h2>
@@ -34,6 +34,10 @@
         <h2>ダウンロード</h2>
         <div><a href="./UploadFiles/yubinbango.shp.zip" download>郵便番号境界データ(shapefile)</a></div>
         <div><a href="./UploadFiles/yubinbango.geojson.zip" download>郵便番号境界データ(geojson)</a></div>
+        <br>
+        <div>▼区域調整版郵便区データ(ページ下部の解説を参照)</div>
+        <div><a href="./UploadFiles/yubinku_edit.shp.zip" download>調整版郵便区データ(shapefile)</a></div>
+        <div><a href="./UploadFiles/yubinku_edit.geojson.zip" download>調整版郵便区データ(geojson)</a></div>
     </div>
     <div>
         <h2>ジオメトリ</h2>
@@ -61,6 +65,23 @@
         当データでは、郵便区番号の桁数を格納する属性を設定しています。(また、郵便区番号が3桁の地域に関しても4・5桁目のデータを格納しています。)<br>
 
         (参考：<a href="https://www.post.japanpost.jp/zipcode/zipmanual/p04.html" target="_blank">郵便番号・バーコードマニュアル</a>)
+    </div>
+    <div>
+        <h2>区域調整版郵便区データについて</h2>
+        <img src="./img/yubindl3.png" style="max-height: 60vh"></img><br>
+        「<a href="./yubinbangogacha.html">郵便番号ガチャ</a>」のコンテンツで使用している、郵便区ごとに地域を区分したデータです。<br>
+        郵便区は通常郵便区番号によって区分されますが、実質的に同じ郵便区でありながら都合上異なる郵便区番号が設定されている地域があります。<br>
+        こうした地域を当サイト独自の基準により統合し、同一の郵便区としてまとめたデータになります。<br>
+        「郵便番号境界データ」との相違点は、一部のポリゴンが統合されているほか、収録する属性値(以下の表のとおり)が異なります。<br>
+        (注：ここでいう「郵便区」は、当サイト独自に使用しているものです。日本郵便が使用している用語の定義とは異なります。)
+        <table>
+            <tr><th>code</th><td>郵便番号の上5桁。複数の番号をまとめた郵便区の場合、代表するひとつのみを表示。</td></tr>
+            <tr><th>name</th><td>郵便区の名称。原則その地域の集配を担当する(担当していた)郵便局の名前を用いたが、独自に命名したものもある。</td></tr>
+            <tr><th>yomi</th><td>郵便局名称の読み方。</td></tr>
+            <tr><th>ken</th><td>都道府県の名称。複数県にまたがる郵便区は、集配局が所在する県。</td></tr>
+            <tr><th>area</th><td>管轄する地域。その市区町村の一部のみが含まれる場合、市区町村名の後に[]を付して地域名を記入した。例：中央市[玉穂・田富]、昭和町</td></tr>
+            <tr><th>fullcode</th><td>その郵便区の郵便番号上5桁を列挙したもの。単体の郵便区番号からなる地域は「code」と同一。複数の郵便区番号からなる地域は複数の番号を「/」で繋いだ文字列。例：52000/52008</td></tr>
+        </table>
     </div>
     <div>
         <h2>データ出典</h2>
