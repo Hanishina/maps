@@ -92,7 +92,7 @@ async function getCsv(name){
 async function init(){
   polygonJson = await getResources("polygon.geojson");
   lineJson = await getResources("line.geojson");
-  nameJson = await getResources("name.geojson");
+  //nameJson = await getResources("name.geojson");
   nameCsv = await getCsv("shichosonname.csv");
 
   cookies = getCookieArray();
@@ -485,7 +485,7 @@ function polygonRedraw(n){
         if(date[n] < new Date("1947/05/03")){
           return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
         }else if(date[n] < new Date("1970/04/01")){
-          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "岡山県"].some(e => e === properties.KEN)){
+          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県", "広島県", "山口県"].some(e => e === properties.KEN)){
             return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
           }else{
             return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
