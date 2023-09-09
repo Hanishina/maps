@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        if(window.parent == null || window.parent == window){
+            let item = {a: "aaa", b: "bbb"};
+            localStorage.setItem("test", JSON.stringify(item));
+            console.log(localStorage.getItem("test"));
+        }else{
+            const data = localStorage.getItem("test");
+            console.log(data);
+            window.parent.postMessage(JSON.parse(data), "https://hanishina.net");
+        }
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
