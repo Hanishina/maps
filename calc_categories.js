@@ -722,8 +722,8 @@ var Categories_habitable = [{name: "habitable", label: "可住地面積", data:[
 ]}];
 
 var Categories_keizai = [{name: "office", label: "事業所・従業者数", data:[
-  {name: "POPULATION", label: "人口(国調2015)(人)", func: "sum", args: ["POPULATION"], desc:"平成27年国勢調査による人口。"},
-  {name: "AREA", label: "面積(国調2015)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"平成27年国勢調査による面積。"},
+  {name: "POPULATION", label: "人口(国調)(人)", func: "sum", args: ["POPULATION"], desc:"前年国勢調査による人口。"},
+  {name: "AREA", label: "面積(国調)(㎢)", func: "sum", args: ["AREA"], prec: 2, desc:"前年国勢調査による面積。"},
   {name: "OFFICE", label: "民営事業所数(所)", func: "sum", args: ["OFFICE"], desc:"事業所の数(公務を除く)。"},
   {name: "WORKER", label: "従業者数(人)", func: "sum", args: ["WORKER"]}
 ]}, {name: "ind_office", label: "産業別事業所数", data:[
@@ -1085,6 +1085,7 @@ var Dataset = [
   {name: "shorai2015", label: "将来推計人口", polygonFile: "2015shorai.geojson", polygonObj: "shorai2015", lineFile: "2015shorai_l.geojson", lineObj: "shoraiLine2015", csvFile: "2015shorai.csv", csvObj: "shorai2015", category: Categories_shorai, attr: [{label: "国立社会保障・人口問題研究所", link: "https://www.ipss.go.jp/syoushika/tohkei/Mainmenu.asp"}]},
   {name: "habitable2015", label: "2015年可住地面積", date: "2015-10-01", polygonFile: "polygon.geojson", polygonObj: "polygon2015", lineFile: "line.geojson", lineObj: "line2015", csvFile: "2015habitable.csv", csvObj: "habitable2015", category: Categories_habitable, attr: [{label: "社会・人口統計体系", link: "https://www.e-stat.go.jp/regional-statistics/ssdsview"}]},
   {name: "keizaicensus2016", label: "2016年経済センサス", date: "2016-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2016", lineFile: "line.geojson", lineObj: "line2016", csvFile: "2016keizai.csv", csvObj: "keizai2016", category: Categories_keizai, attr: [{label: "平成28年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2016/index.html"}]},
+  {name: "keizaicensus2021", label: "2021年経済センサス", date: "2021-06-01", polygonFile: "polygon.geojson", polygonObj: "polygon2021", lineFile: "line.geojson", lineObj: "line2021", csvFile: "2021keizai.csv", csvObj: "keizai2021", category: Categories_keizai, attr: [{label: "令和3年経済センサス-活動調査", link: "https://www.stat.go.jp/data/e-census/2021/index.html"}]},
   {name: "senkyo2021", label: "2021年衆院選", polygonFile: "2021shosenkyoku.geojson", polygonObj: "senkyo2021", lineFile: "2021shosenkyoku_l.geojson", lineObj: "senkyoLine2021", csvFile: "2021election.csv", csvObj: "election2021", category: Categories_senkyo2021, estimate: Senkyo_estimate, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin49/index.html"}, {label: "各都道府県選管資料"}]},
   {name: "senkyo2022", label: "2022年参院選", date: "2022-07-10", polygonFile: "polygon.geojson", polygonObj: "polygon2022", lineFile: "line.geojson", lineObj: "line2022", csvFile: "2022election.csv", csvObj: "election2022", category: Categories_senkyo2022, attr: [{label: "総務省：選挙関連資料", link: "https://www.soumu.go.jp/senkyo/senkyo_s/data/sangiin26/index.html"}, {label: "各都道府県選管資料"}]}
 ];
