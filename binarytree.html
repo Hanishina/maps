@@ -217,7 +217,7 @@
                         minimap.addData(geojson_filter(filteredJson, f=>{return ["21", "2"].includes(f.properties.fullcode.substring(d[0].length,d[0].length+2))}), {fill: "#aaaaee"}, "base");
                         minimap.addData(geojson_filter(filteredJson, f=>{return f.properties.fullcode.substring(d[0].length,d[0].length+2) === "22"}), {fill: "#aaccee"}, "base");
                     });
-                    node.on("pointerover pointerdown", (e)=>{
+                    node.on("pointerover", (e)=>{
                         $("#name").text(d[1]? d[1]["name"] : "");
                         $("#code").text(d[0]);
                         $("#alpha").text(alpha(d[0]));
