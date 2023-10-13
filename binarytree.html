@@ -75,7 +75,7 @@
             button1.drawRect(5,5,80,30);
             button1.eventMode = "static";
             button1.cursor = "pointer";
-            button1.on("click", (e)=>{
+            button1.on("pointerup", (e)=>{
                 clearDisplay();
                 clear();
                 draw(data);
@@ -100,7 +100,7 @@
             button2.drawRect(5,40,80,30);
             button2.eventMode = "static";
             button2.cursor = "pointer";
-            button2.on("click", (e)=>{
+            button2.on("pointerup", (e)=>{
                 if(topCode != ""){
                     topCode = topCode.substring(0,topCode.length-1);
                     clearDisplay();
@@ -200,7 +200,7 @@
                     layers.point.addChild(node);
                     node.eventMode = "static";
                     node.cursor = "pointer";
-                    node.on("click", (e)=>{
+                    node.on("pointerup", (e)=>{
                         clearDisplay();
                         clear();
                         draw(part(d[0]), d[0].length);
@@ -217,7 +217,7 @@
                         minimap.addData(geojson_filter(filteredJson, f=>{return ["21", "2"].includes(f.properties.fullcode.substring(d[0].length,d[0].length+2))}), {fill: "#aaaaee"}, "base");
                         minimap.addData(geojson_filter(filteredJson, f=>{return f.properties.fullcode.substring(d[0].length,d[0].length+2) === "22"}), {fill: "#aaccee"}, "base");
                     });
-                    node.on("mouseover", (e)=>{
+                    node.on("pointerover pointerdown", (e)=>{
                         $("#name").text(d[1]? d[1]["name"] : "");
                         $("#code").text(d[0]);
                         $("#alpha").text(alpha(d[0]));
