@@ -1,0 +1,237 @@
+'111':
+  jichitaicode: '01000'
+  name: 北海道
+'111111':
+  jichitaicode: 
+  name: 石狩
+'1111111':
+  jichitaicode: '01100'
+  name: 札幌市
+'111112':
+  jichitaicode: 
+  name: 空知
+'111121':
+  jichitaicode: 
+  name: 胆振+日高
+'1111221':
+  jichitaicode: 
+  name: 後志
+'1111222':
+  jichitaicode: 
+  name: 渡島+檜山
+'111211':
+  jichitaicode: 
+  name: 上川
+'1112121':
+  jichitaicode: 
+  name: 留萌
+'1112122':
+  jichitaicode: 
+  name: 宗谷
+'111221':
+  jichitaicode: 
+  name: オホーツク
+'1112221':
+  jichitaicode: 
+  name: 十勝
+'11122221':
+  jichitaicode: 
+  name: 釧路
+'11122222':
+  jichitaicode: 
+  name: 根室
+'112111':
+  jichitaicode: '02000'
+  name: 青森県
+'112112':
+  jichitaicode: '03000'
+  name: 岩手県
+'112121':
+  jichitaicode: '05000'
+  name: 秋田県
+'112122':
+  jichitaicode: '06000'
+  name: 山形県
+'112211':
+  jichitaicode: '04000'
+  name: 宮城県
+'11221111':
+  jichitaicode: '04100'
+  name: 仙台市
+'112212':
+  jichitaicode: '07000'
+  name: 福島県
+'11222':
+  jichitaicode: '15000'
+  name: 新潟県
+'1122211':
+  jichitaicode: '15100'
+  name: 新潟市
+'1211':
+  jichitaicode: '13000'
+  name: 東京都
+'12121':
+  jichitaicode: '14000'
+  name: 神奈川県
+'1212111':
+  jichitaicode: '14100'
+  name: 横浜市
+'1212112':
+  jichitaicode: '14130'
+  name: 川崎市
+'121212221':
+  jichitaicode: '14150'
+  name: 相模原市
+'12122':
+  jichitaicode: '12000'
+  name: 千葉県
+'1212212':
+  jichitaicode: '12100'
+  name: 千葉市
+'122111':
+  jichitaicode: '08000'
+  name: 茨城県
+'122112':
+  jichitaicode: '09000'
+  name: 栃木県
+'122121':
+  jichitaicode: '10000'
+  name: 群馬県
+'122122':
+  jichitaicode: '11000'
+  name: 埼玉県
+'12212211':
+  jichitaicode: '11100'
+  name: さいたま市
+'122211':
+  jichitaicode: '19000'
+  name: 山梨県
+'122212':
+  jichitaicode: '20000'
+  name: 長野県
+'12222':
+  jichitaicode: '22000'
+  name: 静岡県
+'12222111':
+  jichitaicode: '22100'
+  name: 静岡市
+'1222221':
+  jichitaicode: '22130'
+  name: 浜松市
+'211111':
+  jichitaicode: '16000'
+  name: 富山県
+'211112':
+  jichitaicode: '17000'
+  name: 石川県
+'211121':
+  jichitaicode: '18000'
+  name: 福井県
+'211122':
+  jichitaicode: '21000'
+  name: 岐阜県
+'21121':
+  jichitaicode: '23000'
+  name: 愛知県
+'2112111':
+  jichitaicode: '23100'
+  name: 名古屋市
+'211221':
+  jichitaicode: '24000'
+  name: 三重県
+'211222':
+  jichitaicode: '25000'
+  name: 滋賀県
+'21211':
+  jichitaicode: '27000'
+  name: 大阪府
+'212111':
+  jichitaicode: '27100'
+  name: 大阪市
+'21211221':
+  jichitaicode: '27140'
+  name: 堺市
+'21212':
+  jichitaicode: '28000'
+  name: 兵庫県
+'2121211':
+  jichitaicode: '28100'
+  name: 神戸市
+'21221':
+  jichitaicode: '26000'
+  name: 京都府
+'212211':
+  jichitaicode: '26100'
+  name: 京都市
+'212221':
+  jichitaicode: '29000'
+  name: 奈良県
+'212222':
+  jichitaicode: '30000'
+  name: 和歌山県
+'221111':
+  jichitaicode: '33000'
+  name: 岡山県
+'22111111':
+  jichitaicode: '33100'
+  name: 岡山市
+'221112':
+  jichitaicode: '34000'
+  name: 広島県
+'22111211':
+  jichitaicode: '34100'
+  name: 広島市
+'2211211':
+  jichitaicode: '31000'
+  name: 鳥取県
+'2211212':
+  jichitaicode: '32000'
+  name: 島根県
+'221122':
+  jichitaicode: '35000'
+  name: 山口県
+'221211':
+  jichitaicode: '37000'
+  name: 香川県
+'221212':
+  jichitaicode: '36000'
+  name: 徳島県
+'221221':
+  jichitaicode: '38000'
+  name: 愛媛県
+'221222':
+  jichitaicode: '39000'
+  name: 高知県
+'22211':
+  jichitaicode: '40000'
+  name: 福岡県
+'2221111':
+  jichitaicode: '40130'
+  name: 福岡市
+'22211211':
+  jichitaicode: '40100'
+  name: 北九州市
+'2221211':
+  jichitaicode: '41000'
+  name: 佐賀県
+'2221212':
+  jichitaicode: '42000'
+  name: 長崎県
+'222122':
+  jichitaicode: '43000'
+  name: 熊本県
+'22212211':
+  jichitaicode: '43100'
+  name: 熊本市
+'222211':
+  jichitaicode: '44000'
+  name: 大分県
+'222212':
+  jichitaicode: '45000'
+  name: 宮崎県
+'222221':
+  jichitaicode: '46000'
+  name: 鹿児島県
+'222222':
+  jichitaicode: '47000'
+  name: 沖縄県

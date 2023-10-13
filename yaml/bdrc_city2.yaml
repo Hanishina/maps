@@ -1,0 +1,5949 @@
+'111':
+  jichitaicode: '01000'
+  name: 北海道
+'111111':
+  jichitaicode: 
+  name: 石狩
+'1111111':
+  jichitaicode: '01100'
+  name: 札幌市
+'111112':
+  jichitaicode: 
+  name: 空知
+'111121':
+  jichitaicode: 
+  name: 胆振+日高
+'1111221':
+  jichitaicode: 
+  name: 後志
+'1111222':
+  jichitaicode: 
+  name: 渡島+檜山
+'111211':
+  jichitaicode: 
+  name: 上川
+'1112121':
+  jichitaicode: 
+  name: 留萌
+'1112122':
+  jichitaicode: 
+  name: 宗谷
+'111221':
+  jichitaicode: 
+  name: オホーツク
+'1112221':
+  jichitaicode: 
+  name: 十勝
+'11122221':
+  jichitaicode: 
+  name: 釧路
+'11122222':
+  jichitaicode: 
+  name: 根室
+'112111':
+  jichitaicode: '02000'
+  name: 青森県
+'112112':
+  jichitaicode: '03000'
+  name: 岩手県
+'112121':
+  jichitaicode: '05000'
+  name: 秋田県
+'112122':
+  jichitaicode: '06000'
+  name: 山形県
+'112211':
+  jichitaicode: '04000'
+  name: 宮城県
+'11221111':
+  jichitaicode: '04100'
+  name: 仙台市
+'112212':
+  jichitaicode: '07000'
+  name: 福島県
+'11222':
+  jichitaicode: '15000'
+  name: 新潟県
+'1122211':
+  jichitaicode: '15100'
+  name: 新潟市
+'1211':
+  jichitaicode: '13000'
+  name: 東京都
+'12121':
+  jichitaicode: '14000'
+  name: 神奈川県
+'1212111':
+  jichitaicode: '14100'
+  name: 横浜市
+'1212112':
+  jichitaicode: '14130'
+  name: 川崎市
+'121212221':
+  jichitaicode: '14150'
+  name: 相模原市
+'12122':
+  jichitaicode: '12000'
+  name: 千葉県
+'1212212':
+  jichitaicode: '12100'
+  name: 千葉市
+'122111':
+  jichitaicode: '08000'
+  name: 茨城県
+'122112':
+  jichitaicode: '09000'
+  name: 栃木県
+'122121':
+  jichitaicode: '10000'
+  name: 群馬県
+'122122':
+  jichitaicode: '11000'
+  name: 埼玉県
+'12212211':
+  jichitaicode: '11100'
+  name: さいたま市
+'122211':
+  jichitaicode: '19000'
+  name: 山梨県
+'122212':
+  jichitaicode: '20000'
+  name: 長野県
+'12222':
+  jichitaicode: '22000'
+  name: 静岡県
+'12222111':
+  jichitaicode: '22100'
+  name: 静岡市
+'1222221':
+  jichitaicode: '22130'
+  name: 浜松市
+'211111':
+  jichitaicode: '16000'
+  name: 富山県
+'211112':
+  jichitaicode: '17000'
+  name: 石川県
+'211121':
+  jichitaicode: '18000'
+  name: 福井県
+'211122':
+  jichitaicode: '21000'
+  name: 岐阜県
+'21121':
+  jichitaicode: '23000'
+  name: 愛知県
+'2112111':
+  jichitaicode: '23100'
+  name: 名古屋市
+'211221':
+  jichitaicode: '24000'
+  name: 三重県
+'211222':
+  jichitaicode: '25000'
+  name: 滋賀県
+'21211':
+  jichitaicode: '27000'
+  name: 大阪府
+'212111':
+  jichitaicode: '27100'
+  name: 大阪市
+'21211221':
+  jichitaicode: '27140'
+  name: 堺市
+'21212':
+  jichitaicode: '28000'
+  name: 兵庫県
+'2121211':
+  jichitaicode: '28100'
+  name: 神戸市
+'21221':
+  jichitaicode: '26000'
+  name: 京都府
+'212211':
+  jichitaicode: '26100'
+  name: 京都市
+'212221':
+  jichitaicode: '29000'
+  name: 奈良県
+'212222':
+  jichitaicode: '30000'
+  name: 和歌山県
+'221111':
+  jichitaicode: '33000'
+  name: 岡山県
+'22111111':
+  jichitaicode: '33100'
+  name: 岡山市
+'221112':
+  jichitaicode: '34000'
+  name: 広島県
+'22111211':
+  jichitaicode: '34100'
+  name: 広島市
+'2211211':
+  jichitaicode: '31000'
+  name: 鳥取県
+'2211212':
+  jichitaicode: '32000'
+  name: 島根県
+'221122':
+  jichitaicode: '35000'
+  name: 山口県
+'221211':
+  jichitaicode: '37000'
+  name: 香川県
+'221212':
+  jichitaicode: '36000'
+  name: 徳島県
+'221221':
+  jichitaicode: '38000'
+  name: 愛媛県
+'221222':
+  jichitaicode: '39000'
+  name: 高知県
+'22211':
+  jichitaicode: '40000'
+  name: 福岡県
+'2221111':
+  jichitaicode: '40130'
+  name: 福岡市
+'22211211':
+  jichitaicode: '40100'
+  name: 北九州市
+'2221211':
+  jichitaicode: '41000'
+  name: 佐賀県
+'2221212':
+  jichitaicode: '42000'
+  name: 長崎県
+'222122':
+  jichitaicode: '43000'
+  name: 熊本県
+'22212211':
+  jichitaicode: '43100'
+  name: 熊本市
+'222211':
+  jichitaicode: '44000'
+  name: 大分県
+'222212':
+  jichitaicode: '45000'
+  name: 宮崎県
+'222221':
+  jichitaicode: '46000'
+  name: 鹿児島県
+'222222':
+  jichitaicode: '47000'
+  name: 沖縄県
+'1111111111':
+  jichitaicode: 01109
+  name: 手稲区
+'1111111112':
+  jichitaicode: '01107'
+  name: 西区
+'1111111121':
+  jichitaicode: '01102'
+  name: 北区
+'1111111122':
+  jichitaicode: '01103'
+  name: 東区
+'1111111211':
+  jichitaicode: '01101'
+  name: 中央区
+'1111111212':
+  jichitaicode: '01106'
+  name: 南区
+'11111112211':
+  jichitaicode: '01104'
+  name: 白石区
+'11111112212':
+  jichitaicode: 01108
+  name: 厚別区
+'11111112221':
+  jichitaicode: '01105'
+  name: 豊平区
+'11111112222':
+  jichitaicode: '01110'
+  name: 清田区
+'1111112111':
+  jichitaicode: '01235'
+  name: 石狩市
+'11111121121':
+  jichitaicode: '01303'
+  name: 当別町
+'11111121122':
+  jichitaicode: '01304'
+  name: 新篠津村
+'111111212':
+  jichitaicode: '01217'
+  name: 江別市
+'1111112211':
+  jichitaicode: '01234'
+  name: 北広島市
+'1111112212':
+  jichitaicode: '01231'
+  name: 恵庭市
+'111111222':
+  jichitaicode: '01224'
+  name: 千歳市
+'111112111':
+  jichitaicode: '01210'
+  name: 岩見沢市
+'11111211211':
+  jichitaicode: 01209
+  name: 夕張市
+'11111211212':
+  jichitaicode: 01429
+  name: 栗山町
+'11111211221':
+  jichitaicode: '01427'
+  name: 由仁町
+'111112112221':
+  jichitaicode: 01428
+  name: 長沼町
+'111112112222':
+  jichitaicode: '01423'
+  name: 南幌町
+'1111121211':
+  jichitaicode: '01215'
+  name: 美唄市
+'11111212121':
+  jichitaicode: '01222'
+  name: 三笠市
+'111112121221':
+  jichitaicode: '01424'
+  name: 奈井江町
+'111112121222':
+  jichitaicode: '01425'
+  name: 上砂川町
+'11111212211':
+  jichitaicode: 01218
+  name: 赤平市
+'11111212212':
+  jichitaicode: '01227'
+  name: 歌志内市
+'1111121222':
+  jichitaicode: '01216'
+  name: 芦別市
+'111112211':
+  jichitaicode: '01225'
+  name: 滝川市
+'1111122121':
+  jichitaicode: '01226'
+  name: 砂川市
+'11111221221':
+  jichitaicode: '01432'
+  name: 新十津川町
+'111112212221':
+  jichitaicode: '01431'
+  name: 浦臼町
+'111112212222':
+  jichitaicode: '01430'
+  name: 月形町
+'1111122211':
+  jichitaicode: 01228
+  name: 深川市
+'1111122212':
+  jichitaicode: 01438
+  name: 沼田町
+'11111222211':
+  jichitaicode: '01433'
+  name: 妹背牛町
+'11111222212':
+  jichitaicode: '01434'
+  name: 秩父別町
+'11111222221':
+  jichitaicode: '01436'
+  name: 雨竜町
+'11111222222':
+  jichitaicode: '01437'
+  name: 北竜町
+'111121111':
+  jichitaicode: '01205'
+  name: 室蘭市
+'1111211121':
+  jichitaicode: '01230'
+  name: 登別市
+'1111211122':
+  jichitaicode: 01578
+  name: 白老町
+'111121121':
+  jichitaicode: '01233'
+  name: 伊達市
+'1111211221':
+  jichitaicode: 01584
+  name: 洞爺湖町
+'11112112221':
+  jichitaicode: '01575'
+  name: 壮瞥町
+'11112112222':
+  jichitaicode: '01571'
+  name: 豊浦町
+'111121211':
+  jichitaicode: '01213'
+  name: 苫小牧市
+'11112121211':
+  jichitaicode: 01585
+  name: 安平町
+'11112121212':
+  jichitaicode: 01581
+  name: 厚真町
+'1111212122':
+  jichitaicode: 01586
+  name: むかわ町
+'1111212211':
+  jichitaicode: '01601'
+  name: 日高町
+'11112122121':
+  jichitaicode: '01602'
+  name: 平取町
+'11112122122':
+  jichitaicode: '01604'
+  name: 新冠町
+'11112122211':
+  jichitaicode: '01610'
+  name: 新ひだか町
+'11112122212':
+  jichitaicode: '01607'
+  name: 浦河町
+'11112122221':
+  jichitaicode: 01608
+  name: 様似町
+'11112122222':
+  jichitaicode: 01609
+  name: えりも町
+'111122111':
+  jichitaicode: '01203'
+  name: 小樽市
+'11112211211':
+  jichitaicode: 01408
+  name: 余市町
+'111122112121':
+  jichitaicode: '01407'
+  name: 仁木町
+'111122112122':
+  jichitaicode: 01409
+  name: 赤井川村
+'111122112211':
+  jichitaicode: '01406'
+  name: 古平町
+'111122112212':
+  jichitaicode: '01405'
+  name: 積丹町
+'111122112221':
+  jichitaicode: '01403'
+  name: 泊村
+'111122112222':
+  jichitaicode: '01404'
+  name: 神恵内村
+'11112212111':
+  jichitaicode: '01400'
+  name: 倶知安町
+'11112212112':
+  jichitaicode: 01395
+  name: ニセコ町
+'111122121211':
+  jichitaicode: 01399
+  name: 京極町
+'111122121212':
+  jichitaicode: 01398
+  name: 喜茂別町
+'111122121221':
+  jichitaicode: 01396
+  name: 真狩村
+'111122121222':
+  jichitaicode: 01397
+  name: 留寿都村
+'111122122111':
+  jichitaicode: '01402'
+  name: 岩内町
+'111122122112':
+  jichitaicode: '01401'
+  name: 共和町
+'11112212212':
+  jichitaicode: 01394
+  name: 蘭越町
+'111122122211':
+  jichitaicode: 01392
+  name: 寿都町
+'111122122212':
+  jichitaicode: 01393
+  name: 黒松内町
+'11112212222':
+  jichitaicode: 01391
+  name: 島牧村
+'11112221':
+  jichitaicode: '01202'
+  name: 函館市
+'11112222111':
+  jichitaicode: '01236'
+  name: 北斗市
+'1111222211211':
+  jichitaicode: '01334'
+  name: 木古内町
+'1111222211212':
+  jichitaicode: '01333'
+  name: 知内町
+'1111222211221':
+  jichitaicode: '01332'
+  name: 福島町
+'1111222211222':
+  jichitaicode: '01331'
+  name: 松前町
+'111122221211':
+  jichitaicode: '01337'
+  name: 七飯町
+'1111222212121':
+  jichitaicode: '01345'
+  name: 森町
+'1111222212122':
+  jichitaicode: '01343'
+  name: 鹿部町
+'111122221221':
+  jichitaicode: '01346'
+  name: 八雲町
+'111122221222':
+  jichitaicode: '01347'
+  name: 長万部町
+'111122222111':
+  jichitaicode: '01361'
+  name: 江差町
+'111122222112':
+  jichitaicode: '01362'
+  name: 上ノ国町
+'111122222121':
+  jichitaicode: '01363'
+  name: 厚沢部町
+'111122222122':
+  jichitaicode: '01364'
+  name: 乙部町
+'111122222211':
+  jichitaicode: '01371'
+  name: せたな町
+'111122222212':
+  jichitaicode: '01370'
+  name: 今金町
+'11112222222':
+  jichitaicode: '01367'
+  name: 奥尻町
+'11121111':
+  jichitaicode: '01204'
+  name: 旭川市
+'111211121111':
+  jichitaicode: '01453'
+  name: 東神楽町
+'111211121112':
+  jichitaicode: 01458
+  name: 東川町
+'11121112112':
+  jichitaicode: 01459
+  name: 美瑛町
+'11121112121':
+  jichitaicode: '01460'
+  name: 上富良野町
+'11121112122':
+  jichitaicode: '01461'
+  name: 中富良野町
+'1112111221':
+  jichitaicode: 01229
+  name: 富良野市
+'11121112221':
+  jichitaicode: '01462'
+  name: 南富良野町
+'11121112222':
+  jichitaicode: '01463'
+  name: 占冠村
+'11121121111':
+  jichitaicode: '01455'
+  name: 比布町
+'11121121112':
+  jichitaicode: '01454'
+  name: 当麻町
+'11121121121':
+  jichitaicode: '01456'
+  name: 愛別町
+'11121121122':
+  jichitaicode: '01457'
+  name: 上川町
+'11121121211':
+  jichitaicode: '01452'
+  name: 鷹栖町
+'11121121212':
+  jichitaicode: '01472'
+  name: 幌加内町
+'11121121221':
+  jichitaicode: '01464'
+  name: 和寒町
+'11121121222':
+  jichitaicode: '01465'
+  name: 剣淵町
+'1112112211':
+  jichitaicode: '01220'
+  name: 士別市
+'1112112212':
+  jichitaicode: '01221'
+  name: 名寄市
+'11121122211':
+  jichitaicode: 01468
+  name: 下川町
+'11121122212':
+  jichitaicode: 01469
+  name: 美深町
+'11121122221':
+  jichitaicode: '01470'
+  name: 音威子府村
+'11121122222':
+  jichitaicode: '01471'
+  name: 中川町
+'111212111':
+  jichitaicode: '01212'
+  name: 留萌市
+'1112121121':
+  jichitaicode: 01481
+  name: 増毛町
+'1112121122':
+  jichitaicode: 01482
+  name: 小平町
+'1112121211':
+  jichitaicode: 01483
+  name: 苫前町
+'1112121212':
+  jichitaicode: 01484
+  name: 羽幌町
+'11121212211':
+  jichitaicode: 01485
+  name: 初山別村
+'11121212212':
+  jichitaicode: 01486
+  name: 遠別町
+'1112121222':
+  jichitaicode: 01487
+  name: 天塩町
+'11121221':
+  jichitaicode: '01214'
+  name: 稚内市
+'11121222111':
+  jichitaicode: '01520'
+  name: 幌延町
+'11121222112':
+  jichitaicode: '01516'
+  name: 豊富町
+'111212221211':
+  jichitaicode: 01519
+  name: 利尻富士町
+'111212221212':
+  jichitaicode: 01518
+  name: 利尻町
+'11121222122':
+  jichitaicode: '01517'
+  name: 礼文町
+'11121222211':
+  jichitaicode: '01511'
+  name: 猿払村
+'11121222212':
+  jichitaicode: '01512'
+  name: 浜頓別町
+'11121222221':
+  jichitaicode: '01513'
+  name: 中頓別町
+'11121222222':
+  jichitaicode: '01514'
+  name: 枝幸町
+'11122111':
+  jichitaicode: 01208
+  name: 北見市
+'111221121':
+  jichitaicode: 01219
+  name: 紋別市
+'111221122111':
+  jichitaicode: '01563'
+  name: 雄武町
+'111221122112':
+  jichitaicode: '01561'
+  name: 興部町
+'111221122121':
+  jichitaicode: '01562'
+  name: 西興部村
+'111221122122':
+  jichitaicode: '01560'
+  name: 滝上町
+'11122112221':
+  jichitaicode: '01555'
+  name: 遠軽町
+'111221122221':
+  jichitaicode: 01559
+  name: 湧別町
+'111221122222':
+  jichitaicode: '01552'
+  name: 佐呂間町
+'11122121':
+  jichitaicode: '01211'
+  name: 網走市
+'11122122111':
+  jichitaicode: 01549
+  name: 訓子府町
+'11122122112':
+  jichitaicode: '01550'
+  name: 置戸町
+'11122122121':
+  jichitaicode: '01543'
+  name: 美幌町
+'11122122122':
+  jichitaicode: '01544'
+  name: 津別町
+'11122122211':
+  jichitaicode: '01564'
+  name: 大空町
+'11122122212':
+  jichitaicode: '01547'
+  name: 小清水町
+'11122122221':
+  jichitaicode: '01546'
+  name: 清里町
+'11122122222':
+  jichitaicode: '01545'
+  name: 斜里町
+'11122211':
+  jichitaicode: '01207'
+  name: 帯広市
+'111222121111':
+  jichitaicode: '01635'
+  name: 新得町
+'111222121112':
+  jichitaicode: '01636'
+  name: 清水町
+'111222121121':
+  jichitaicode: '01637'
+  name: 芽室町
+'1112221211221':
+  jichitaicode: 01638
+  name: 中札内村
+'1112221211222':
+  jichitaicode: 01639
+  name: 更別村
+'111222121211':
+  jichitaicode: '01631'
+  name: 音更町
+'111222121212':
+  jichitaicode: '01634'
+  name: 鹿追町
+'111222121221':
+  jichitaicode: '01632'
+  name: 士幌町
+'111222121222':
+  jichitaicode: '01633'
+  name: 上士幌町
+'111222122111':
+  jichitaicode: '01641'
+  name: 大樹町
+'111222122112':
+  jichitaicode: '01642'
+  name: 広尾町
+'111222122121':
+  jichitaicode: '01643'
+  name: 幕別町
+'1112221221221':
+  jichitaicode: '01645'
+  name: 豊頃町
+'1112221221222':
+  jichitaicode: 01649
+  name: 浦幌町
+'111222122211':
+  jichitaicode: '01644'
+  name: 池田町
+'111222122212':
+  jichitaicode: '01646'
+  name: 本別町
+'111222122221':
+  jichitaicode: '01647'
+  name: 足寄町
+'111222122222':
+  jichitaicode: 01648
+  name: 陸別町
+'111222211':
+  jichitaicode: '01206'
+  name: 釧路市
+'111222212111':
+  jichitaicode: 01668
+  name: 白糠町
+'111222212112':
+  jichitaicode: '01667'
+  name: 鶴居村
+'11122221212':
+  jichitaicode: '01661'
+  name: 釧路町
+'111222212211':
+  jichitaicode: '01664'
+  name: 標茶町
+'111222212212':
+  jichitaicode: '01665'
+  name: 弟子屈町
+'111222212221':
+  jichitaicode: '01662'
+  name: 厚岸町
+'111222212222':
+  jichitaicode: '01663'
+  name: 浜中町
+'111222221111':
+  jichitaicode: 01691
+  name: 別海町
+'111222221112':
+  jichitaicode: 01692
+  name: 中標津町
+'111222221121':
+  jichitaicode: 01693
+  name: 標津町
+'111222221122':
+  jichitaicode: 01694
+  name: 羅臼町
+'11122222121':
+  jichitaicode: '01223'
+  name: 根室市
+'11122222122':
+  jichitaicode: 01223X
+  name: 根室市
+'11122222211':
+  jichitaicode: 01695
+  name: 色丹村
+'111222222121':
+  jichitaicode: 01696
+  name: 泊村
+'111222222122':
+  jichitaicode: 01697
+  name: 留夜別村
+'11122222221':
+  jichitaicode: 01698
+  name: 留別村
+'111222222221':
+  jichitaicode: 01699
+  name: 紗那村
+'111222222222':
+  jichitaicode: '01700'
+  name: 蘂取村
+'112111111':
+  jichitaicode: '02201'
+  name: 青森市
+'1121111121':
+  jichitaicode: '02205'
+  name: 五所川原市
+'112111112211':
+  jichitaicode: 02387
+  name: 中泊町
+'112111112212':
+  jichitaicode: '02304'
+  name: 蓬田村
+'112111112221':
+  jichitaicode: '02307'
+  name: 外ヶ浜町
+'112111112222':
+  jichitaicode: '02303'
+  name: 今別町
+'1121111211':
+  jichitaicode: '02202'
+  name: 弘前市
+'112111121211':
+  jichitaicode: '02362'
+  name: 大鰐町
+'112111121212':
+  jichitaicode: '02343'
+  name: 西目屋村
+'112111121221':
+  jichitaicode: '02321'
+  name: 鰺ヶ沢町
+'112111121222':
+  jichitaicode: '02323'
+  name: 深浦町
+'11211112211':
+  jichitaicode: '02204'
+  name: 黒石市
+'11211112212':
+  jichitaicode: '02210'
+  name: 平川市
+'11211112221':
+  jichitaicode: 02209
+  name: つがる市
+'1121111222211':
+  jichitaicode: 02384
+  name: 鶴田町
+'1121111222212':
+  jichitaicode: 02381
+  name: 板柳町
+'1121111222221':
+  jichitaicode: '02361'
+  name: 藤崎町
+'1121111222222':
+  jichitaicode: '02367'
+  name: 田舎館村
+'1121112111':
+  jichitaicode: '02203'
+  name: 八戸市
+'112111211211':
+  jichitaicode: '02446'
+  name: 階上町
+'112111211212':
+  jichitaicode: '02445'
+  name: 南部町
+'112111211221':
+  jichitaicode: '02441'
+  name: 三戸町
+'112111211222':
+  jichitaicode: '02443'
+  name: 田子町
+'1121112121':
+  jichitaicode: '02206'
+  name: 十和田市
+'112111212211':
+  jichitaicode: '02442'
+  name: 五戸町
+'112111212212':
+  jichitaicode: '02450'
+  name: 新郷村
+'112111212221':
+  jichitaicode: '02405'
+  name: 六戸町
+'112111212222':
+  jichitaicode: '02412'
+  name: おいらせ町
+'11211122111':
+  jichitaicode: '02207'
+  name: 三沢市
+'112111221121':
+  jichitaicode: 02408
+  name: 東北町
+'112111221122':
+  jichitaicode: '02402'
+  name: 七戸町
+'112111221211':
+  jichitaicode: '02301'
+  name: 平内町
+'112111221212':
+  jichitaicode: '02401'
+  name: 野辺地町
+'112111221221':
+  jichitaicode: '02406'
+  name: 横浜町
+'112111221222':
+  jichitaicode: '02411'
+  name: 六ヶ所村
+'1121112221':
+  jichitaicode: 02208
+  name: むつ市
+'112111222211':
+  jichitaicode: '02424'
+  name: 東通村
+'112111222212':
+  jichitaicode: '02425'
+  name: 風間浦村
+'112111222221':
+  jichitaicode: '02423'
+  name: 大間町
+'112111222222':
+  jichitaicode: '02426'
+  name: 佐井村
+'112112111':
+  jichitaicode: '03201'
+  name: 盛岡市
+'11211211211':
+  jichitaicode: '03216'
+  name: 滝沢市
+'11211211212':
+  jichitaicode: '03301'
+  name: 雫石町
+'11211211221':
+  jichitaicode: '03322'
+  name: 矢巾町
+'11211211222':
+  jichitaicode: '03321'
+  name: 紫波町
+'11211212111':
+  jichitaicode: '03214'
+  name: 八幡平市
+'112112121121':
+  jichitaicode: '03303'
+  name: 岩手町
+'112112121122':
+  jichitaicode: '03302'
+  name: 葛巻町
+'112112121211':
+  jichitaicode: '03524'
+  name: 一戸町
+'112112121212':
+  jichitaicode: '03213'
+  name: 二戸市
+'112112121221':
+  jichitaicode: '03506'
+  name: 九戸村
+'112112121222':
+  jichitaicode: '03501'
+  name: 軽米町
+'11211212211':
+  jichitaicode: '03202'
+  name: 宮古市
+'112112122121':
+  jichitaicode: 03482
+  name: 山田町
+'112112122122':
+  jichitaicode: 03483
+  name: 岩泉町
+'11211212221':
+  jichitaicode: '03207'
+  name: 久慈市
+'1121121222211':
+  jichitaicode: 03484
+  name: 田野畑村
+'1121121222212':
+  jichitaicode: 03485
+  name: 普代村
+'1121121222221':
+  jichitaicode: '03503'
+  name: 野田村
+'1121121222222':
+  jichitaicode: '03507'
+  name: 洋野町
+'1121122111':
+  jichitaicode: '03205'
+  name: 花巻市
+'11211221121':
+  jichitaicode: '03206'
+  name: 北上市
+'11211221122':
+  jichitaicode: '03366'
+  name: 西和賀町
+'1121122121':
+  jichitaicode: 03209
+  name: 一関市
+'11211221221':
+  jichitaicode: '03215'
+  name: 奥州市
+'112112212221':
+  jichitaicode: '03402'
+  name: 平泉町
+'112112212222':
+  jichitaicode: 03381
+  name: 金ケ崎町
+'1121122211':
+  jichitaicode: '03211'
+  name: 釜石市
+'11211222121':
+  jichitaicode: 03208
+  name: 遠野市
+'11211222122':
+  jichitaicode: '03461'
+  name: 大槌町
+'1121122221':
+  jichitaicode: '03203'
+  name: 大船渡市
+'11211222221':
+  jichitaicode: '03210'
+  name: 陸前高田市
+'11211222222':
+  jichitaicode: '03441'
+  name: 住田町
+'112121111':
+  jichitaicode: '05201'
+  name: 秋田市
+'1121211121':
+  jichitaicode: '05210'
+  name: 由利本荘市
+'1121211122':
+  jichitaicode: '05214'
+  name: にかほ市
+'1121211211':
+  jichitaicode: '05212'
+  name: 大仙市
+'11212112121':
+  jichitaicode: '05215'
+  name: 仙北市
+'11212112122':
+  jichitaicode: '05434'
+  name: 美郷町
+'1121211221':
+  jichitaicode: '05203'
+  name: 横手市
+'11212112221':
+  jichitaicode: '05207'
+  name: 湯沢市
+'112121122221':
+  jichitaicode: '05463'
+  name: 羽後町
+'112121122222':
+  jichitaicode: '05464'
+  name: 東成瀬村
+'11212121111':
+  jichitaicode: '05211'
+  name: 潟上市
+'11212121112':
+  jichitaicode: '05366'
+  name: 井川町
+'11212121121':
+  jichitaicode: '05363'
+  name: 八郎潟町
+'11212121122':
+  jichitaicode: '05361'
+  name: 五城目町
+'1121212121':
+  jichitaicode: '05206'
+  name: 男鹿市
+'11212121221':
+  jichitaicode: 05368
+  name: 大潟村
+'11212121222':
+  jichitaicode: 05348
+  name: 三種町
+'1121212211':
+  jichitaicode: '05202'
+  name: 能代市
+'11212122121':
+  jichitaicode: '05213'
+  name: 北秋田市
+'112121221221':
+  jichitaicode: 05349
+  name: 八峰町
+'1121212212221':
+  jichitaicode: '05346'
+  name: 藤里町
+'1121212212222':
+  jichitaicode: '05327'
+  name: 上小阿仁村
+'1121212221':
+  jichitaicode: '05204'
+  name: 大館市
+'11212122221':
+  jichitaicode: 05209
+  name: 鹿角市
+'11212122222':
+  jichitaicode: '05303'
+  name: 小坂町
+'1121221111':
+  jichitaicode: '06201'
+  name: 山形市
+'11212211121':
+  jichitaicode: '06207'
+  name: 上山市
+'112122111221':
+  jichitaicode: '06301'
+  name: 山辺町
+'112122111222':
+  jichitaicode: '06302'
+  name: 中山町
+'11212211211':
+  jichitaicode: '06206'
+  name: 寒河江市
+'11212211212':
+  jichitaicode: '06321'
+  name: 河北町
+'11212211221':
+  jichitaicode: '06322'
+  name: 西川町
+'112122112221':
+  jichitaicode: '06324'
+  name: 大江町
+'112122112222':
+  jichitaicode: '06323'
+  name: 朝日町
+'1121221211':
+  jichitaicode: '06202'
+  name: 米沢市
+'11212212121':
+  jichitaicode: '06213'
+  name: 南陽市
+'112122121221':
+  jichitaicode: 06381
+  name: 高畠町
+'112122121222':
+  jichitaicode: 06382
+  name: 川西町
+'11212212211':
+  jichitaicode: 06209
+  name: 長井市
+'11212212212':
+  jichitaicode: '06402'
+  name: 白鷹町
+'11212212221':
+  jichitaicode: '06403'
+  name: 飯豊町
+'11212212222':
+  jichitaicode: '06401'
+  name: 小国町
+'1121222111':
+  jichitaicode: '06210'
+  name: 天童市
+'1121222112':
+  jichitaicode: '06211'
+  name: 東根市
+'11212221211':
+  jichitaicode: 06208
+  name: 村山市
+'112122212121':
+  jichitaicode: '06341'
+  name: 大石田町
+'112122212122':
+  jichitaicode: '06212'
+  name: 尾花沢市
+'112122212211':
+  jichitaicode: '06362'
+  name: 最上町
+'1121222122121':
+  jichitaicode: '06363'
+  name: 舟形町
+'1121222122122':
+  jichitaicode: '06365'
+  name: 大蔵村
+'1121222122211':
+  jichitaicode: '06367'
+  name: 戸沢村
+'1121222122212':
+  jichitaicode: '06366'
+  name: 鮭川村
+'1121222122221':
+  jichitaicode: '06364'
+  name: 真室川町
+'1121222122222':
+  jichitaicode: '06361'
+  name: 金山町
+'1121222211':
+  jichitaicode: '06205'
+  name: 新庄市
+'112122221211':
+  jichitaicode: 06428
+  name: 庄内町
+'112122221212':
+  jichitaicode: '06426'
+  name: 三川町
+'11212222122':
+  jichitaicode: '06461'
+  name: 遊佐町
+'1121222221':
+  jichitaicode: '06203'
+  name: 鶴岡市
+'1121222222':
+  jichitaicode: '06204'
+  name: 酒田市
+'1122111111':
+  jichitaicode: '04101'
+  name: 青葉区
+'1122111112':
+  jichitaicode: '04104'
+  name: 太白区
+'1122111121':
+  jichitaicode: '04105'
+  name: 泉区
+'11221111221':
+  jichitaicode: '04102'
+  name: 宮城野区
+'11221111222':
+  jichitaicode: '04103'
+  name: 若林区
+'11221112111':
+  jichitaicode: '04207'
+  name: 名取市
+'11221112112':
+  jichitaicode: '04211'
+  name: 岩沼市
+'112211121211':
+  jichitaicode: '04361'
+  name: 亘理町
+'112211121212':
+  jichitaicode: '04362'
+  name: 山元町
+'112211121221':
+  jichitaicode: 04208
+  name: 角田市
+'112211121222':
+  jichitaicode: '04341'
+  name: 丸森町
+'112211122111':
+  jichitaicode: '04323'
+  name: 柴田町
+'112211122112':
+  jichitaicode: '04321'
+  name: 大河原町
+'112211122121':
+  jichitaicode: '04322'
+  name: 村田町
+'112211122122':
+  jichitaicode: '04324'
+  name: 川崎町
+'11221112221':
+  jichitaicode: '04206'
+  name: 白石市
+'112211122221':
+  jichitaicode: '04301'
+  name: 蔵王町
+'112211122222':
+  jichitaicode: '04302'
+  name: 七ヶ宿町
+'11221121111':
+  jichitaicode: 04209
+  name: 多賀城市
+'11221121112':
+  jichitaicode: '04203'
+  name: 塩竈市
+'112211211211':
+  jichitaicode: '04406'
+  name: 利府町
+'1122112112121':
+  jichitaicode: '04404'
+  name: 七ヶ浜町
+'1122112112122':
+  jichitaicode: '04401'
+  name: 松島町
+'112211211221':
+  jichitaicode: '04216'
+  name: 富谷市
+'1122112112221':
+  jichitaicode: '04421'
+  name: 大和町
+'1122112112222':
+  jichitaicode: '04424'
+  name: 大衡村
+'1122112121':
+  jichitaicode: '04215'
+  name: 大崎市
+'112211212211':
+  jichitaicode: '04445'
+  name: 加美町
+'112211212212':
+  jichitaicode: '04444'
+  name: 色麻町
+'112211212221':
+  jichitaicode: '04422'
+  name: 大郷町
+'112211212222':
+  jichitaicode: '04505'
+  name: 美里町
+'1122112211':
+  jichitaicode: '04202'
+  name: 石巻市
+'11221122121':
+  jichitaicode: '04214'
+  name: 東松島市
+'112211221221':
+  jichitaicode: '04501'
+  name: 涌谷町
+'112211221222':
+  jichitaicode: 04581
+  name: 女川町
+'11221122211':
+  jichitaicode: '04213'
+  name: 栗原市
+'11221122212':
+  jichitaicode: '04212'
+  name: 登米市
+'11221122221':
+  jichitaicode: '04606'
+  name: 南三陸町
+'11221122222':
+  jichitaicode: '04205'
+  name: 気仙沼市
+'1122121111':
+  jichitaicode: '07201'
+  name: 福島市
+'11221211121':
+  jichitaicode: '07213'
+  name: 伊達市
+'1122121112211':
+  jichitaicode: '07301'
+  name: 桑折町
+'1122121112212':
+  jichitaicode: '07303'
+  name: 国見町
+'1122121112221':
+  jichitaicode: 07308
+  name: 川俣町
+'1122121112222':
+  jichitaicode: '07564'
+  name: 飯舘村
+'11221211211':
+  jichitaicode: '07210'
+  name: 二本松市
+'112212112121':
+  jichitaicode: '07214'
+  name: 本宮市
+'112212112122':
+  jichitaicode: '07322'
+  name: 大玉村
+'11221211221':
+  jichitaicode: '07211'
+  name: 田村市
+'112212112221':
+  jichitaicode: '07521'
+  name: 三春町
+'112212112222':
+  jichitaicode: '07522'
+  name: 小野町
+'1122121211':
+  jichitaicode: '07204'
+  name: いわき市
+'112212121211':
+  jichitaicode: '07541'
+  name: 広野町
+'112212121212':
+  jichitaicode: '07542'
+  name: 楢葉町
+'112212121221':
+  jichitaicode: '07543'
+  name: 富岡町
+'112212121222':
+  jichitaicode: '07544'
+  name: 川内村
+'112212122111':
+  jichitaicode: '07545'
+  name: 大熊町
+'112212122112':
+  jichitaicode: '07546'
+  name: 双葉町
+'112212122121':
+  jichitaicode: '07547'
+  name: 浪江町
+'112212122122':
+  jichitaicode: 07548
+  name: 葛尾村
+'11221212221':
+  jichitaicode: '07212'
+  name: 南相馬市
+'112212122221':
+  jichitaicode: 07209
+  name: 相馬市
+'112212122222':
+  jichitaicode: '07561'
+  name: 新地町
+'1122122111':
+  jichitaicode: '07203'
+  name: 郡山市
+'11221221121':
+  jichitaicode: '07207'
+  name: 須賀川市
+'112212211221':
+  jichitaicode: '07342'
+  name: 鏡石町
+'112212211222':
+  jichitaicode: '07344'
+  name: 天栄村
+'11221221211':
+  jichitaicode: '07205'
+  name: 白河市
+'1122122121211':
+  jichitaicode: '07461'
+  name: 西郷村
+'1122122121212':
+  jichitaicode: '07464'
+  name: 泉崎村
+'1122122121221':
+  jichitaicode: '07465'
+  name: 中島村
+'1122122121222':
+  jichitaicode: '07466'
+  name: 矢吹町
+'1122122122111':
+  jichitaicode: '07504'
+  name: 浅川町
+'1122122122112':
+  jichitaicode: '07501'
+  name: 石川町
+'1122122122121':
+  jichitaicode: '07502'
+  name: 玉川村
+'11221221221221':
+  jichitaicode: '07503'
+  name: 平田村
+'11221221221222':
+  jichitaicode: '07505'
+  name: 古殿町
+'1122122122211':
+  jichitaicode: 07481
+  name: 棚倉町
+'1122122122212':
+  jichitaicode: 07484
+  name: 鮫川村
+'1122122122221':
+  jichitaicode: 07483
+  name: 塙町
+'1122122122222':
+  jichitaicode: 07482
+  name: 矢祭町
+'11221222111':
+  jichitaicode: 07208
+  name: 喜多方市
+'112212221121':
+  jichitaicode: '07421'
+  name: 会津坂下町
+'1122122211221':
+  jichitaicode: '07422'
+  name: 湯川村
+'1122122211222':
+  jichitaicode: '07423'
+  name: 柳津町
+'112212221211':
+  jichitaicode: 07408
+  name: 猪苗代町
+'112212221212':
+  jichitaicode: '07402'
+  name: 北塩原村
+'112212221221':
+  jichitaicode: '07407'
+  name: 磐梯町
+'112212221222':
+  jichitaicode: '07405'
+  name: 西会津町
+'1122122221':
+  jichitaicode: '07202'
+  name: 会津若松市
+'112212222211':
+  jichitaicode: '07447'
+  name: 会津美里町
+'11221222221211':
+  jichitaicode: '07444'
+  name: 三島町
+'11221222221212':
+  jichitaicode: '07446'
+  name: 昭和村
+'1122122222122':
+  jichitaicode: '07445'
+  name: 金山町
+'1122122222211':
+  jichitaicode: '07362'
+  name: 下郷町
+'1122122222212':
+  jichitaicode: 07368
+  name: 南会津町
+'1122122222221':
+  jichitaicode: '07367'
+  name: 只見町
+'1122122222222':
+  jichitaicode: '07364'
+  name: 檜枝岐村
+'1122211111':
+  jichitaicode: '15103'
+  name: 中央区
+'1122211112':
+  jichitaicode: '15102'
+  name: 東区
+'1122211121':
+  jichitaicode: '15104'
+  name: 江南区
+'1122211122':
+  jichitaicode: '15101'
+  name: 北区
+'1122211211':
+  jichitaicode: '15105'
+  name: 秋葉区
+'1122211212':
+  jichitaicode: '15106'
+  name: 南区
+'1122211221':
+  jichitaicode: '15107'
+  name: 西区
+'1122211222':
+  jichitaicode: '15108'
+  name: 西蒲区
+'1122212111':
+  jichitaicode: '15223'
+  name: 阿賀野市
+'11222121121':
+  jichitaicode: '15385'
+  name: 阿賀町
+'11222121122':
+  jichitaicode: '15361'
+  name: 田上町
+'1122212121':
+  jichitaicode: '15218'
+  name: 五泉市
+'1122212122':
+  jichitaicode: '15209'
+  name: 加茂市
+'1122212211':
+  jichitaicode: '15206'
+  name: 新発田市
+'11222122121':
+  jichitaicode: '15307'
+  name: 聖籠町
+'11222122122':
+  jichitaicode: '15227'
+  name: 胎内市
+'1122212221':
+  jichitaicode: '15212'
+  name: 村上市
+'11222122221':
+  jichitaicode: '15581'
+  name: 関川村
+'11222122222':
+  jichitaicode: '15586'
+  name: 粟島浦村
+'112222111':
+  jichitaicode: '15202'
+  name: 長岡市
+'1122221121':
+  jichitaicode: '15204'
+  name: 三条市
+'11222211221':
+  jichitaicode: '15211'
+  name: 見附市
+'11222211222':
+  jichitaicode: '15208'
+  name: 小千谷市
+'1122221211':
+  jichitaicode: '15205'
+  name: 柏崎市
+'11222212121':
+  jichitaicode: '15504'
+  name: 刈羽村
+'11222212122':
+  jichitaicode: '15405'
+  name: 出雲崎町
+'11222212211':
+  jichitaicode: '15213'
+  name: 燕市
+'11222212212':
+  jichitaicode: '15342'
+  name: 弥彦村
+'1122221222':
+  jichitaicode: '15224'
+  name: 佐渡市
+'1122222111':
+  jichitaicode: '15210'
+  name: 十日町市
+'11222221121':
+  jichitaicode: '15482'
+  name: 津南町
+'11222221122':
+  jichitaicode: '15461'
+  name: 湯沢町
+'1122222121':
+  jichitaicode: '15225'
+  name: 魚沼市
+'1122222122':
+  jichitaicode: '15226'
+  name: 南魚沼市
+'112222221':
+  jichitaicode: '15222'
+  name: 上越市
+'1122222221':
+  jichitaicode: '15217'
+  name: 妙高市
+'1122222222':
+  jichitaicode: '15216'
+  name: 糸魚川市
+'1211111111':
+  jichitaicode: '13101'
+  name: 千代田区
+'1211111112':
+  jichitaicode: '13102'
+  name: 中央区
+'121111112':
+  jichitaicode: '13103'
+  name: 港区
+'121111121':
+  jichitaicode: '13109'
+  name: 品川区
+'121111122':
+  jichitaicode: '13111'
+  name: 大田区
+'121111211':
+  jichitaicode: '13104'
+  name: 新宿区
+'1211112121':
+  jichitaicode: '13114'
+  name: 中野区
+'1211112122':
+  jichitaicode: '13115'
+  name: 杉並区
+'1211112211':
+  jichitaicode: '13113'
+  name: 渋谷区
+'1211112212':
+  jichitaicode: '13110'
+  name: 目黒区
+'121111222':
+  jichitaicode: '13112'
+  name: 世田谷区
+'1211121111':
+  jichitaicode: '13105'
+  name: 文京区
+'1211121112':
+  jichitaicode: '13116'
+  name: 豊島区
+'121112112':
+  jichitaicode: '13117'
+  name: 北区
+'121112121':
+  jichitaicode: '13119'
+  name: 板橋区
+'121112122':
+  jichitaicode: '13120'
+  name: 練馬区
+'1211122111':
+  jichitaicode: '13106'
+  name: 台東区
+'1211122112':
+  jichitaicode: '13118'
+  name: 荒川区
+'1211122121':
+  jichitaicode: '13121'
+  name: 足立区
+'1211122122':
+  jichitaicode: '13122'
+  name: 葛飾区
+'121112221':
+  jichitaicode: '13108'
+  name: 江東区
+'1211122221':
+  jichitaicode: '13107'
+  name: 墨田区
+'1211122222':
+  jichitaicode: '13123'
+  name: 江戸川区
+'1211211111':
+  jichitaicode: '13203'
+  name: 武蔵野市
+'1211211112':
+  jichitaicode: '13204'
+  name: 三鷹市
+'1211211121':
+  jichitaicode: '13208'
+  name: 調布市
+'1211211122':
+  jichitaicode: '13219'
+  name: 狛江市
+'1211211211':
+  jichitaicode: '13210'
+  name: 小金井市
+'1211211212':
+  jichitaicode: '13214'
+  name: 国分寺市
+'1211211221':
+  jichitaicode: '13206'
+  name: 府中市
+'1211211222':
+  jichitaicode: '13215'
+  name: 国立市
+'1211212111':
+  jichitaicode: '13229'
+  name: 西東京市
+'1211212112':
+  jichitaicode: '13211'
+  name: 小平市
+'1211212121':
+  jichitaicode: '13222'
+  name: 東久留米市
+'1211212122':
+  jichitaicode: '13221'
+  name: 清瀬市
+'1211212211':
+  jichitaicode: '13213'
+  name: 東村山市
+'12112122121':
+  jichitaicode: '13220'
+  name: 東大和市
+'12112122122':
+  jichitaicode: '13223'
+  name: 武蔵村山市
+'1211212221':
+  jichitaicode: '13202'
+  name: 立川市
+'1211212222':
+  jichitaicode: '13207'
+  name: 昭島市
+'12112211':
+  jichitaicode: '13201'
+  name: 八王子市
+'121122121':
+  jichitaicode: '13209'
+  name: 町田市
+'1211221221':
+  jichitaicode: '13212'
+  name: 日野市
+'12112212221':
+  jichitaicode: '13224'
+  name: 多摩市
+'12112212222':
+  jichitaicode: '13225'
+  name: 稲城市
+'1211222111':
+  jichitaicode: '13228'
+  name: あきる野市
+'12112221121':
+  jichitaicode: '13218'
+  name: 福生市
+'121122211221':
+  jichitaicode: '13305'
+  name: 日の出町
+'121122211222':
+  jichitaicode: '13307'
+  name: 檜原村
+'1211222121':
+  jichitaicode: '13205'
+  name: 青梅市
+'121122212211':
+  jichitaicode: '13227'
+  name: 羽村市
+'121122212212':
+  jichitaicode: '13303'
+  name: 瑞穂町
+'12112221222':
+  jichitaicode: '13308'
+  name: 奥多摩町
+'121122221111':
+  jichitaicode: '13361'
+  name: 大島町
+'121122221112':
+  jichitaicode: '13362'
+  name: 利島村
+'121122221121':
+  jichitaicode: '13363'
+  name: 新島村
+'121122221122':
+  jichitaicode: '13364'
+  name: 神津島村
+'12112222121':
+  jichitaicode: '13381'
+  name: 三宅村
+'12112222122':
+  jichitaicode: '13382'
+  name: 御蔵島村
+'12112222211':
+  jichitaicode: '13401'
+  name: 八丈町
+'121122222121':
+  jichitaicode: '13402'
+  name: 青ヶ島村
+'121122222122':
+  jichitaicode: 13419X
+  name: ''
+'1211222222':
+  jichitaicode: '13421'
+  name: 小笠原村
+'12121111111':
+  jichitaicode: '14101'
+  name: 鶴見区
+'12121111112':
+  jichitaicode: '14109'
+  name: 港北区
+'121211111211':
+  jichitaicode: '14118'
+  name: 都筑区
+'121211111212':
+  jichitaicode: '14113'
+  name: 緑区
+'12121111122':
+  jichitaicode: '14117'
+  name: 青葉区
+'12121111211':
+  jichitaicode: '14102'
+  name: 神奈川区
+'12121111212':
+  jichitaicode: '14103'
+  name: 西区
+'12121111221':
+  jichitaicode: '14106'
+  name: 保土ケ谷区
+'12121111222':
+  jichitaicode: '14112'
+  name: 旭区
+'12121112111':
+  jichitaicode: '14104'
+  name: 中区
+'12121112112':
+  jichitaicode: '14105'
+  name: 南区
+'12121112121':
+  jichitaicode: '14107'
+  name: 磯子区
+'12121112122':
+  jichitaicode: '14108'
+  name: 金沢区
+'12121112211':
+  jichitaicode: '14111'
+  name: 港南区
+'12121112212':
+  jichitaicode: '14115'
+  name: 栄区
+'12121112221':
+  jichitaicode: '14110'
+  name: 戸塚区
+'121211122221':
+  jichitaicode: '14116'
+  name: 泉区
+'121211122222':
+  jichitaicode: '14114'
+  name: 瀬谷区
+'121211211':
+  jichitaicode: '14131'
+  name: 川崎区
+'1212112121':
+  jichitaicode: '14132'
+  name: 幸区
+'1212112122':
+  jichitaicode: '14133'
+  name: 中原区
+'1212112211':
+  jichitaicode: '14134'
+  name: 高津区
+'1212112212':
+  jichitaicode: '14136'
+  name: 宮前区
+'1212112221':
+  jichitaicode: '14135'
+  name: 多摩区
+'1212112222':
+  jichitaicode: '14137'
+  name: 麻生区
+'121212111':
+  jichitaicode: '14201'
+  name: 横須賀市
+'12121211211':
+  jichitaicode: '14204'
+  name: 鎌倉市
+'12121211212':
+  jichitaicode: '14208'
+  name: 逗子市
+'12121211221':
+  jichitaicode: '14301'
+  name: 葉山町
+'12121211222':
+  jichitaicode: '14210'
+  name: 三浦市
+'1212121211':
+  jichitaicode: '14205'
+  name: 藤沢市
+'12121212121':
+  jichitaicode: '14207'
+  name: 茅ヶ崎市
+'12121212122':
+  jichitaicode: '14321'
+  name: 寒川町
+'12121212211':
+  jichitaicode: '14213'
+  name: 大和市
+'12121212212':
+  jichitaicode: '14218'
+  name: 綾瀬市
+'12121212221':
+  jichitaicode: '14215'
+  name: 海老名市
+'12121212222':
+  jichitaicode: '14216'
+  name: 座間市
+'1212122111':
+  jichitaicode: '14203'
+  name: 平塚市
+'121212211211':
+  jichitaicode: '14341'
+  name: 大磯町
+'121212211212':
+  jichitaicode: '14342'
+  name: 二宮町
+'121212211221':
+  jichitaicode: '14361'
+  name: 中井町
+'121212211222':
+  jichitaicode: '14362'
+  name: 大井町
+'1212122121':
+  jichitaicode: '14206'
+  name: 小田原市
+'12121221221':
+  jichitaicode: '14217'
+  name: 南足柄市
+'1212122122211':
+  jichitaicode: '14366'
+  name: 開成町
+'1212122122212':
+  jichitaicode: '14382'
+  name: 箱根町
+'1212122122221':
+  jichitaicode: '14383'
+  name: 真鶴町
+'1212122122222':
+  jichitaicode: '14384'
+  name: 湯河原町
+'12121222111':
+  jichitaicode: '14153'
+  name: 南区
+'12121222112':
+  jichitaicode: '14152'
+  name: 中央区
+'1212122212':
+  jichitaicode: '14151'
+  name: 緑区
+'12121222211':
+  jichitaicode: '14212'
+  name: 厚木市
+'12121222212':
+  jichitaicode: '14214'
+  name: 伊勢原市
+'12121222221':
+  jichitaicode: '14211'
+  name: 秦野市
+'1212122222211':
+  jichitaicode: '14401'
+  name: 愛川町
+'1212122222212':
+  jichitaicode: '14402'
+  name: 清川村
+'1212122222221':
+  jichitaicode: '14363'
+  name: 松田町
+'1212122222222':
+  jichitaicode: '14364'
+  name: 山北町
+'1212211111':
+  jichitaicode: '12203'
+  name: 市川市
+'12122111121':
+  jichitaicode: '12227'
+  name: 浦安市
+'12122111122':
+  jichitaicode: '12224'
+  name: 鎌ケ谷市
+'1212211121':
+  jichitaicode: '12204'
+  name: 船橋市
+'12122111221':
+  jichitaicode: '12216'
+  name: 習志野市
+'12122111222':
+  jichitaicode: '12221'
+  name: 八千代市
+'1212211211':
+  jichitaicode: '12207'
+  name: 松戸市
+'1212211212':
+  jichitaicode: '12220'
+  name: 流山市
+'1212211221':
+  jichitaicode: '12217'
+  name: 柏市
+'12122112221':
+  jichitaicode: '12222'
+  name: 我孫子市
+'12122112222':
+  jichitaicode: '12208'
+  name: 野田市
+'1212212111':
+  jichitaicode: '12102'
+  name: 花見川区
+'1212212112':
+  jichitaicode: '12103'
+  name: 稲毛区
+'121221212':
+  jichitaicode: '12106'
+  name: 美浜区
+'121221221':
+  jichitaicode: '12101'
+  name: 中央区
+'1212212221':
+  jichitaicode: '12104'
+  name: 若葉区
+'1212212222':
+  jichitaicode: '12105'
+  name: 緑区
+'1212221111':
+  jichitaicode: '12231'
+  name: 印西市
+'12122211121':
+  jichitaicode: '12232'
+  name: 白井市
+'121222111221':
+  jichitaicode: '12329'
+  name: 栄町
+'121222111222':
+  jichitaicode: '12322'
+  name: 酒々井町
+'1212221121':
+  jichitaicode: '12212'
+  name: 佐倉市
+'12122211221':
+  jichitaicode: '12228'
+  name: 四街道市
+'12122211222':
+  jichitaicode: '12230'
+  name: 八街市
+'1212221211':
+  jichitaicode: '12211'
+  name: 成田市
+'12122212121':
+  jichitaicode: '12236'
+  name: 香取市
+'1212221212211':
+  jichitaicode: '12233'
+  name: 富里市
+'1212221212212':
+  jichitaicode: '12409'
+  name: 芝山町
+'1212221212221':
+  jichitaicode: '12347'
+  name: 多古町
+'1212221212222':
+  jichitaicode: '12342'
+  name: 神崎町
+'121222122111':
+  jichitaicode: '12235'
+  name: 匝瑳市
+'121222122112':
+  jichitaicode: '12215'
+  name: 旭市
+'121222122121':
+  jichitaicode: '12202'
+  name: 銚子市
+'121222122122':
+  jichitaicode: '12349'
+  name: 東庄町
+'121222122211':
+  jichitaicode: '12237'
+  name: 山武市
+'1212221222121':
+  jichitaicode: '12410'
+  name: 横芝光町
+'1212221222122':
+  jichitaicode: '12403'
+  name: 九十九里町
+'121222122221':
+  jichitaicode: '12213'
+  name: 東金市
+'121222122222':
+  jichitaicode: '12239'
+  name: 大網白里市
+'1212222111':
+  jichitaicode: '12219'
+  name: 市原市
+'1212222112':
+  jichitaicode: '12229'
+  name: 袖ケ浦市
+'1212222121':
+  jichitaicode: '12206'
+  name: 木更津市
+'12122221221':
+  jichitaicode: '12225'
+  name: 君津市
+'12122221222':
+  jichitaicode: '12226'
+  name: 富津市
+'1212222211':
+  jichitaicode: '12210'
+  name: 茂原市
+'121222221211':
+  jichitaicode: '12424'
+  name: 白子町
+'121222221212':
+  jichitaicode: '12423'
+  name: 長生村
+'1212222212211':
+  jichitaicode: '12421'
+  name: 一宮町
+'1212222212212':
+  jichitaicode: '12422'
+  name: 睦沢町
+'1212222212221':
+  jichitaicode: '12426'
+  name: 長柄町
+'1212222212222':
+  jichitaicode: '12427'
+  name: 長南町
+'121222222111':
+  jichitaicode: '12238'
+  name: いすみ市
+'121222222112':
+  jichitaicode: '12443'
+  name: 御宿町
+'121222222121':
+  jichitaicode: '12441'
+  name: 大多喜町
+'121222222122':
+  jichitaicode: '12218'
+  name: 勝浦市
+'121222222211':
+  jichitaicode: '12223'
+  name: 鴨川市
+'121222222212':
+  jichitaicode: '12463'
+  name: 鋸南町
+'121222222221':
+  jichitaicode: '12234'
+  name: 南房総市
+'121222222222':
+  jichitaicode: '12205'
+  name: 館山市
+'1221111111':
+  jichitaicode: 08204
+  name: 古河市
+'122111111211':
+  jichitaicode: 08228
+  name: 坂東市
+'122111111212':
+  jichitaicode: 08211
+  name: 常総市
+'1221111112211':
+  jichitaicode: 08542
+  name: 五霞町
+'1221111112212':
+  jichitaicode: 08546
+  name: 境町
+'122111111222':
+  jichitaicode: 08521
+  name: 八千代町
+'12211111211':
+  jichitaicode: 08207
+  name: 結城市
+'12211111212':
+  jichitaicode: 08210
+  name: 下妻市
+'12211111221':
+  jichitaicode: 08227
+  name: 筑西市
+'12211111222':
+  jichitaicode: 08231
+  name: 桜川市
+'1221111211':
+  jichitaicode: 08220
+  name: つくば市
+'1221111212':
+  jichitaicode: 08203
+  name: 土浦市
+'122111122111':
+  jichitaicode: 08224
+  name: 守谷市
+'122111122112':
+  jichitaicode: 08235
+  name: つくばみらい市
+'122111122121':
+  jichitaicode: 08217
+  name: 取手市
+'122111122122':
+  jichitaicode: 08208
+  name: 龍ケ崎市
+'122111122211':
+  jichitaicode: 08219
+  name: 牛久市
+'1221111222121':
+  jichitaicode: 08443
+  name: 阿見町
+'1221111222122':
+  jichitaicode: 08442
+  name: 美浦村
+'122111122221':
+  jichitaicode: 08229
+  name: 稲敷市
+'1221111222221':
+  jichitaicode: 08447
+  name: 河内町
+'1221111222222':
+  jichitaicode: 08564
+  name: 利根町
+'122111211111':
+  jichitaicode: 08230
+  name: かすみがうら市
+'122111211112':
+  jichitaicode: 08205
+  name: 石岡市
+'122111211121':
+  jichitaicode: 08236
+  name: 小美玉市
+'122111211122':
+  jichitaicode: 08234
+  name: 鉾田市
+'122111211211':
+  jichitaicode: 08233
+  name: 行方市
+'122111211212':
+  jichitaicode: 08223
+  name: 潮来市
+'122111211221':
+  jichitaicode: 08222
+  name: 鹿嶋市
+'122111211222':
+  jichitaicode: 08232
+  name: 神栖市
+'1221112121':
+  jichitaicode: 08201
+  name: 水戸市
+'12211121221':
+  jichitaicode: 08216
+  name: 笠間市
+'122111212221':
+  jichitaicode: 08302
+  name: 茨城町
+'122111212222':
+  jichitaicode: 08309
+  name: 大洗町
+'12211122111':
+  jichitaicode: 08221
+  name: ひたちなか市
+'12211122112':
+  jichitaicode: 08226
+  name: 那珂市
+'12211122121':
+  jichitaicode: 08225
+  name: 常陸大宮市
+'122111221221':
+  jichitaicode: 08310
+  name: 城里町
+'122111221222':
+  jichitaicode: 08364
+  name: 大子町
+'1221112221':
+  jichitaicode: 08202
+  name: 日立市
+'122111222211':
+  jichitaicode: 08341
+  name: 東海村
+'122111222212':
+  jichitaicode: 08212
+  name: 常陸太田市
+'122111222221':
+  jichitaicode: 08214
+  name: 高萩市
+'122111222222':
+  jichitaicode: 08215
+  name: 北茨城市
+'12211211':
+  jichitaicode: 09201
+  name: 宇都宮市
+'12211212111':
+  jichitaicode: 09209
+  name: 真岡市
+'122112121121':
+  jichitaicode: 09342
+  name: 益子町
+'122112121122':
+  jichitaicode: 09343
+  name: 茂木町
+'122112121211':
+  jichitaicode: 09345
+  name: 芳賀町
+'122112121212':
+  jichitaicode: 09344
+  name: 市貝町
+'122112121221':
+  jichitaicode: 09386
+  name: 高根沢町
+'122112121222':
+  jichitaicode: 09215
+  name: 那須烏山市
+'122112122111':
+  jichitaicode: 09214
+  name: さくら市
+'122112122112':
+  jichitaicode: 09211
+  name: 矢板市
+'1221121221211':
+  jichitaicode: 09384
+  name: 塩谷町
+'1221121221212':
+  jichitaicode: 09411
+  name: 那珂川町
+'122112122122':
+  jichitaicode: 09407
+  name: 那須町
+'12211212221':
+  jichitaicode: 09210
+  name: 大田原市
+'12211212222':
+  jichitaicode: 09213
+  name: 那須塩原市
+'1221122111':
+  jichitaicode: 09202
+  name: 足利市
+'1221122112':
+  jichitaicode: 09204
+  name: 佐野市
+'1221122121':
+  jichitaicode: 09203
+  name: 栃木市
+'1221122122':
+  jichitaicode: 09208
+  name: 小山市
+'12211222111':
+  jichitaicode: 09364
+  name: 野木町
+'12211222112':
+  jichitaicode: 09361
+  name: 壬生町
+'12211222121':
+  jichitaicode: 09216
+  name: 下野市
+'12211222122':
+  jichitaicode: 09301
+  name: 上三川町
+'1221122221':
+  jichitaicode: 09205
+  name: 鹿沼市
+'1221122222':
+  jichitaicode: 09206
+  name: 日光市
+'122121111':
+  jichitaicode: '10201'
+  name: 前橋市
+'12212111211':
+  jichitaicode: '10203'
+  name: 桐生市
+'12212111212':
+  jichitaicode: '10212'
+  name: みどり市
+'12212111221':
+  jichitaicode: '10204'
+  name: 伊勢崎市
+'12212111222':
+  jichitaicode: '10464'
+  name: 玉村町
+'1221211211':
+  jichitaicode: '10205'
+  name: 太田市
+'12212112121':
+  jichitaicode: '10524'
+  name: 大泉町
+'12212112122':
+  jichitaicode: '10525'
+  name: 邑楽町
+'12212112211':
+  jichitaicode: '10207'
+  name: 館林市
+'12212112212':
+  jichitaicode: '10521'
+  name: 板倉町
+'12212112221':
+  jichitaicode: '10523'
+  name: 千代田町
+'12212112222':
+  jichitaicode: '10522'
+  name: 明和町
+'122121211':
+  jichitaicode: '10202'
+  name: 高崎市
+'12212121211':
+  jichitaicode: '10211'
+  name: 安中市
+'122121212121':
+  jichitaicode: '10210'
+  name: 富岡市
+'122121212122':
+  jichitaicode: '10384'
+  name: 甘楽町
+'12212121221':
+  jichitaicode: '10209'
+  name: 藤岡市
+'1221212122211':
+  jichitaicode: '10382'
+  name: 下仁田町
+'1221212122212':
+  jichitaicode: '10383'
+  name: 南牧村
+'1221212122221':
+  jichitaicode: '10367'
+  name: 神流町
+'1221212122222':
+  jichitaicode: '10366'
+  name: 上野村
+'12212122111':
+  jichitaicode: '10208'
+  name: 渋川市
+'122121221121':
+  jichitaicode: '10345'
+  name: 吉岡町
+'122121221122':
+  jichitaicode: '10344'
+  name: 榛東村
+'122121221211':
+  jichitaicode: '10429'
+  name: 東吾妻町
+'122121221212':
+  jichitaicode: '10424'
+  name: 長野原町
+'122121221221':
+  jichitaicode: '10426'
+  name: 草津町
+'122121221222':
+  jichitaicode: '10425'
+  name: 嬬恋村
+'1221212221':
+  jichitaicode: '10206'
+  name: 沼田市
+'122121222211':
+  jichitaicode: '10421'
+  name: 中之条町
+'122121222212':
+  jichitaicode: '10449'
+  name: みなかみ町
+'1221212222211':
+  jichitaicode: '10428'
+  name: 高山村
+'1221212222212':
+  jichitaicode: '10448'
+  name: 昭和村
+'1221212222221':
+  jichitaicode: '10444'
+  name: 川場村
+'1221212222222':
+  jichitaicode: '10443'
+  name: 片品村
+'122122111111':
+  jichitaicode: '11105'
+  name: 中央区
+'122122111112':
+  jichitaicode: '11106'
+  name: 桜区
+'12212211112':
+  jichitaicode: '11107'
+  name: 浦和区
+'12212211121':
+  jichitaicode: '11108'
+  name: 南区
+'12212211122':
+  jichitaicode: '11109'
+  name: 緑区
+'122122112111':
+  jichitaicode: '11103'
+  name: 大宮区
+'122122112112':
+  jichitaicode: '11101'
+  name: 西区
+'12212211212':
+  jichitaicode: '11102'
+  name: 北区
+'12212211221':
+  jichitaicode: '11104'
+  name: 見沼区
+'12212211222':
+  jichitaicode: '11110'
+  name: 岩槻区
+'1221221211':
+  jichitaicode: '11203'
+  name: 川口市
+'122122121211':
+  jichitaicode: '11223'
+  name: 蕨市
+'122122121212':
+  jichitaicode: '11224'
+  name: 戸田市
+'1221221212211':
+  jichitaicode: '11229'
+  name: 和光市
+'1221221212212':
+  jichitaicode: '11227'
+  name: 朝霞市
+'1221221212221':
+  jichitaicode: '11228'
+  name: 志木市
+'1221221212222':
+  jichitaicode: '11230'
+  name: 新座市
+'122122122111':
+  jichitaicode: '11221'
+  name: 草加市
+'122122122112':
+  jichitaicode: '11234'
+  name: 八潮市
+'122122122121':
+  jichitaicode: '11237'
+  name: 三郷市
+'1221221221221':
+  jichitaicode: '11243'
+  name: 吉川市
+'1221221221222':
+  jichitaicode: '11465'
+  name: 松伏町
+'12212212221':
+  jichitaicode: '11222'
+  name: 越谷市
+'12212212222':
+  jichitaicode: '11214'
+  name: 春日部市
+'12212221111':
+  jichitaicode: '11201'
+  name: 川越市
+'1221222111211':
+  jichitaicode: '11235'
+  name: 富士見市
+'1221222111212':
+  jichitaicode: '11324'
+  name: 三芳町
+'122122211122':
+  jichitaicode: '11245'
+  name: ふじみ野市
+'12212221121':
+  jichitaicode: '11208'
+  name: 所沢市
+'122122211221':
+  jichitaicode: '11215'
+  name: 狭山市
+'122122211222':
+  jichitaicode: '11225'
+  name: 入間市
+'122122212111':
+  jichitaicode: '11209'
+  name: 飯能市
+'122122212112':
+  jichitaicode: '11242'
+  name: 日高市
+'122122212121':
+  jichitaicode: '11241'
+  name: 鶴ヶ島市
+'122122212122':
+  jichitaicode: '11239'
+  name: 坂戸市
+'122122212211':
+  jichitaicode: '11212'
+  name: 東松山市
+'1221222122121':
+  jichitaicode: '11347'
+  name: 吉見町
+'1221222122122':
+  jichitaicode: '11346'
+  name: 川島町
+'12212221222111':
+  jichitaicode: '11326'
+  name: 毛呂山町
+'12212221222112':
+  jichitaicode: '11327'
+  name: 越生町
+'12212221222121':
+  jichitaicode: '11348'
+  name: 鳩山町
+'12212221222122':
+  jichitaicode: '11349'
+  name: ときがわ町
+'12212221222211':
+  jichitaicode: '11341'
+  name: 滑川町
+'12212221222212':
+  jichitaicode: '11342'
+  name: 嵐山町
+'12212221222221':
+  jichitaicode: '11343'
+  name: 小川町
+'12212221222222':
+  jichitaicode: '11369'
+  name: 東秩父村
+'122122221111':
+  jichitaicode: '11219'
+  name: 上尾市
+'1221222211121':
+  jichitaicode: '11231'
+  name: 桶川市
+'1221222211122':
+  jichitaicode: '11233'
+  name: 北本市
+'122122221121':
+  jichitaicode: '11217'
+  name: 鴻巣市
+'122122221122':
+  jichitaicode: '11206'
+  name: 行田市
+'1221222212111':
+  jichitaicode: '11301'
+  name: 伊奈町
+'1221222212112':
+  jichitaicode: '11238'
+  name: 蓮田市
+'1221222212121':
+  jichitaicode: '11246'
+  name: 白岡市
+'12212222121221':
+  jichitaicode: '11442'
+  name: 宮代町
+'12212222121222':
+  jichitaicode: '11464'
+  name: 杉戸町
+'1221222212211':
+  jichitaicode: '11240'
+  name: 幸手市
+'1221222212212':
+  jichitaicode: '11232'
+  name: 久喜市
+'1221222212221':
+  jichitaicode: '11210'
+  name: 加須市
+'1221222212222':
+  jichitaicode: '11216'
+  name: 羽生市
+'12212222211':
+  jichitaicode: '11202'
+  name: 熊谷市
+'12212222212':
+  jichitaicode: '11218'
+  name: 深谷市
+'122122222211':
+  jichitaicode: '11211'
+  name: 本庄市
+'12212222221211':
+  jichitaicode: '11408'
+  name: 寄居町
+'12212222221212':
+  jichitaicode: '11381'
+  name: 美里町
+'12212222221221':
+  jichitaicode: '11385'
+  name: 上里町
+'12212222221222':
+  jichitaicode: '11383'
+  name: 神川町
+'122122222221':
+  jichitaicode: '11207'
+  name: 秩父市
+'12212222222211':
+  jichitaicode: '11363'
+  name: 長瀞町
+'12212222222212':
+  jichitaicode: '11362'
+  name: 皆野町
+'12212222222221':
+  jichitaicode: '11361'
+  name: 横瀬町
+'12212222222222':
+  jichitaicode: '11365'
+  name: 小鹿野町
+'12221111':
+  jichitaicode: '19201'
+  name: 甲府市
+'12221112111':
+  jichitaicode: '19210'
+  name: 甲斐市
+'12221112112':
+  jichitaicode: '19208'
+  name: 南アルプス市
+'12221112121':
+  jichitaicode: '19207'
+  name: 韮崎市
+'12221112122':
+  jichitaicode: '19209'
+  name: 北杜市
+'12221112211':
+  jichitaicode: '19214'
+  name: 中央市
+'122211122121':
+  jichitaicode: '19384'
+  name: 昭和町
+'122211122122':
+  jichitaicode: '19346'
+  name: 市川三郷町
+'122211122211':
+  jichitaicode: '19368'
+  name: 富士川町
+'122211122212':
+  jichitaicode: '19364'
+  name: 早川町
+'122211122221':
+  jichitaicode: '19365'
+  name: 身延町
+'122211122222':
+  jichitaicode: '19366'
+  name: 南部町
+'1222112111':
+  jichitaicode: '19211'
+  name: 笛吹市
+'12221121121':
+  jichitaicode: '19205'
+  name: 山梨市
+'12221121122':
+  jichitaicode: '19213'
+  name: 甲州市
+'12221121211':
+  jichitaicode: '19206'
+  name: 大月市
+'122211212121':
+  jichitaicode: '19442'
+  name: 小菅村
+'122211212122':
+  jichitaicode: '19443'
+  name: 丹波山村
+'1222112122':
+  jichitaicode: '19212'
+  name: 上野原市
+'1222112211':
+  jichitaicode: '19204'
+  name: 都留市
+'12221122121':
+  jichitaicode: '19422'
+  name: 道志村
+'12221122122':
+  jichitaicode: '19423'
+  name: 西桂町
+'1222112221':
+  jichitaicode: '19202'
+  name: 富士吉田市
+'122211222211':
+  jichitaicode: '19430'
+  name: 富士河口湖町
+'122211222212':
+  jichitaicode: '19429'
+  name: 鳴沢村
+'122211222221':
+  jichitaicode: '19424'
+  name: 忍野村
+'122211222222':
+  jichitaicode: '19425'
+  name: 山中湖村
+'122212111':
+  jichitaicode: '20201'
+  name: 長野市
+'122212112111':
+  jichitaicode: '20218'
+  name: 千曲市
+'122212112112':
+  jichitaicode: '20212'
+  name: 大町市
+'1222121121211':
+  jichitaicode: '20482'
+  name: 松川村
+'1222121121212':
+  jichitaicode: '20481'
+  name: 池田町
+'1222121121221':
+  jichitaicode: '20588'
+  name: 小川村
+'12221211212221':
+  jichitaicode: '20485'
+  name: 白馬村
+'12221211212222':
+  jichitaicode: '20486'
+  name: 小谷村
+'122212112211':
+  jichitaicode: '20211'
+  name: 中野市
+'1222121122121':
+  jichitaicode: '20590'
+  name: 飯綱町
+'1222121122122':
+  jichitaicode: '20583'
+  name: 信濃町
+'1222121122211':
+  jichitaicode: '20561'
+  name: 山ノ内町
+'1222121122212':
+  jichitaicode: '20562'
+  name: 木島平村
+'1222121122221':
+  jichitaicode: '20213'
+  name: 飯山市
+'12221211222221':
+  jichitaicode: '20563'
+  name: 野沢温泉村
+'12221211222222':
+  jichitaicode: '20602'
+  name: 栄村
+'1222121211':
+  jichitaicode: '20203'
+  name: 上田市
+'122212121211':
+  jichitaicode: '20207'
+  name: 須坂市
+'1222121212121':
+  jichitaicode: '20541'
+  name: 小布施町
+'1222121212122':
+  jichitaicode: '20543'
+  name: 高山村
+'122212121221':
+  jichitaicode: '20521'
+  name: 坂城町
+'1222121212221':
+  jichitaicode: '20349'
+  name: 青木村
+'1222121212222':
+  jichitaicode: '20350'
+  name: 長和町
+'122212122111':
+  jichitaicode: '20219'
+  name: 東御市
+'122212122112':
+  jichitaicode: '20208'
+  name: 小諸市
+'122212122121':
+  jichitaicode: '20323'
+  name: 御代田町
+'122212122122':
+  jichitaicode: '20321'
+  name: 軽井沢町
+'12221212221':
+  jichitaicode: '20217'
+  name: 佐久市
+'1222121222211':
+  jichitaicode: '20324'
+  name: 立科町
+'1222121222212':
+  jichitaicode: '20309'
+  name: 佐久穂町
+'12221212222211':
+  jichitaicode: '20303'
+  name: 小海町
+'122212122222121':
+  jichitaicode: '20307'
+  name: 北相木村
+'122212122222122':
+  jichitaicode: '20306'
+  name: 南相木村
+'12221212222221':
+  jichitaicode: '20305'
+  name: 南牧村
+'12221212222222':
+  jichitaicode: '20304'
+  name: 川上村
+'122212211':
+  jichitaicode: '20202'
+  name: 松本市
+'12221221211':
+  jichitaicode: '20220'
+  name: 安曇野市
+'1222122121211':
+  jichitaicode: '20450'
+  name: 山形村
+'1222122121212':
+  jichitaicode: '20451'
+  name: 朝日村
+'1222122121221':
+  jichitaicode: '20452'
+  name: 筑北村
+'12221221212221':
+  jichitaicode: '20446'
+  name: 麻績村
+'12221221212222':
+  jichitaicode: '20448'
+  name: 生坂村
+'12221221221':
+  jichitaicode: '20215'
+  name: 塩尻市
+'122212212221':
+  jichitaicode: '20432'
+  name: 木曽町
+'122212212222111':
+  jichitaicode: '20425'
+  name: 木祖村
+'122212212222112':
+  jichitaicode: '20429'
+  name: 王滝村
+'12221221222212':
+  jichitaicode: '20422'
+  name: 上松町
+'12221221222221':
+  jichitaicode: '20430'
+  name: 大桑村
+'12221221222222':
+  jichitaicode: '20423'
+  name: 南木曽町
+'122212221111':
+  jichitaicode: '20204'
+  name: 岡谷市
+'122212221112':
+  jichitaicode: '20206'
+  name: 諏訪市
+'122212221121':
+  jichitaicode: '20214'
+  name: 茅野市
+'1222122211221':
+  jichitaicode: '20361'
+  name: 下諏訪町
+'12221222112221':
+  jichitaicode: '20362'
+  name: 富士見町
+'12221222112222':
+  jichitaicode: '20363'
+  name: 原村
+'122212221211':
+  jichitaicode: '20209'
+  name: 伊那市
+'122212221212':
+  jichitaicode: '20210'
+  name: 駒ヶ根市
+'1222122212211':
+  jichitaicode: '20382'
+  name: 辰野町
+'1222122212212':
+  jichitaicode: '20383'
+  name: 箕輪町
+'1222122212221':
+  jichitaicode: '20385'
+  name: 南箕輪村
+'1222122212222':
+  jichitaicode: '20388'
+  name: 宮田村
+'1222122221':
+  jichitaicode: '20205'
+  name: 飯田市
+'12221222221111':
+  jichitaicode: '20384'
+  name: 飯島町
+'12221222221112':
+  jichitaicode: '20386'
+  name: 中川村
+'12221222221121':
+  jichitaicode: '20402'
+  name: 松川町
+'12221222221122':
+  jichitaicode: '20417'
+  name: 大鹿村
+'1222122222121':
+  jichitaicode: '20403'
+  name: 高森町
+'12221222221221':
+  jichitaicode: '20416'
+  name: 豊丘村
+'12221222221222':
+  jichitaicode: '20415'
+  name: 喬木村
+'12221222222111':
+  jichitaicode: '20411'
+  name: 下條村
+'12221222222112':
+  jichitaicode: '20407'
+  name: 阿智村
+'12221222222121':
+  jichitaicode: '20409'
+  name: 平谷村
+'12221222222122':
+  jichitaicode: '20410'
+  name: 根羽村
+'12221222222211':
+  jichitaicode: '20404'
+  name: 阿南町
+'12221222222212':
+  jichitaicode: '20412'
+  name: 売木村
+'12221222222221':
+  jichitaicode: '20414'
+  name: 泰阜村
+'12221222222222':
+  jichitaicode: '20413'
+  name: 天龍村
+'122221111':
+  jichitaicode: '22101'
+  name: 葵区
+'1222211121':
+  jichitaicode: '22102'
+  name: 駿河区
+'1222211122':
+  jichitaicode: '22103'
+  name: 清水区
+'1222211211':
+  jichitaicode: '22210'
+  name: 富士市
+'1222211212':
+  jichitaicode: '22207'
+  name: 富士宮市
+'1222211221':
+  jichitaicode: '22215'
+  name: 御殿場市
+'12222112221':
+  jichitaicode: '22220'
+  name: 裾野市
+'12222112222':
+  jichitaicode: '22344'
+  name: 小山町
+'1222212111':
+  jichitaicode: '22203'
+  name: 沼津市
+'12222121121':
+  jichitaicode: '22342'
+  name: 長泉町
+'12222121122':
+  jichitaicode: '22341'
+  name: 清水町
+'1222212121':
+  jichitaicode: '22206'
+  name: 三島市
+'1222212122':
+  jichitaicode: '22325'
+  name: 函南町
+'12222122111':
+  jichitaicode: '22225'
+  name: 伊豆の国市
+'12222122112':
+  jichitaicode: '22222'
+  name: 伊豆市
+'12222122121':
+  jichitaicode: '22205'
+  name: 熱海市
+'12222122122':
+  jichitaicode: '22208'
+  name: 伊東市
+'12222122211':
+  jichitaicode: '22219'
+  name: 下田市
+'122221222121':
+  jichitaicode: '22301'
+  name: 東伊豆町
+'122221222122':
+  jichitaicode: '22302'
+  name: 河津町
+'12222122221':
+  jichitaicode: '22306'
+  name: 西伊豆町
+'122221222221':
+  jichitaicode: '22305'
+  name: 松崎町
+'122221222222':
+  jichitaicode: '22304'
+  name: 南伊豆町
+'1222221111':
+  jichitaicode: '22131'
+  name: 中区
+'1222221112':
+  jichitaicode: '22132'
+  name: 東区
+'1222221121':
+  jichitaicode: '22134'
+  name: 南区
+'1222221122':
+  jichitaicode: '22133'
+  name: 西区
+'1222221211':
+  jichitaicode: '22136'
+  name: 浜北区
+'1222221212':
+  jichitaicode: '22135'
+  name: 北区
+'122222122':
+  jichitaicode: '22137'
+  name: 天竜区
+'1222222111':
+  jichitaicode: '22212'
+  name: 焼津市
+'1222222112':
+  jichitaicode: '22214'
+  name: 藤枝市
+'1222222121':
+  jichitaicode: '22209'
+  name: 島田市
+'12222221221':
+  jichitaicode: '22226'
+  name: 牧之原市
+'122222212221':
+  jichitaicode: '22424'
+  name: 吉田町
+'122222212222':
+  jichitaicode: '22429'
+  name: 川根本町
+'12222222111':
+  jichitaicode: '22223'
+  name: 御前崎市
+'12222222112':
+  jichitaicode: '22224'
+  name: 菊川市
+'1222222212':
+  jichitaicode: '22213'
+  name: 掛川市
+'12222222211':
+  jichitaicode: '22216'
+  name: 袋井市
+'12222222212':
+  jichitaicode: '22461'
+  name: 森町
+'12222222221':
+  jichitaicode: '22211'
+  name: 磐田市
+'12222222222':
+  jichitaicode: '22221'
+  name: 湖西市
+'21111111':
+  jichitaicode: '16201'
+  name: 富山市
+'2111111211':
+  jichitaicode: '16206'
+  name: 滑川市
+'21111112121':
+  jichitaicode: '16323'
+  name: 立山町
+'211111121221':
+  jichitaicode: '16321'
+  name: 舟橋村
+'211111121222':
+  jichitaicode: '16322'
+  name: 上市町
+'21111112211':
+  jichitaicode: '16204'
+  name: 魚津市
+'21111112212':
+  jichitaicode: '16207'
+  name: 黒部市
+'21111112221':
+  jichitaicode: '16342'
+  name: 入善町
+'21111112222':
+  jichitaicode: '16343'
+  name: 朝日町
+'211111211':
+  jichitaicode: '16202'
+  name: 高岡市
+'211111212':
+  jichitaicode: '16211'
+  name: 射水市
+'2111112211':
+  jichitaicode: '16205'
+  name: 氷見市
+'2111112212':
+  jichitaicode: '16209'
+  name: 小矢部市
+'2111112221':
+  jichitaicode: '16208'
+  name: 砺波市
+'2111112222':
+  jichitaicode: '16210'
+  name: 南砺市
+'21111211':
+  jichitaicode: '17201'
+  name: 金沢市
+'2111121211':
+  jichitaicode: '17210'
+  name: 白山市
+'21111212121':
+  jichitaicode: '17212'
+  name: 野々市市
+'211112121221':
+  jichitaicode: '17324'
+  name: 川北町
+'211112121222':
+  jichitaicode: '17211'
+  name: 能美市
+'2111121221':
+  jichitaicode: '17203'
+  name: 小松市
+'2111121222':
+  jichitaicode: '17206'
+  name: 加賀市
+'21111221111':
+  jichitaicode: '17365'
+  name: 内灘町
+'21111221112':
+  jichitaicode: '17361'
+  name: 津幡町
+'21111221121':
+  jichitaicode: '17209'
+  name: かほく市
+'21111221122':
+  jichitaicode: '17386'
+  name: 宝達志水町
+'21111221211':
+  jichitaicode: '17207'
+  name: 羽咋市
+'21111221212':
+  jichitaicode: '17384'
+  name: 志賀町
+'21111221221':
+  jichitaicode: '17407'
+  name: 中能登町
+'21111221222':
+  jichitaicode: '17461'
+  name: 穴水町
+'211112221':
+  jichitaicode: '17202'
+  name: 七尾市
+'2111122221':
+  jichitaicode: '17204'
+  name: 輪島市
+'21111222221':
+  jichitaicode: '17463'
+  name: 能登町
+'21111222222':
+  jichitaicode: '17205'
+  name: 珠洲市
+'21112111':
+  jichitaicode: '18201'
+  name: 福井市
+'2111211211':
+  jichitaicode: '18210'
+  name: 坂井市
+'21112112121':
+  jichitaicode: '18208'
+  name: あわら市
+'21112112122':
+  jichitaicode: '18322'
+  name: 永平寺町
+'2111211221':
+  jichitaicode: '18206'
+  name: 勝山市
+'2111211222':
+  jichitaicode: '18205'
+  name: 大野市
+'2111212111':
+  jichitaicode: '18207'
+  name: 鯖江市
+'2111212112':
+  jichitaicode: '18423'
+  name: 越前町
+'2111212121':
+  jichitaicode: '18209'
+  name: 越前市
+'21112121221':
+  jichitaicode: '18382'
+  name: 池田町
+'21112121222':
+  jichitaicode: '18404'
+  name: 南越前町
+'2111212211':
+  jichitaicode: '18202'
+  name: 敦賀市
+'21112122121':
+  jichitaicode: '18442'
+  name: 美浜町
+'21112122122':
+  jichitaicode: '18501'
+  name: 若狭町
+'2111212221':
+  jichitaicode: '18204'
+  name: 小浜市
+'21112122221':
+  jichitaicode: '18483'
+  name: おおい町
+'21112122222':
+  jichitaicode: '18481'
+  name: 高浜町
+'211122111':
+  jichitaicode: '21201'
+  name: 岐阜市
+'2111221121':
+  jichitaicode: '21213'
+  name: 各務原市
+'21112211221':
+  jichitaicode: '21209'
+  name: 羽島市
+'211122112221':
+  jichitaicode: '21303'
+  name: 笠松町
+'211122112222':
+  jichitaicode: '21302'
+  name: 岐南町
+'2111221211':
+  jichitaicode: '21202'
+  name: 大垣市
+'211122121211':
+  jichitaicode: '21221'
+  name: 海津市
+'211122121212':
+  jichitaicode: '21341'
+  name: 養老町
+'2111221212211':
+  jichitaicode: '21382'
+  name: 輪之内町
+'2111221212212':
+  jichitaicode: '21383'
+  name: 安八町
+'211122121222':
+  jichitaicode: '21381'
+  name: 神戸町
+'211122122111':
+  jichitaicode: '21216'
+  name: 瑞穂市
+'211122122112':
+  jichitaicode: '21421'
+  name: 北方町
+'211122122121':
+  jichitaicode: '21218'
+  name: 本巣市
+'211122122122':
+  jichitaicode: '21215'
+  name: 山県市
+'211122122211':
+  jichitaicode: '21403'
+  name: 大野町
+'211122122212':
+  jichitaicode: '21401'
+  name: 揖斐川町
+'211122122221':
+  jichitaicode: '21404'
+  name: 池田町
+'2111221222221':
+  jichitaicode: '21361'
+  name: 垂井町
+'2111221222222':
+  jichitaicode: '21362'
+  name: 関ケ原町
+'21112221111':
+  jichitaicode: '21212'
+  name: 土岐市
+'21112221112':
+  jichitaicode: '21208'
+  name: 瑞浪市
+'21112221121':
+  jichitaicode: '21210'
+  name: 恵那市
+'21112221122':
+  jichitaicode: '21206'
+  name: 中津川市
+'21112221211':
+  jichitaicode: '21204'
+  name: 多治見市
+'211122212121':
+  jichitaicode: '21214'
+  name: 可児市
+'211122212122':
+  jichitaicode: '21521'
+  name: 御嵩町
+'211122212211':
+  jichitaicode: '21503'
+  name: 川辺町
+'211122212212':
+  jichitaicode: '21505'
+  name: 八百津町
+'211122212221':
+  jichitaicode: '21504'
+  name: 七宗町
+'2111222122221':
+  jichitaicode: '21506'
+  name: 白川町
+'2111222122222':
+  jichitaicode: '21507'
+  name: 東白川村
+'21112222111':
+  jichitaicode: '21205'
+  name: 関市
+'211122221121':
+  jichitaicode: '21207'
+  name: 美濃市
+'211122221122':
+  jichitaicode: '21219'
+  name: 郡上市
+'21112222121':
+  jichitaicode: '21211'
+  name: 美濃加茂市
+'211122221221':
+  jichitaicode: '21501'
+  name: 坂祝町
+'211122221222':
+  jichitaicode: '21502'
+  name: 富加町
+'2111222221':
+  jichitaicode: '21203'
+  name: 高山市
+'21112222221':
+  jichitaicode: '21220'
+  name: 下呂市
+'211122222221':
+  jichitaicode: '21217'
+  name: 飛騨市
+'211122222222':
+  jichitaicode: '21604'
+  name: 白川村
+'21121111111':
+  jichitaicode: '23106'
+  name: 中区
+'21121111112':
+  jichitaicode: '23102'
+  name: 東区
+'21121111121':
+  jichitaicode: '23104'
+  name: 西区
+'21121111122':
+  jichitaicode: '23103'
+  name: 北区
+'21121111211':
+  jichitaicode: '23105'
+  name: 中村区
+'21121111212':
+  jichitaicode: '23110'
+  name: 中川区
+'21121111221':
+  jichitaicode: '23109'
+  name: 熱田区
+'21121111222':
+  jichitaicode: '23111'
+  name: 港区
+'21121112111':
+  jichitaicode: '23107'
+  name: 昭和区
+'21121112112':
+  jichitaicode: '23101'
+  name: 千種区
+'21121112121':
+  jichitaicode: '23115'
+  name: 名東区
+'21121112122':
+  jichitaicode: '23113'
+  name: 守山区
+'21121112211':
+  jichitaicode: '23108'
+  name: 瑞穂区
+'21121112212':
+  jichitaicode: '23116'
+  name: 天白区
+'21121112221':
+  jichitaicode: '23112'
+  name: 南区
+'21121112222':
+  jichitaicode: '23114'
+  name: 緑区
+'21121121111':
+  jichitaicode: '23208'
+  name: 津島市
+'21121121112':
+  jichitaicode: '23232'
+  name: 愛西市
+'21121121121':
+  jichitaicode: '23235'
+  name: 弥富市
+'211211211221':
+  jichitaicode: '23425'
+  name: 蟹江町
+'211211211222':
+  jichitaicode: '23427'
+  name: 飛島村
+'21121121211':
+  jichitaicode: '23237'
+  name: あま市
+'21121121212':
+  jichitaicode: '23424'
+  name: 大治町
+'21121121221':
+  jichitaicode: '23233'
+  name: 清須市
+'21121121222':
+  jichitaicode: '23220'
+  name: 稲沢市
+'2112112211':
+  jichitaicode: '23203'
+  name: 一宮市
+'211211221211':
+  jichitaicode: '23234'
+  name: 北名古屋市
+'211211221212':
+  jichitaicode: '23342'
+  name: 豊山町
+'211211221221':
+  jichitaicode: '23228'
+  name: 岩倉市
+'211211221222':
+  jichitaicode: '23217'
+  name: 江南市
+'21121122211':
+  jichitaicode: '23206'
+  name: 春日井市
+'21121122212':
+  jichitaicode: '23219'
+  name: 小牧市
+'21121122221':
+  jichitaicode: '23215'
+  name: 犬山市
+'211211222221':
+  jichitaicode: '23361'
+  name: 大口町
+'211211222222':
+  jichitaicode: '23362'
+  name: 扶桑町
+'21121211111':
+  jichitaicode: '23226'
+  name: 尾張旭市
+'21121211112':
+  jichitaicode: '23238'
+  name: 長久手市
+'2112121112':
+  jichitaicode: '23204'
+  name: 瀬戸市
+'211212112111':
+  jichitaicode: '23230'
+  name: 日進市
+'211212112112':
+  jichitaicode: '23302'
+  name: 東郷町
+'211212112121':
+  jichitaicode: '23236'
+  name: みよし市
+'211212112122':
+  jichitaicode: '23229'
+  name: 豊明市
+'2112121122':
+  jichitaicode: '23211'
+  name: 豊田市
+'21121212111':
+  jichitaicode: '23222'
+  name: 東海市
+'21121212112':
+  jichitaicode: '23224'
+  name: 知多市
+'21121212121':
+  jichitaicode: '23223'
+  name: 大府市
+'211212121221':
+  jichitaicode: '23442'
+  name: 東浦町
+'211212121222':
+  jichitaicode: '23441'
+  name: 阿久比町
+'21121212211':
+  jichitaicode: '23216'
+  name: 常滑市
+'21121212212':
+  jichitaicode: '23205'
+  name: 半田市
+'21121212221':
+  jichitaicode: '23447'
+  name: 武豊町
+'211212122221':
+  jichitaicode: '23446'
+  name: 美浜町
+'211212122222':
+  jichitaicode: '23445'
+  name: 南知多町
+'21121221111':
+  jichitaicode: '23210'
+  name: 刈谷市
+'21121221112':
+  jichitaicode: '23225'
+  name: 知立市
+'21121221121':
+  jichitaicode: '23212'
+  name: 安城市
+'211212211221':
+  jichitaicode: '23227'
+  name: 高浜市
+'211212211222':
+  jichitaicode: '23209'
+  name: 碧南市
+'2112122121':
+  jichitaicode: '23202'
+  name: 岡崎市
+'21121221221':
+  jichitaicode: '23213'
+  name: 西尾市
+'21121221222':
+  jichitaicode: '23501'
+  name: 幸田町
+'2112122211':
+  jichitaicode: '23201'
+  name: 豊橋市
+'2112122212':
+  jichitaicode: '23231'
+  name: 田原市
+'21121222211':
+  jichitaicode: '23207'
+  name: 豊川市
+'21121222212':
+  jichitaicode: '23214'
+  name: 蒲郡市
+'21121222221':
+  jichitaicode: '23221'
+  name: 新城市
+'211212222221':
+  jichitaicode: '23561'
+  name: 設楽町
+'2112122222221':
+  jichitaicode: '23562'
+  name: 東栄町
+'2112122222222':
+  jichitaicode: '23563'
+  name: 豊根村
+'2112211111':
+  jichitaicode: '24205'
+  name: 桑名市
+'21122111121':
+  jichitaicode: '24303'
+  name: 木曽岬町
+'211221111221':
+  jichitaicode: '24343'
+  name: 朝日町
+'211221111222':
+  jichitaicode: '24344'
+  name: 川越町
+'2112211121':
+  jichitaicode: '24214'
+  name: いなべ市
+'21122111221':
+  jichitaicode: '24324'
+  name: 東員町
+'21122111222':
+  jichitaicode: '24341'
+  name: 菰野町
+'211221121':
+  jichitaicode: '24202'
+  name: 四日市市
+'2112211221':
+  jichitaicode: '24207'
+  name: 鈴鹿市
+'2112211222':
+  jichitaicode: '24210'
+  name: 亀山市
+'2112212111':
+  jichitaicode: '24201'
+  name: 津市
+'2112212112':
+  jichitaicode: '24204'
+  name: 松阪市
+'2112212121':
+  jichitaicode: '24216'
+  name: 伊賀市
+'2112212122':
+  jichitaicode: '24208'
+  name: 名張市
+'211221221111':
+  jichitaicode: '24442'
+  name: 明和町
+'211221221112':
+  jichitaicode: '24461'
+  name: 玉城町
+'211221221121':
+  jichitaicode: '24441'
+  name: 多気町
+'211221221122':
+  jichitaicode: '24443'
+  name: 大台町
+'21122122121':
+  jichitaicode: '24203'
+  name: 伊勢市
+'211221221221':
+  jichitaicode: '24211'
+  name: 鳥羽市
+'211221221222':
+  jichitaicode: '24215'
+  name: 志摩市
+'211221222111':
+  jichitaicode: '24470'
+  name: 度会町
+'211221222112':
+  jichitaicode: '24472'
+  name: 南伊勢町
+'211221222121':
+  jichitaicode: '24471'
+  name: 大紀町
+'211221222122':
+  jichitaicode: '24543'
+  name: 紀北町
+'211221222211':
+  jichitaicode: '24209'
+  name: 尾鷲市
+'211221222212':
+  jichitaicode: '24212'
+  name: 熊野市
+'211221222221':
+  jichitaicode: '24561'
+  name: 御浜町
+'211221222222':
+  jichitaicode: '24562'
+  name: 紀宝町
+'211222111':
+  jichitaicode: '25201'
+  name: 大津市
+'2112221121':
+  jichitaicode: '25206'
+  name: 草津市
+'2112221122':
+  jichitaicode: '25208'
+  name: 栗東市
+'2112221211':
+  jichitaicode: '25207'
+  name: 守山市
+'2112221212':
+  jichitaicode: '25210'
+  name: 野洲市
+'2112221221':
+  jichitaicode: '25211'
+  name: 湖南市
+'2112221222':
+  jichitaicode: '25209'
+  name: 甲賀市
+'2112222111':
+  jichitaicode: '25204'
+  name: 近江八幡市
+'21122221121':
+  jichitaicode: '25384'
+  name: 竜王町
+'21122221122':
+  jichitaicode: '25383'
+  name: 日野町
+'2112222121':
+  jichitaicode: '25213'
+  name: 東近江市
+'21122221221':
+  jichitaicode: '25425'
+  name: 愛荘町
+'211222212221':
+  jichitaicode: '25441'
+  name: 豊郷町
+'211222212222':
+  jichitaicode: '25442'
+  name: 甲良町
+'2112222211':
+  jichitaicode: '25202'
+  name: 彦根市
+'21122222121':
+  jichitaicode: '25443'
+  name: 多賀町
+'21122222122':
+  jichitaicode: '25214'
+  name: 米原市
+'2112222221':
+  jichitaicode: '25203'
+  name: 長浜市
+'2112222222':
+  jichitaicode: '25212'
+  name: 高島市
+'2121111111':
+  jichitaicode: '27128'
+  name: 中央区
+'2121111112':
+  jichitaicode: '27127'
+  name: 北区
+'21211111211':
+  jichitaicode: '27103'
+  name: 福島区
+'21211111212':
+  jichitaicode: '27106'
+  name: 西区
+'21211111221':
+  jichitaicode: '27104'
+  name: 此花区
+'21211111222':
+  jichitaicode: '27113'
+  name: 西淀川区
+'2121111211':
+  jichitaicode: '27123'
+  name: 淀川区
+'2121111212':
+  jichitaicode: '27114'
+  name: 東淀川区
+'21211112211':
+  jichitaicode: '27102'
+  name: 都島区
+'21211112212':
+  jichitaicode: '27117'
+  name: 旭区
+'21211112221':
+  jichitaicode: '27118'
+  name: 城東区
+'21211112222':
+  jichitaicode: '27124'
+  name: 鶴見区
+'21211121111':
+  jichitaicode: '27107'
+  name: 港区
+'21211121112':
+  jichitaicode: '27108'
+  name: 大正区
+'21211121121':
+  jichitaicode: '27111'
+  name: 浪速区
+'21211121122':
+  jichitaicode: '27122'
+  name: 西成区
+'2121112121':
+  jichitaicode: '27125'
+  name: 住之江区
+'2121112122':
+  jichitaicode: '27120'
+  name: 住吉区
+'21211122111':
+  jichitaicode: '27109'
+  name: 天王寺区
+'21211122112':
+  jichitaicode: '27119'
+  name: 阿倍野区
+'21211122121':
+  jichitaicode: '27115'
+  name: 東成区
+'21211122122':
+  jichitaicode: '27116'
+  name: 生野区
+'2121112221':
+  jichitaicode: '27121'
+  name: 東住吉区
+'2121112222':
+  jichitaicode: '27126'
+  name: 平野区
+'21211211111':
+  jichitaicode: '27207'
+  name: 高槻市
+'21211211112':
+  jichitaicode: '27211'
+  name: 茨木市
+'21211211121':
+  jichitaicode: '27224'
+  name: 摂津市
+'212112111221':
+  jichitaicode: '27301'
+  name: 島本町
+'2121121112221':
+  jichitaicode: '27321'
+  name: 豊能町
+'2121121112222':
+  jichitaicode: '27322'
+  name: 能勢町
+'21211211211':
+  jichitaicode: '27205'
+  name: 吹田市
+'21211211212':
+  jichitaicode: '27203'
+  name: 豊中市
+'21211211221':
+  jichitaicode: '27204'
+  name: 池田市
+'21211211222':
+  jichitaicode: '27220'
+  name: 箕面市
+'21211212111':
+  jichitaicode: '27209'
+  name: 守口市
+'21211212112':
+  jichitaicode: '27223'
+  name: 門真市
+'21211212121':
+  jichitaicode: '27215'
+  name: 寝屋川市
+'21211212122':
+  jichitaicode: '27210'
+  name: 枚方市
+'21211212211':
+  jichitaicode: '27227'
+  name: 東大阪市
+'21211212212':
+  jichitaicode: '27212'
+  name: 八尾市
+'21211212221':
+  jichitaicode: '27218'
+  name: 大東市
+'212112122221':
+  jichitaicode: '27229'
+  name: 四條畷市
+'212112122222':
+  jichitaicode: '27230'
+  name: 交野市
+'2121122111':
+  jichitaicode: '27141'
+  name: 堺区
+'21211221121':
+  jichitaicode: '27144'
+  name: 西区
+'21211221122':
+  jichitaicode: '27146'
+  name: 北区
+'21211221211':
+  jichitaicode: '27142'
+  name: 中区
+'21211221212':
+  jichitaicode: '27145'
+  name: 南区
+'21211221221':
+  jichitaicode: '27143'
+  name: 東区
+'21211221222':
+  jichitaicode: '27147'
+  name: 美原区
+'212112221111':
+  jichitaicode: '27217'
+  name: 松原市
+'212112221112':
+  jichitaicode: '27222'
+  name: 羽曳野市
+'212112221121':
+  jichitaicode: '27226'
+  name: 藤井寺市
+'212112221122':
+  jichitaicode: '27221'
+  name: 柏原市
+'212112221211':
+  jichitaicode: '27231'
+  name: 大阪狭山市
+'212112221212':
+  jichitaicode: '27216'
+  name: 河内長野市
+'212112221221':
+  jichitaicode: '27214'
+  name: 富田林市
+'2121122212221':
+  jichitaicode: '27381'
+  name: 太子町
+'21211222122221':
+  jichitaicode: '27382'
+  name: 河南町
+'21211222122222':
+  jichitaicode: '27383'
+  name: 千早赤阪村
+'212112222111':
+  jichitaicode: '27225'
+  name: 高石市
+'212112222112':
+  jichitaicode: '27206'
+  name: 泉大津市
+'212112222121':
+  jichitaicode: '27219'
+  name: 和泉市
+'212112222122':
+  jichitaicode: '27202'
+  name: 岸和田市
+'212112222211':
+  jichitaicode: '27208'
+  name: 貝塚市
+'212112222212':
+  jichitaicode: '27213'
+  name: 泉佐野市
+'2121122222211':
+  jichitaicode: '27228'
+  name: 泉南市
+'2121122222212':
+  jichitaicode: '27232'
+  name: 阪南市
+'21211222222211':
+  jichitaicode: '27341'
+  name: 忠岡町
+'21211222222212':
+  jichitaicode: '27361'
+  name: 熊取町
+'21211222222221':
+  jichitaicode: '27362'
+  name: 田尻町
+'21211222222222':
+  jichitaicode: '27366'
+  name: 岬町
+'2121211111':
+  jichitaicode: '28101'
+  name: 東灘区
+'2121211112':
+  jichitaicode: '28102'
+  name: 灘区
+'2121211121':
+  jichitaicode: '28110'
+  name: 中央区
+'21212111221':
+  jichitaicode: '28105'
+  name: 兵庫区
+'21212111222':
+  jichitaicode: '28106'
+  name: 長田区
+'2121211211':
+  jichitaicode: '28107'
+  name: 須磨区
+'2121211212':
+  jichitaicode: '28108'
+  name: 垂水区
+'2121211221':
+  jichitaicode: '28109'
+  name: 北区
+'2121211222':
+  jichitaicode: '28111'
+  name: 西区
+'2121212111':
+  jichitaicode: '28202'
+  name: 尼崎市
+'2121212112':
+  jichitaicode: '28207'
+  name: 伊丹市
+'2121212121':
+  jichitaicode: '28204'
+  name: 西宮市
+'2121212122':
+  jichitaicode: '28206'
+  name: 芦屋市
+'2121212211':
+  jichitaicode: '28217'
+  name: 川西市
+'2121212212':
+  jichitaicode: '28214'
+  name: 宝塚市
+'21212122211':
+  jichitaicode: '28219'
+  name: 三田市
+'21212122212':
+  jichitaicode: '28301'
+  name: 猪名川町
+'21212122221':
+  jichitaicode: '28221'
+  name: 丹波篠山市
+'21212122222':
+  jichitaicode: '28223'
+  name: 丹波市
+'2121221111':
+  jichitaicode: '28203'
+  name: 明石市
+'2121221112':
+  jichitaicode: '28210'
+  name: 加古川市
+'21212211211':
+  jichitaicode: '28216'
+  name: 高砂市
+'212122112121':
+  jichitaicode: '28382'
+  name: 播磨町
+'212122112122':
+  jichitaicode: '28381'
+  name: 稲美町
+'212122112211':
+  jichitaicode: '28226'
+  name: 淡路市
+'212122112212':
+  jichitaicode: '28205'
+  name: 洲本市
+'21212211222':
+  jichitaicode: '28224'
+  name: 南あわじ市
+'2121221211':
+  jichitaicode: '28215'
+  name: 三木市
+'21212212121':
+  jichitaicode: '28218'
+  name: 小野市
+'21212212122':
+  jichitaicode: '28228'
+  name: 加東市
+'2121221221':
+  jichitaicode: '28220'
+  name: 加西市
+'21212212221':
+  jichitaicode: '28213'
+  name: 西脇市
+'21212212222':
+  jichitaicode: '28365'
+  name: 多可町
+'212122211':
+  jichitaicode: '28201'
+  name: 姫路市
+'21212221211':
+  jichitaicode: '28229'
+  name: たつの市
+'212122212121':
+  jichitaicode: '28464'
+  name: 太子町
+'212122212122':
+  jichitaicode: '28208'
+  name: 相生市
+'21212221221':
+  jichitaicode: '28212'
+  name: 赤穂市
+'212122212221':
+  jichitaicode: '28481'
+  name: 上郡町
+'212122212222':
+  jichitaicode: '28501'
+  name: 佐用町
+'21212222111':
+  jichitaicode: '28443'
+  name: 福崎町
+'212122221121':
+  jichitaicode: '28442'
+  name: 市川町
+'212122221122':
+  jichitaicode: '28446'
+  name: 神河町
+'21212222121':
+  jichitaicode: '28227'
+  name: 宍粟市
+'21212222122':
+  jichitaicode: '28225'
+  name: 朝来市
+'2121222221':
+  jichitaicode: '28209'
+  name: 豊岡市
+'21212222221':
+  jichitaicode: '28222'
+  name: 養父市
+'212122222221':
+  jichitaicode: '28585'
+  name: 香美町
+'212122222222':
+  jichitaicode: '28586'
+  name: 新温泉町
+'2122111111':
+  jichitaicode: '26102'
+  name: 上京区
+'2122111112':
+  jichitaicode: '26104'
+  name: 中京区
+'2122111121':
+  jichitaicode: '26106'
+  name: 下京区
+'2122111122':
+  jichitaicode: '26107'
+  name: 南区
+'2122111211':
+  jichitaicode: '26105'
+  name: 東山区
+'2122111212':
+  jichitaicode: '26110'
+  name: 山科区
+'212211122':
+  jichitaicode: '26109'
+  name: 伏見区
+'212211211':
+  jichitaicode: '26103'
+  name: 左京区
+'212211212':
+  jichitaicode: '26101'
+  name: 北区
+'212211221':
+  jichitaicode: '26108'
+  name: 右京区
+'212211222':
+  jichitaicode: '26111'
+  name: 西京区
+'2122121111':
+  jichitaicode: '26208'
+  name: 向日市
+'2122121112':
+  jichitaicode: '26209'
+  name: 長岡京市
+'21221211211':
+  jichitaicode: '26303'
+  name: 大山崎町
+'21221211212':
+  jichitaicode: '26322'
+  name: 久御山町
+'2122121122':
+  jichitaicode: '26204'
+  name: 宇治市
+'21221212111':
+  jichitaicode: '26210'
+  name: 八幡市
+'21221212112':
+  jichitaicode: '26211'
+  name: 京田辺市
+'21221212121':
+  jichitaicode: '26207'
+  name: 城陽市
+'212212121221':
+  jichitaicode: '26343'
+  name: 井手町
+'212212121222':
+  jichitaicode: '26344'
+  name: 宇治田原町
+'21221212211':
+  jichitaicode: '26214'
+  name: 木津川市
+'21221212212':
+  jichitaicode: '26366'
+  name: 精華町
+'21221212221':
+  jichitaicode: '26365'
+  name: 和束町
+'212212122221':
+  jichitaicode: '26364'
+  name: 笠置町
+'212212122222':
+  jichitaicode: '26367'
+  name: 南山城村
+'2122122111':
+  jichitaicode: '26206'
+  name: 亀岡市
+'2122122112':
+  jichitaicode: '26213'
+  name: 南丹市
+'2122122121':
+  jichitaicode: '26407'
+  name: 京丹波町
+'2122122122':
+  jichitaicode: '26201'
+  name: 福知山市
+'2122122211':
+  jichitaicode: '26202'
+  name: 舞鶴市
+'2122122212':
+  jichitaicode: '26203'
+  name: 綾部市
+'21221222211':
+  jichitaicode: '26205'
+  name: 宮津市
+'212212222121':
+  jichitaicode: '26465'
+  name: 与謝野町
+'212212222122':
+  jichitaicode: '26463'
+  name: 伊根町
+'2122122222':
+  jichitaicode: '26212'
+  name: 京丹後市
+'212221111':
+  jichitaicode: '29201'
+  name: 奈良市
+'21222111211':
+  jichitaicode: '29209'
+  name: 生駒市
+'21222111212':
+  jichitaicode: '29203'
+  name: 大和郡山市
+'21222111221':
+  jichitaicode: '29204'
+  name: 天理市
+'21222111222':
+  jichitaicode: '29363'
+  name: 田原本町
+'21222112111':
+  jichitaicode: '29342'
+  name: 平群町
+'21222112112':
+  jichitaicode: '29343'
+  name: 三郷町
+'212221121211':
+  jichitaicode: '29344'
+  name: 斑鳩町
+'212221121212':
+  jichitaicode: '29345'
+  name: 安堵町
+'212221121221':
+  jichitaicode: '29361'
+  name: 川西町
+'212221121222':
+  jichitaicode: '29362'
+  name: 三宅町
+'21222112211':
+  jichitaicode: '29425'
+  name: 王寺町
+'21222112212':
+  jichitaicode: '29210'
+  name: 香芝市
+'212221122211':
+  jichitaicode: '29427'
+  name: 河合町
+'212221122212':
+  jichitaicode: '29424'
+  name: 上牧町
+'21222112222':
+  jichitaicode: '29426'
+  name: 広陵町
+'2122212111':
+  jichitaicode: '29205'
+  name: 橿原市
+'21222121121':
+  jichitaicode: '29206'
+  name: 桜井市
+'212221211221':
+  jichitaicode: '29402'
+  name: 明日香村
+'212221211222':
+  jichitaicode: '29401'
+  name: 高取町
+'2122212121':
+  jichitaicode: '29202'
+  name: 大和高田市
+'21222121221':
+  jichitaicode: '29211'
+  name: 葛城市
+'21222121222':
+  jichitaicode: '29208'
+  name: 御所市
+'21222122111':
+  jichitaicode: '29207'
+  name: 五條市
+'212221221121':
+  jichitaicode: '29442'
+  name: 大淀町
+'212221221122':
+  jichitaicode: '29443'
+  name: 下市町
+'212221221211':
+  jichitaicode: '29444'
+  name: 黒滝村
+'212221221212':
+  jichitaicode: '29446'
+  name: 天川村
+'212221221221':
+  jichitaicode: '29447'
+  name: 野迫川村
+'212221221222':
+  jichitaicode: '29449'
+  name: 十津川村
+'21222122211':
+  jichitaicode: '29212'
+  name: 宇陀市
+'212221222121':
+  jichitaicode: '29322'
+  name: 山添村
+'2122212221221':
+  jichitaicode: '29385'
+  name: 曽爾村
+'2122212221222':
+  jichitaicode: '29386'
+  name: 御杖村
+'212221222211':
+  jichitaicode: '29441'
+  name: 吉野町
+'212221222212':
+  jichitaicode: '29453'
+  name: 東吉野村
+'212221222221':
+  jichitaicode: '29452'
+  name: 川上村
+'2122212222221':
+  jichitaicode: '29451'
+  name: 上北山村
+'2122212222222':
+  jichitaicode: '29450'
+  name: 下北山村
+'21222211':
+  jichitaicode: '30201'
+  name: 和歌山市
+'21222212111':
+  jichitaicode: '30202'
+  name: 海南市
+'21222212112':
+  jichitaicode: '30304'
+  name: 紀美野町
+'21222212121':
+  jichitaicode: '30209'
+  name: 岩出市
+'21222212122':
+  jichitaicode: '30208'
+  name: 紀の川市
+'21222212211':
+  jichitaicode: '30341'
+  name: かつらぎ町
+'21222212212':
+  jichitaicode: '30203'
+  name: 橋本市
+'21222212221':
+  jichitaicode: '30343'
+  name: 九度山町
+'21222212222':
+  jichitaicode: '30344'
+  name: 高野町
+'21222221111':
+  jichitaicode: '30204'
+  name: 有田市
+'21222221112':
+  jichitaicode: '30366'
+  name: 有田川町
+'21222221121':
+  jichitaicode: '30361'
+  name: 湯浅町
+'212222211221':
+  jichitaicode: '30362'
+  name: 広川町
+'212222211222':
+  jichitaicode: '30383'
+  name: 由良町
+'212222212111':
+  jichitaicode: '30382'
+  name: 日高町
+'212222212112':
+  jichitaicode: '30381'
+  name: 美浜町
+'21222221212':
+  jichitaicode: '30205'
+  name: 御坊市
+'21222221221':
+  jichitaicode: '30392'
+  name: 日高川町
+'212222212221':
+  jichitaicode: '30390'
+  name: 印南町
+'212222212222':
+  jichitaicode: '30391'
+  name: みなべ町
+'2122222211':
+  jichitaicode: '30206'
+  name: 田辺市
+'21222222121':
+  jichitaicode: '30401'
+  name: 白浜町
+'212222221221':
+  jichitaicode: '30404'
+  name: 上富田町
+'212222221222':
+  jichitaicode: '30406'
+  name: すさみ町
+'2122222221':
+  jichitaicode: '30207'
+  name: 新宮市
+'212222222211':
+  jichitaicode: '30428'
+  name: 串本町
+'212222222212':
+  jichitaicode: '30424'
+  name: 古座川町
+'212222222221':
+  jichitaicode: '30421'
+  name: 那智勝浦町
+'2122222222221':
+  jichitaicode: '30422'
+  name: 太地町
+'2122222222222':
+  jichitaicode: '30427'
+  name: 北山村
+'2211111111':
+  jichitaicode: '33101'
+  name: 北区
+'2211111112':
+  jichitaicode: '33104'
+  name: 南区
+'2211111121':
+  jichitaicode: '33102'
+  name: 中区
+'2211111122':
+  jichitaicode: '33103'
+  name: 東区
+'22111112111':
+  jichitaicode: '33212'
+  name: 瀬戸内市
+'22111112112':
+  jichitaicode: '33213'
+  name: 赤磐市
+'22111112121':
+  jichitaicode: '33211'
+  name: 備前市
+'22111112122':
+  jichitaicode: '33346'
+  name: 和気町
+'2211111221':
+  jichitaicode: '33215'
+  name: 美作市
+'22111112221':
+  jichitaicode: '33622'
+  name: 勝央町
+'221111122221':
+  jichitaicode: '33623'
+  name: 奈義町
+'221111122222':
+  jichitaicode: '33643'
+  name: 西粟倉村
+'2211112111':
+  jichitaicode: '33202'
+  name: 倉敷市
+'22111121121':
+  jichitaicode: '33204'
+  name: 玉野市
+'22111121122':
+  jichitaicode: '33208'
+  name: 総社市
+'221111212111':
+  jichitaicode: '33216'
+  name: 浅口市
+'2211112121121':
+  jichitaicode: '33423'
+  name: 早島町
+'2211112121122':
+  jichitaicode: '33445'
+  name: 里庄町
+'22111121212':
+  jichitaicode: '33205'
+  name: 笠岡市
+'22111121221':
+  jichitaicode: '33207'
+  name: 井原市
+'22111121222':
+  jichitaicode: '33461'
+  name: 矢掛町
+'22111122111':
+  jichitaicode: '33209'
+  name: 高梁市
+'22111122112':
+  jichitaicode: '33210'
+  name: 新見市
+'22111122121':
+  jichitaicode: '33214'
+  name: 真庭市
+'221111221221':
+  jichitaicode: '33681'
+  name: 吉備中央町
+'221111221222':
+  jichitaicode: '33586'
+  name: 新庄村
+'2211112221':
+  jichitaicode: '33203'
+  name: 津山市
+'221111222211':
+  jichitaicode: '33666'
+  name: 美咲町
+'221111222212':
+  jichitaicode: '33663'
+  name: 久米南町
+'22111122222':
+  jichitaicode: '33606'
+  name: 鏡野町
+'22111211111':
+  jichitaicode: '34101'
+  name: 中区
+'22111211112':
+  jichitaicode: '34103'
+  name: 南区
+'22111211121':
+  jichitaicode: '34102'
+  name: 東区
+'22111211122':
+  jichitaicode: '34107'
+  name: 安芸区
+'22111211211':
+  jichitaicode: '34104'
+  name: 西区
+'22111211212':
+  jichitaicode: '34108'
+  name: 佐伯区
+'22111211221':
+  jichitaicode: '34105'
+  name: 安佐南区
+'22111211222':
+  jichitaicode: '34106'
+  name: 安佐北区
+'2211121211':
+  jichitaicode: '34202'
+  name: 呉市
+'2211121212111':
+  jichitaicode: '34302'
+  name: 府中町
+'2211121212112':
+  jichitaicode: '34304'
+  name: 海田町
+'2211121212121':
+  jichitaicode: '34307'
+  name: 熊野町
+'2211121212122':
+  jichitaicode: '34309'
+  name: 坂町
+'22111212122':
+  jichitaicode: '34215'
+  name: 江田島市
+'22111212211':
+  jichitaicode: '34213'
+  name: 廿日市市
+'22111212212':
+  jichitaicode: '34211'
+  name: 大竹市
+'22111212221':
+  jichitaicode: '34214'
+  name: 安芸高田市
+'221112122221':
+  jichitaicode: '34369'
+  name: 北広島町
+'221112122222':
+  jichitaicode: '34368'
+  name: 安芸太田町
+'221112211':
+  jichitaicode: '34207'
+  name: 福山市
+'221112212111':
+  jichitaicode: '34208'
+  name: 府中市
+'221112212112':
+  jichitaicode: '34462'
+  name: 世羅町
+'22111221212':
+  jichitaicode: '34545'
+  name: 神石高原町
+'22111221221':
+  jichitaicode: '34210'
+  name: 庄原市
+'22111221222':
+  jichitaicode: '34209'
+  name: 三次市
+'2211122211':
+  jichitaicode: '34205'
+  name: 尾道市
+'2211122212':
+  jichitaicode: '34204'
+  name: 三原市
+'22111222211':
+  jichitaicode: '34203'
+  name: 竹原市
+'22111222212':
+  jichitaicode: '34431'
+  name: 大崎上島町
+'2211122222':
+  jichitaicode: '34212'
+  name: 東広島市
+'221121111':
+  jichitaicode: '31201'
+  name: 鳥取市
+'221121112111':
+  jichitaicode: '31302'
+  name: 岩美町
+'221121112112':
+  jichitaicode: '31329'
+  name: 八頭町
+'221121112121':
+  jichitaicode: '31325'
+  name: 若桜町
+'221121112122':
+  jichitaicode: '31328'
+  name: 智頭町
+'22112111221':
+  jichitaicode: '31203'
+  name: 倉吉市
+'221121112221':
+  jichitaicode: '31370'
+  name: 湯梨浜町
+'221121112222':
+  jichitaicode: '31364'
+  name: 三朝町
+'2211211211':
+  jichitaicode: '31202'
+  name: 米子市
+'22112112121':
+  jichitaicode: '31204'
+  name: 境港市
+'221121121221':
+  jichitaicode: '31384'
+  name: 日吉津村
+'221121121222':
+  jichitaicode: '31389'
+  name: 南部町
+'221121122111':
+  jichitaicode: '31372'
+  name: 北栄町
+'221121122112':
+  jichitaicode: '31371'
+  name: 琴浦町
+'22112112212':
+  jichitaicode: '31386'
+  name: 大山町
+'221121122211':
+  jichitaicode: '31390'
+  name: 伯耆町
+'221121122212':
+  jichitaicode: '31403'
+  name: 江府町
+'221121122221':
+  jichitaicode: '31402'
+  name: 日野町
+'221121122222':
+  jichitaicode: '31401'
+  name: 日南町
+'2211212111':
+  jichitaicode: '32201'
+  name: 松江市
+'2211212112':
+  jichitaicode: '32203'
+  name: 出雲市
+'22112121211':
+  jichitaicode: '32206'
+  name: 安来市
+'221121212121':
+  jichitaicode: '32209'
+  name: 雲南市
+'221121212122':
+  jichitaicode: '32343'
+  name: 奥出雲町
+'221121212211':
+  jichitaicode: '32526'
+  name: 西ノ島町
+'2211212122121':
+  jichitaicode: '32527'
+  name: 知夫村
+'2211212122122':
+  jichitaicode: '32525'
+  name: 海士町
+'22112121222':
+  jichitaicode: '32528'
+  name: 隠岐の島町
+'22112122111':
+  jichitaicode: '32205'
+  name: 大田市
+'22112122112':
+  jichitaicode: '32207'
+  name: 江津市
+'221121221211':
+  jichitaicode: '32386'
+  name: 飯南町
+'221121221212':
+  jichitaicode: '32448'
+  name: 美郷町
+'221121221221':
+  jichitaicode: '32441'
+  name: 川本町
+'221121221222':
+  jichitaicode: '32449'
+  name: 邑南町
+'2211212221':
+  jichitaicode: '32202'
+  name: 浜田市
+'22112122221':
+  jichitaicode: '32204'
+  name: 益田市
+'221121222221':
+  jichitaicode: '32501'
+  name: 津和野町
+'221121222222':
+  jichitaicode: '32505'
+  name: 吉賀町
+'2211221111':
+  jichitaicode: '35203'
+  name: 山口市
+'2211221112':
+  jichitaicode: '35206'
+  name: 防府市
+'2211221121':
+  jichitaicode: '35215'
+  name: 周南市
+'2211221122':
+  jichitaicode: '35207'
+  name: 下松市
+'2211221211':
+  jichitaicode: '35208'
+  name: 岩国市
+'22112212121':
+  jichitaicode: '35212'
+  name: 柳井市
+'221122121221':
+  jichitaicode: '35321'
+  name: 和木町
+'221122121222':
+  jichitaicode: '35305'
+  name: 周防大島町
+'2211221221':
+  jichitaicode: '35210'
+  name: 光市
+'22112212221':
+  jichitaicode: '35343'
+  name: 田布施町
+'221122122221':
+  jichitaicode: '35344'
+  name: 平生町
+'221122122222':
+  jichitaicode: '35341'
+  name: 上関町
+'221122211':
+  jichitaicode: '35201'
+  name: 下関市
+'2211222121':
+  jichitaicode: '35202'
+  name: 宇部市
+'2211222122':
+  jichitaicode: '35216'
+  name: 山陽小野田市
+'2211222211':
+  jichitaicode: '35213'
+  name: 美祢市
+'2211222212':
+  jichitaicode: '35211'
+  name: 長門市
+'2211222221':
+  jichitaicode: '35204'
+  name: 萩市
+'2211222222':
+  jichitaicode: '35502'
+  name: 阿武町
+'22121111':
+  jichitaicode: '37201'
+  name: 高松市
+'2212111211':
+  jichitaicode: '37207'
+  name: 東かがわ市
+'2212111212':
+  jichitaicode: '37206'
+  name: さぬき市
+'22121112211':
+  jichitaicode: '37341'
+  name: 三木町
+'22121112212':
+  jichitaicode: '37364'
+  name: 直島町
+'22121112221':
+  jichitaicode: '37322'
+  name: 土庄町
+'22121112222':
+  jichitaicode: '37324'
+  name: 小豆島町
+'2212112111':
+  jichitaicode: '37203'
+  name: 坂出市
+'22121121121':
+  jichitaicode: '37386'
+  name: 宇多津町
+'22121121122':
+  jichitaicode: '37387'
+  name: 綾川町
+'2212112121':
+  jichitaicode: '37202'
+  name: 丸亀市
+'22121121221':
+  jichitaicode: '37403'
+  name: 琴平町
+'22121121222':
+  jichitaicode: '37406'
+  name: まんのう町
+'2212112211':
+  jichitaicode: '37404'
+  name: 多度津町
+'2212112212':
+  jichitaicode: '37204'
+  name: 善通寺市
+'2212112221':
+  jichitaicode: '37208'
+  name: 三豊市
+'2212112222':
+  jichitaicode: '37205'
+  name: 観音寺市
+'221212111':
+  jichitaicode: '36201'
+  name: 徳島市
+'22121211211':
+  jichitaicode: '36203'
+  name: 小松島市
+'221212112121':
+  jichitaicode: '36301'
+  name: 勝浦町
+'221212112122':
+  jichitaicode: '36302'
+  name: 上勝町
+'221212112211':
+  jichitaicode: '36321'
+  name: 佐那河内村
+'221212112212':
+  jichitaicode: '36342'
+  name: 神山町
+'22121211222':
+  jichitaicode: '36341'
+  name: 石井町
+'221212121':
+  jichitaicode: '36204'
+  name: 阿南市
+'22121212211':
+  jichitaicode: '36368'
+  name: 那賀町
+'22121212212':
+  jichitaicode: '36387'
+  name: 美波町
+'22121212221':
+  jichitaicode: '36383'
+  name: 牟岐町
+'22121212222':
+  jichitaicode: '36388'
+  name: 海陽町
+'221212211':
+  jichitaicode: '36202'
+  name: 鳴門市
+'221212212111':
+  jichitaicode: '36401'
+  name: 松茂町
+'221212212112':
+  jichitaicode: '36402'
+  name: 北島町
+'22121221212':
+  jichitaicode: '36403'
+  name: 藍住町
+'22121221221':
+  jichitaicode: '36404'
+  name: 板野町
+'22121221222':
+  jichitaicode: '36405'
+  name: 上板町
+'2212122211':
+  jichitaicode: '36206'
+  name: 阿波市
+'2212122212':
+  jichitaicode: '36205'
+  name: 吉野川市
+'22121222211':
+  jichitaicode: '36207'
+  name: 美馬市
+'22121222212':
+  jichitaicode: '36468'
+  name: つるぎ町
+'22121222221':
+  jichitaicode: '36208'
+  name: 三好市
+'22121222222':
+  jichitaicode: '36489'
+  name: 東みよし町
+'221221111':
+  jichitaicode: '38201'
+  name: 松山市
+'2212211121':
+  jichitaicode: '38215'
+  name: 東温市
+'22122111221':
+  jichitaicode: '38401'
+  name: 松前町
+'22122111222':
+  jichitaicode: '38356'
+  name: 上島町
+'2212211211':
+  jichitaicode: '38202'
+  name: 今治市
+'2212211212':
+  jichitaicode: '38206'
+  name: 西条市
+'2212211221':
+  jichitaicode: '38205'
+  name: 新居浜市
+'2212211222':
+  jichitaicode: '38213'
+  name: 四国中央市
+'2212212111':
+  jichitaicode: '38210'
+  name: 伊予市
+'22122121121':
+  jichitaicode: '38402'
+  name: 砥部町
+'22122121122':
+  jichitaicode: '38386'
+  name: 久万高原町
+'2212212121':
+  jichitaicode: '38207'
+  name: 大洲市
+'2212212122':
+  jichitaicode: '38422'
+  name: 内子町
+'22122122111':
+  jichitaicode: '38204'
+  name: 八幡浜市
+'22122122112':
+  jichitaicode: '38442'
+  name: 伊方町
+'2212212212':
+  jichitaicode: '38214'
+  name: 西予市
+'2212212221':
+  jichitaicode: '38203'
+  name: 宇和島市
+'221221222211':
+  jichitaicode: '38488'
+  name: 鬼北町
+'221221222212':
+  jichitaicode: '38484'
+  name: 松野町
+'22122122222':
+  jichitaicode: '38506'
+  name: 愛南町
+'22122211':
+  jichitaicode: '39201'
+  name: 高知市
+'22122212111':
+  jichitaicode: '39204'
+  name: 南国市
+'2212221211211':
+  jichitaicode: '39344'
+  name: 大豊町
+'2212221211212':
+  jichitaicode: '39341'
+  name: 本山町
+'2212221211221':
+  jichitaicode: '39363'
+  name: 土佐町
+'2212221211222':
+  jichitaicode: '39364'
+  name: 大川村
+'22122212121':
+  jichitaicode: '39212'
+  name: 香美市
+'22122212122':
+  jichitaicode: '39211'
+  name: 香南市
+'22122212211':
+  jichitaicode: '39203'
+  name: 安芸市
+'221222122121':
+  jichitaicode: '39307'
+  name: 芸西村
+'2212221221221':
+  jichitaicode: '39304'
+  name: 安田町
+'2212221221222':
+  jichitaicode: '39306'
+  name: 馬路村
+'2212221222111':
+  jichitaicode: '39303'
+  name: 田野町
+'2212221222112':
+  jichitaicode: '39305'
+  name: 北川村
+'221222122212':
+  jichitaicode: '39302'
+  name: 奈半利町
+'221222122221':
+  jichitaicode: '39202'
+  name: 室戸市
+'221222122222':
+  jichitaicode: '39301'
+  name: 東洋町
+'22122221111':
+  jichitaicode: '39205'
+  name: 土佐市
+'22122221112':
+  jichitaicode: '39386'
+  name: いの町
+'221222211211':
+  jichitaicode: '39410'
+  name: 日高村
+'221222211212':
+  jichitaicode: '39402'
+  name: 佐川町
+'221222211221':
+  jichitaicode: '39403'
+  name: 越知町
+'221222211222':
+  jichitaicode: '39387'
+  name: 仁淀川町
+'22122221211':
+  jichitaicode: '39206'
+  name: 須崎市
+'22122221212':
+  jichitaicode: '39401'
+  name: 中土佐町
+'22122221221':
+  jichitaicode: '39411'
+  name: 津野町
+'22122221222':
+  jichitaicode: '39405'
+  name: 檮原町
+'22122222111':
+  jichitaicode: '39412'
+  name: 四万十町
+'22122222112':
+  jichitaicode: '39428'
+  name: 黒潮町
+'2212222212':
+  jichitaicode: '39210'
+  name: 四万十市
+'22122222211':
+  jichitaicode: '39209'
+  name: 土佐清水市
+'22122222212':
+  jichitaicode: '39427'
+  name: 三原村
+'22122222221':
+  jichitaicode: '39208'
+  name: 宿毛市
+'22122222222':
+  jichitaicode: '39424'
+  name: 大月町
+'2221111111':
+  jichitaicode: '40133'
+  name: 中央区
+'2221111112':
+  jichitaicode: '40132'
+  name: 博多区
+'222111112':
+  jichitaicode: '40131'
+  name: 東区
+'2221111211':
+  jichitaicode: '40134'
+  name: 南区
+'2221111212':
+  jichitaicode: '40136'
+  name: 城南区
+'2221111221':
+  jichitaicode: '40137'
+  name: 早良区
+'2221111222':
+  jichitaicode: '40135'
+  name: 西区
+'2221112111':
+  jichitaicode: '40217'
+  name: 筑紫野市
+'22211121121':
+  jichitaicode: '40221'
+  name: 太宰府市
+'22211121122':
+  jichitaicode: '40219'
+  name: 大野城市
+'22211121211':
+  jichitaicode: '40218'
+  name: 春日市
+'22211121212':
+  jichitaicode: '40231'
+  name: 那珂川市
+'2221112122':
+  jichitaicode: '40230'
+  name: 糸島市
+'222111221111':
+  jichitaicode: '40349'
+  name: 粕屋町
+'222111221112':
+  jichitaicode: '40343'
+  name: 志免町
+'222111221121':
+  jichitaicode: '40344'
+  name: 須恵町
+'222111221122':
+  jichitaicode: '40341'
+  name: 宇美町
+'222111221211':
+  jichitaicode: '40342'
+  name: 篠栗町
+'222111221212':
+  jichitaicode: '40348'
+  name: 久山町
+'222111221221':
+  jichitaicode: '40345'
+  name: 新宮町
+'222111221222':
+  jichitaicode: '40223'
+  name: 古賀市
+'222111222111':
+  jichitaicode: '40224'
+  name: 福津市
+'222111222112':
+  jichitaicode: '40220'
+  name: 宗像市
+'222111222121':
+  jichitaicode: '40226'
+  name: 宮若市
+'2221112221221':
+  jichitaicode: '40402'
+  name: 鞍手町
+'2221112221222':
+  jichitaicode: '40401'
+  name: 小竹町
+'2221112222111':
+  jichitaicode: '40383'
+  name: 岡垣町
+'2221112222112':
+  jichitaicode: '40381'
+  name: 芦屋町
+'2221112222121':
+  jichitaicode: '40384'
+  name: 遠賀町
+'2221112222122':
+  jichitaicode: '40382'
+  name: 水巻町
+'222111222221':
+  jichitaicode: '40215'
+  name: 中間市
+'222111222222':
+  jichitaicode: '40204'
+  name: 直方市
+'22211211111':
+  jichitaicode: '40106'
+  name: 小倉北区
+'22211211112':
+  jichitaicode: '40107'
+  name: 小倉南区
+'2221121112':
+  jichitaicode: '40101'
+  name: 門司区
+'22211211211':
+  jichitaicode: '40108'
+  name: 八幡東区
+'22211211212':
+  jichitaicode: '40109'
+  name: 八幡西区
+'22211211221':
+  jichitaicode: '40105'
+  name: 戸畑区
+'22211211222':
+  jichitaicode: '40103'
+  name: 若松区
+'22211212111':
+  jichitaicode: '40213'
+  name: 行橋市
+'222112121121':
+  jichitaicode: '40621'
+  name: 苅田町
+'222112121122':
+  jichitaicode: '40625'
+  name: みやこ町
+'22211212121':
+  jichitaicode: '40214'
+  name: 豊前市
+'222112121221':
+  jichitaicode: '40647'
+  name: 築上町
+'2221121212221':
+  jichitaicode: '40642'
+  name: 吉富町
+'2221121212222':
+  jichitaicode: '40646'
+  name: 上毛町
+'222112122111':
+  jichitaicode: '40610'
+  name: 福智町
+'222112122112':
+  jichitaicode: '40604'
+  name: 糸田町
+'22211212212':
+  jichitaicode: '40206'
+  name: 田川市
+'222112122211':
+  jichitaicode: '40601'
+  name: 香春町
+'2221121222121':
+  jichitaicode: '40608'
+  name: 大任町
+'2221121222122':
+  jichitaicode: '40609'
+  name: 赤村
+'222112122221':
+  jichitaicode: '40605'
+  name: 川崎町
+'222112122222':
+  jichitaicode: '40602'
+  name: 添田町
+'2221122111':
+  jichitaicode: '40205'
+  name: 飯塚市
+'22211221121':
+  jichitaicode: '40227'
+  name: 嘉麻市
+'22211221122':
+  jichitaicode: '40421'
+  name: 桂川町
+'22211221211':
+  jichitaicode: '40228'
+  name: 朝倉市
+'222112212121':
+  jichitaicode: '40447'
+  name: 筑前町
+'222112212122':
+  jichitaicode: '40448'
+  name: 東峰村
+'222112212211':
+  jichitaicode: '40216'
+  name: 小郡市
+'222112212212':
+  jichitaicode: '40503'
+  name: 大刀洗町
+'22211221222':
+  jichitaicode: '40225'
+  name: うきは市
+'2221122211':
+  jichitaicode: '40203'
+  name: 久留米市
+'222112221211':
+  jichitaicode: '40211'
+  name: 筑後市
+'2221122212121':
+  jichitaicode: '40522'
+  name: 大木町
+'2221122212122':
+  jichitaicode: '40544'
+  name: 広川町
+'22211222122':
+  jichitaicode: '40210'
+  name: 八女市
+'22211222211':
+  jichitaicode: '40212'
+  name: 大川市
+'22211222212':
+  jichitaicode: '40207'
+  name: 柳川市
+'22211222221':
+  jichitaicode: '40229'
+  name: みやま市
+'22211222222':
+  jichitaicode: '40202'
+  name: 大牟田市
+'222121111':
+  jichitaicode: '41201'
+  name: 佐賀市
+'22212111211':
+  jichitaicode: '41203'
+  name: 鳥栖市
+'222121112121':
+  jichitaicode: '41341'
+  name: 基山町
+'222121112122':
+  jichitaicode: '41346'
+  name: みやき町
+'222121112211':
+  jichitaicode: '41345'
+  name: 上峰町
+'222121112212':
+  jichitaicode: '41327'
+  name: 吉野ヶ里町
+'22212111222':
+  jichitaicode: '41210'
+  name: 神埼市
+'22212112111':
+  jichitaicode: '41202'
+  name: 唐津市
+'22212112112':
+  jichitaicode: '41205'
+  name: 伊万里市
+'222121121211':
+  jichitaicode: '41208'
+  name: 小城市
+'222121121212':
+  jichitaicode: '41204'
+  name: 多久市
+'222121121221':
+  jichitaicode: '41387'
+  name: 玄海町
+'222121121222':
+  jichitaicode: '41401'
+  name: 有田町
+'2221211221111':
+  jichitaicode: '41424'
+  name: 江北町
+'2221211221112':
+  jichitaicode: '41423'
+  name: 大町町
+'222121122112':
+  jichitaicode: '41425'
+  name: 白石町
+'22212112212':
+  jichitaicode: '41206'
+  name: 武雄市
+'22212112221':
+  jichitaicode: '41209'
+  name: 嬉野市
+'222121122221':
+  jichitaicode: '41207'
+  name: 鹿島市
+'222121122222':
+  jichitaicode: '41441'
+  name: 太良町
+'222121211':
+  jichitaicode: '42201'
+  name: 長崎市
+'22212121211':
+  jichitaicode: '42204'
+  name: 諫早市
+'2221212121211':
+  jichitaicode: '42307'
+  name: 長与町
+'2221212121212':
+  jichitaicode: '42308'
+  name: 時津町
+'222121212122':
+  jichitaicode: '42212'
+  name: 西海市
+'22212121221':
+  jichitaicode: '42213'
+  name: 雲仙市
+'222121212221':
+  jichitaicode: '42203'
+  name: 島原市
+'222121212222':
+  jichitaicode: '42214'
+  name: 南島原市
+'2221212211':
+  jichitaicode: '42202'
+  name: 佐世保市
+'22212122121':
+  jichitaicode: '42205'
+  name: 大村市
+'222121221221':
+  jichitaicode: '42321'
+  name: 東彼杵町
+'2221212212221':
+  jichitaicode: '42322'
+  name: 川棚町
+'2221212212222':
+  jichitaicode: '42323'
+  name: 波佐見町
+'222121222111':
+  jichitaicode: '42208'
+  name: 松浦市
+'2221212221121':
+  jichitaicode: '42391'
+  name: 佐々町
+'2221212221122':
+  jichitaicode: '42383'
+  name: 小値賀町
+'22212122212':
+  jichitaicode: '42207'
+  name: 平戸市
+'222121222211':
+  jichitaicode: '42211'
+  name: 五島市
+'222121222212':
+  jichitaicode: '42411'
+  name: 新上五島町
+'222121222221':
+  jichitaicode: '42210'
+  name: 壱岐市
+'222121222222':
+  jichitaicode: '42209'
+  name: 対馬市
+'2221221111':
+  jichitaicode: '43101'
+  name: 中央区
+'22212211121':
+  jichitaicode: '43102'
+  name: 東区
+'22212211122':
+  jichitaicode: '43104'
+  name: 南区
+'2221221121':
+  jichitaicode: '43103'
+  name: 西区
+'2221221122':
+  jichitaicode: '43105'
+  name: 北区
+'222122121111':
+  jichitaicode: '43204'
+  name: 荒尾市
+'222122121112':
+  jichitaicode: '43368'
+  name: 長洲町
+'222122121121':
+  jichitaicode: '43206'
+  name: 玉名市
+'222122121122':
+  jichitaicode: '43367'
+  name: 南関町
+'22212212121':
+  jichitaicode: '43208'
+  name: 山鹿市
+'222122121221':
+  jichitaicode: '43369'
+  name: 和水町
+'222122121222':
+  jichitaicode: '43364'
+  name: 玉東町
+'222122122111':
+  jichitaicode: '43216'
+  name: 合志市
+'222122122112':
+  jichitaicode: '43404'
+  name: 菊陽町
+'222122122121':
+  jichitaicode: '43210'
+  name: 菊池市
+'222122122122':
+  jichitaicode: '43403'
+  name: 大津町
+'22212212221':
+  jichitaicode: '43214'
+  name: 阿蘇市
+'2221221222211':
+  jichitaicode: '43423'
+  name: 南小国町
+'2221221222212':
+  jichitaicode: '43424'
+  name: 小国町
+'2221221222221':
+  jichitaicode: '43425'
+  name: 産山村
+'2221221222222':
+  jichitaicode: '43428'
+  name: 高森町
+'222122211111':
+  jichitaicode: '43433'
+  name: 南阿蘇村
+'222122211112':
+  jichitaicode: '43432'
+  name: 西原村
+'222122211121':
+  jichitaicode: '43443'
+  name: 益城町
+'222122211122':
+  jichitaicode: '43442'
+  name: 嘉島町
+'222122211211':
+  jichitaicode: '43441'
+  name: 御船町
+'222122211212':
+  jichitaicode: '43444'
+  name: 甲佐町
+'222122211221':
+  jichitaicode: '43348'
+  name: 美里町
+'222122211222':
+  jichitaicode: '43447'
+  name: 山都町
+'22212221211':
+  jichitaicode: '43211'
+  name: 宇土市
+'22212221212':
+  jichitaicode: '43213'
+  name: 宇城市
+'222122212211':
+  jichitaicode: '43212'
+  name: 上天草市
+'222122212212':
+  jichitaicode: '43531'
+  name: 苓北町
+'22212221222':
+  jichitaicode: '43215'
+  name: 天草市
+'2221222211':
+  jichitaicode: '43202'
+  name: 八代市
+'222122221211':
+  jichitaicode: '43468'
+  name: 氷川町
+'222122221212':
+  jichitaicode: '43482'
+  name: 芦北町
+'222122221221':
+  jichitaicode: '43484'
+  name: 津奈木町
+'222122221222':
+  jichitaicode: '43205'
+  name: 水俣市
+'22212222211':
+  jichitaicode: '43203'
+  name: 人吉市
+'222122222121':
+  jichitaicode: '43501'
+  name: 錦町
+'222122222122':
+  jichitaicode: '43514'
+  name: あさぎり町
+'2221222222111':
+  jichitaicode: '43513'
+  name: 球磨村
+'2221222222112':
+  jichitaicode: '43512'
+  name: 山江村
+'2221222222121':
+  jichitaicode: '43510'
+  name: 相良村
+'2221222222122':
+  jichitaicode: '43511'
+  name: 五木村
+'222122222221':
+  jichitaicode: '43505'
+  name: 多良木町
+'2221222222221':
+  jichitaicode: '43506'
+  name: 湯前町
+'2221222222222':
+  jichitaicode: '43507'
+  name: 水上村
+'22221111':
+  jichitaicode: '44201'
+  name: 大分市
+'2222111211':
+  jichitaicode: '44208'
+  name: 竹田市
+'2222111212':
+  jichitaicode: '44212'
+  name: 豊後大野市
+'22221112211':
+  jichitaicode: '44206'
+  name: 臼杵市
+'22221112212':
+  jichitaicode: '44207'
+  name: 津久見市
+'2222111222':
+  jichitaicode: '44205'
+  name: 佐伯市
+'2222112111':
+  jichitaicode: '44203'
+  name: 中津市
+'2222112112':
+  jichitaicode: '44211'
+  name: 宇佐市
+'22221121211':
+  jichitaicode: '44209'
+  name: 豊後高田市
+'222211212121':
+  jichitaicode: '44214'
+  name: 国東市
+'222211212122':
+  jichitaicode: '44322'
+  name: 姫島村
+'22221121221':
+  jichitaicode: '44210'
+  name: 杵築市
+'22221121222':
+  jichitaicode: '44341'
+  name: 日出町
+'2222112211':
+  jichitaicode: '44202'
+  name: 別府市
+'2222112212':
+  jichitaicode: '44213'
+  name: 由布市
+'22221122211':
+  jichitaicode: '44461'
+  name: 九重町
+'22221122212':
+  jichitaicode: '44462'
+  name: 玖珠町
+'2222112222':
+  jichitaicode: '44204'
+  name: 日田市
+'22221211':
+  jichitaicode: '45201'
+  name: 宮崎市
+'22221212111':
+  jichitaicode: '45204'
+  name: 日南市
+'22221212112':
+  jichitaicode: '45207'
+  name: 串間市
+'2222121212':
+  jichitaicode: '45202'
+  name: 都城市
+'22221212211':
+  jichitaicode: '45205'
+  name: 小林市
+'222212122121':
+  jichitaicode: '45383'
+  name: 綾町
+'222212122122':
+  jichitaicode: '45382'
+  name: 国富町
+'222212122211':
+  jichitaicode: '45341'
+  name: 三股町
+'222212122212':
+  jichitaicode: '45361'
+  name: 高原町
+'22221212222':
+  jichitaicode: '45209'
+  name: えびの市
+'2222122111':
+  jichitaicode: '45203'
+  name: 延岡市
+'22221221121':
+  jichitaicode: '45441'
+  name: 高千穂町
+'222212211221':
+  jichitaicode: '45442'
+  name: 日之影町
+'222212211222':
+  jichitaicode: '45443'
+  name: 五ヶ瀬町
+'2222122121':
+  jichitaicode: '45206'
+  name: 日向市
+'222212212211':
+  jichitaicode: '45421'
+  name: 門川町
+'222212212212':
+  jichitaicode: '45431'
+  name: 美郷町
+'222212212221':
+  jichitaicode: '45429'
+  name: 諸塚村
+'222212212222':
+  jichitaicode: '45430'
+  name: 椎葉村
+'22221222111':
+  jichitaicode: '45406'
+  name: 都農町
+'22221222112':
+  jichitaicode: '45405'
+  name: 川南町
+'22221222121':
+  jichitaicode: '45401'
+  name: 高鍋町
+'22221222122':
+  jichitaicode: '45402'
+  name: 新富町
+'2222122221':
+  jichitaicode: '45208'
+  name: 西都市
+'22221222221':
+  jichitaicode: '45404'
+  name: 木城町
+'22221222222':
+  jichitaicode: '45403'
+  name: 西米良村
+'222221111':
+  jichitaicode: '46201'
+  name: 鹿児島市
+'22222111211':
+  jichitaicode: '46210'
+  name: 指宿市
+'22222111212':
+  jichitaicode: '46223'
+  name: 南九州市
+'22222111221':
+  jichitaicode: '46204'
+  name: 枕崎市
+'22222111222':
+  jichitaicode: '46220'
+  name: 南さつま市
+'2222211211':
+  jichitaicode: '46215'
+  name: 薩摩川内市
+'22222112121':
+  jichitaicode: '46219'
+  name: いちき串木野市
+'22222112122':
+  jichitaicode: '46216'
+  name: 日置市
+'222221122111':
+  jichitaicode: '46206'
+  name: 阿久根市
+'222221122112':
+  jichitaicode: '46404'
+  name: 長島町
+'22222112212':
+  jichitaicode: '46208'
+  name: 出水市
+'22222112221':
+  jichitaicode: '46392'
+  name: さつま町
+'22222112222':
+  jichitaicode: '46224'
+  name: 伊佐市
+'222221211111':
+  jichitaicode: '46225'
+  name: 姶良市
+'222221211112':
+  jichitaicode: '46452'
+  name: 湧水町
+'22222121112':
+  jichitaicode: '46218'
+  name: 霧島市
+'22222121121':
+  jichitaicode: '46217'
+  name: 曽於市
+'222221211221':
+  jichitaicode: '46221'
+  name: 志布志市
+'222221211222':
+  jichitaicode: '46468'
+  name: 大崎町
+'22222121211':
+  jichitaicode: '46203'
+  name: 鹿屋市
+'22222121212':
+  jichitaicode: '46214'
+  name: 垂水市
+'222221212211':
+  jichitaicode: '46482'
+  name: 東串良町
+'222221212212':
+  jichitaicode: '46492'
+  name: 肝付町
+'222221212221':
+  jichitaicode: '46490'
+  name: 錦江町
+'222221212222':
+  jichitaicode: '46491'
+  name: 南大隅町
+'22222122111':
+  jichitaicode: '46213'
+  name: 西之表市
+'222221221121':
+  jichitaicode: '46501'
+  name: 中種子町
+'222221221122':
+  jichitaicode: '46502'
+  name: 南種子町
+'22222122121':
+  jichitaicode: '46505'
+  name: 屋久島町
+'222221221221':
+  jichitaicode: '46303'
+  name: 三島村
+'222221221222':
+  jichitaicode: '46304'
+  name: 十島村
+'22222122211':
+  jichitaicode: '46222'
+  name: 奄美市
+'2222212221211':
+  jichitaicode: '46527'
+  name: 龍郷町
+'22222122212121':
+  jichitaicode: '46523'
+  name: 大和村
+'22222122212122':
+  jichitaicode: '46524'
+  name: 宇検村
+'2222212221221':
+  jichitaicode: '46525'
+  name: 瀬戸内町
+'2222212221222':
+  jichitaicode: '46529'
+  name: 喜界町
+'222221222211':
+  jichitaicode: '46530'
+  name: 徳之島町
+'2222212222121':
+  jichitaicode: '46531'
+  name: 天城町
+'2222212222122':
+  jichitaicode: '46532'
+  name: 伊仙町
+'2222212222211':
+  jichitaicode: '46533'
+  name: 和泊町
+'2222212222212':
+  jichitaicode: '46534'
+  name: 知名町
+'222221222222':
+  jichitaicode: '46535'
+  name: 与論町
+'222222111':
+  jichitaicode: '47201'
+  name: 那覇市
+'22222211211':
+  jichitaicode: '47212'
+  name: 豊見城市
+'22222211212':
+  jichitaicode: '47362'
+  name: 八重瀬町
+'2222221122':
+  jichitaicode: '47210'
+  name: 糸満市
+'22222212111':
+  jichitaicode: '47350'
+  name: 南風原町
+'22222212112':
+  jichitaicode: '47215'
+  name: 南城市
+'22222212121':
+  jichitaicode: '47348'
+  name: 与那原町
+'22222212122':
+  jichitaicode: '47329'
+  name: 西原町
+'22222212211':
+  jichitaicode: '47208'
+  name: 浦添市
+'22222212212':
+  jichitaicode: '47205'
+  name: 宜野湾市
+'222222122211':
+  jichitaicode: '47328'
+  name: 中城村
+'222222122212':
+  jichitaicode: '47327'
+  name: 北中城村
+'222222122221':
+  jichitaicode: '47326'
+  name: 北谷町
+'222222122222':
+  jichitaicode: '47325'
+  name: 嘉手納町
+'22222221111':
+  jichitaicode: '47211'
+  name: 沖縄市
+'22222221112':
+  jichitaicode: '47213'
+  name: うるま市
+'22222221121':
+  jichitaicode: '47324'
+  name: 読谷村
+'222222211221':
+  jichitaicode: '47311'
+  name: 恩納村
+'222222211222':
+  jichitaicode: '47314'
+  name: 金武町
+'22222221211':
+  jichitaicode: '47209'
+  name: 名護市
+'222222212121':
+  jichitaicode: '47308'
+  name: 本部町
+'222222212122':
+  jichitaicode: '47306'
+  name: 今帰仁村
+'2222222122111':
+  jichitaicode: '47313'
+  name: 宜野座村
+'2222222122112':
+  jichitaicode: '47303'
+  name: 東村
+'2222222122121':
+  jichitaicode: '47302'
+  name: 大宜味村
+'2222222122122':
+  jichitaicode: '47301'
+  name: 国頭村
+'222222212221':
+  jichitaicode: '47315'
+  name: 伊江村
+'2222222122221':
+  jichitaicode: '47360'
+  name: 伊是名村
+'2222222122222':
+  jichitaicode: '47359'
+  name: 伊平屋村
+'22222222111':
+  jichitaicode: '47361'
+  name: 久米島町
+'2222222211211':
+  jichitaicode: '47353'
+  name: 渡嘉敷村
+'2222222211212':
+  jichitaicode: '47354'
+  name: 座間味村
+'2222222211221':
+  jichitaicode: '47356'
+  name: 渡名喜村
+'2222222211222':
+  jichitaicode: '47355'
+  name: 粟国村
+'22222222121':
+  jichitaicode: '47357'
+  name: 南大東村
+'22222222122':
+  jichitaicode: '47358'
+  name: 北大東村
+'22222222211':
+  jichitaicode: '47214'
+  name: 宮古島市
+'22222222212':
+  jichitaicode: '47375'
+  name: 多良間村
+'22222222221':
+  jichitaicode: '47207'
+  name: 石垣市
+'222222222221':
+  jichitaicode: '47381'
+  name: 竹富町
+'222222222222':
+  jichitaicode: '47382'
+  name: 与那国町
