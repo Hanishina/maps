@@ -382,7 +382,7 @@ async function init(){
     });
 
     $("#importBtn").on("click", e=>{
-        if($("#importBtn").attr("valid")){
+        if($("#importBtn").attr("valid") != "0"){
             for(file of $("#backupFileImport")[0].files){
                 let reader = new FileReader();
                 reader.readAsText(file, "UTF-8");
@@ -391,7 +391,7 @@ async function init(){
                     data = data.filter((d,i)=>{
                         return $($("#importDataTable").children()[i]).attr("selected");
                     });
-                    new Dialog({msg: "ファイルのデータをブラウザに保存します。", buttons: [{id: "determ", text: "OK", onclick: function(){importBackup(data);}}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]}).show();
+                    new Dialog({msg: "ファイルのデータをブラウザに保存します。", buttons: [{id: "determ", text: "OK", onclick: function(){importBackup(data); $("#" + saveModal_prevTab).show();$("#tab3").hide();}}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]}).show();
                 }
             }
         }
@@ -650,11 +650,13 @@ function loadData(save){
 }
 
 function exportBackup(){
-    let blob = new Blob([JSON.stringify(saveDataArr)], {type: "application/json"});
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "訪問ポイントセーブデータ.json";
-    a.click();
+    if(saveDataArr.length){
+        let blob = new Blob([JSON.stringify(saveDataArr)], {type: "application/json"});
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "訪問ポイントセーブデータ.json";
+        a.click();
+    }
 }
 
 function importFileOnChange(e){
@@ -704,6 +706,7 @@ function importBackup(data){
     window.localStorage.setItem("visitlevel_saveData", JSON.stringify(saveDataArr));
     saveDataTableRedraw();
     $("#saveTable").find("[value='0']").click();
+    $("#loadTable").find("[value='0']").click();
 }
 
 function shareModal(){
