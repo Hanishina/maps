@@ -157,23 +157,41 @@
   </div>
 
   <div id="saveModal" style="display:none;">
-    <div class="h3">データを保存する</div>
-    <div id="objDisp" style="border:solid 1px #3c708f; font-size:small">
-      <label for="saveDataName">名前：</label><input name="saveDataName" type="text">
-      <div id="saveDataGroup" style="font-size: 12px; color: #666666;"></div>
+    <div id="tab1">
+      <div class="h3">データを保存する</div>
+      <div style="text-align: right; width: 100%;"><button class="backupMenu" style="font-size: small;"><i class="fa-solid fa-download"></i>バックアップファイルのエクスポート/インポート</button></div>
+      <div id="objDisp" style="border:solid 1px #3c708f; font-size:small">
+        <label for="saveDataName">名前：</label><input name="saveDataName" type="text">
+        <div id="saveDataGroup" style="font-size: 12px; color: #666666;"></div>
+      </div>
+      <div>▼保存するファイルを選択</div>
+      <div id="saveTable" class="saveTable">
+      </div>
+      <button class="save">選択したファイルに保存</button><button class="cancel">キャンセル</button>
     </div>
-    ▼保存するファイルを選択
-    <div id="saveTable" class="saveTable">
+    <div id="tab2" style="display:none;">
+      <div class="h3">データを読み込む</div>
+      <div style="text-align: right; width: 100%;"><button class="backupMenu" style="font-size: small;"><i class="fa-solid fa-download"></i>バックアップファイルのエクスポート/インポート</button></div>
+      <div>▼読み込むファイルを選択</div>
+      <div id="loadTable" class="saveTable">
+      </div>
+      <button class="load">選択したファイルを読み込む</button><button class="cancel">キャンセル</button>
     </div>
-    <button class="save">選択したファイルに保存</button><button id="cancel">キャンセル</button>
-  </div>
-
-  <div id="loadModal" style="display:none;">
-    <div class="h3">データを読み込む</div>
-    ▼読み込むファイルを選択
-    <div id="loadTable" class="saveTable">
+    <div id="tab3" style="display:none;">
+      <div style="border: 2px solid #512366; padding: 2px 0; margin: 2px;">
+        <div class="h3">現在の保存データをダウンロードする</div>
+        <div>他のブラウザに保存データを移動する際などに利用できます。</div>
+        <button onclick="exportBackup()">バックアップファイルをダウンロード</button>
+        <div style="color: #800">※既にブラウザに保存されているデータのみ保存できます。現在編集中のデータがある場合は、先に保存を行ってください。</div>
+      </div>
+      <div style="border: 2px solid #512366; padding: 2px 0; margin: 2px;">
+        <div class="h3">ダウンロードしたファイルをブラウザにインポートする</div>
+        <input type="file" id="backupFileImport" accept=".json"></input>
+        <div id="importDataTable" class="saveTable"></div>
+        <button id="importBtn" valid=0>選択したファイルをインポート</button>
+      </div>
+      <div><button id="backupMenu_back">戻る</button></div>
     </div>
-    <button class="load">選択したファイルを読み込む</button><button id="cancel">キャンセル</button>
   </div>
 
   <div id="dialogCont">

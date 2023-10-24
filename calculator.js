@@ -25,6 +25,7 @@ let dragStart = {x:0, y:0};
 
 let saveDataArr = [];
 let currentSave;
+let saveModal_prevTab = "tab1";
 
 let geojsonFiles = {};
 let csvObjs = {};
@@ -655,9 +656,23 @@ async function init(){
   });
 
   $("#loadbtn").modaal({
-    content_source: "#loadModal",
+    content_source: "#saveModal",
     before_open: loadOpen
   });
+
+  $(".backupMenu").on("click", function(e){
+    $("#tab1").hide();
+    $("#tab2").hide();
+    $("#tab3").show();
+    saveModal_prevTab = $(e.currentTarget).parent().parent().attr("id");
+  });
+
+  $("#backupMenu_back").on("click", function(){
+    $("#" + saveModal_prevTab).show();
+    $("#tab3").hide();
+  });
+
+  $("#backupFileImport").on("change", importFileOnChange);
 
   /*--- トースト初期化処理 ---*/
 
@@ -707,11 +722,22 @@ async function init(){
     dialog.show();
   });
 
-  $("#saveModal").find("#cancel").on("click", ()=>{
-    $("#savebtn").modaal("close");
+  $("#importDataTable").on("click", ".slot", e=>{
+    if($(e.currentTarget).attr("selected")){
+      $(e.currentTarget).removeAttr("style selected");
+    }else{
+      $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+    }
+
+    if($("#importDataTable").find("[selected]").length){
+      $("#importBtn").attr({"valid": 1});
+    }else{
+      $("#importBtn").attr({"valid": 0});
+    }
   });
 
-  $("#loadModal").find("#cancel").on("click", ()=>{
+  $("#saveModal").find(".cancel").on("click", ()=>{
+    $("#savebtn").modaal("close");
     $("#loadbtn").modaal("close");
   });
 
@@ -738,12 +764,28 @@ async function init(){
     
   });
 
-  $("#loadModal").find(".load").on("click", function(){
+  $("#saveModal").find(".load").on("click", function(){
     let index = $("#loadTable").children("[selected]").attr("value");
     if(!isNaN(index)){
       currentSave = saveDataArr[index];
       $("#loadbtn").modaal("close");
       loadData(currentSave);
+    }
+  });
+
+  $("#importBtn").on("click", e=>{
+    if($("#importBtn").attr("valid")){
+      for(file of $("#backupFileImport")[0].files){
+        let reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = ()=>{
+          data = JSON.parse(reader.result);
+          data = data.filter((d,i)=>{
+            return $($("#importDataTable").children()[i]).attr("selected");
+          });
+          new Dialog({msg: "ファイルのデータをブラウザに保存します。", buttons: [{id: "determ", text: "OK", onclick: function(){importBackup(data);}}, {id: "cancel", text: "キャンセル", onclick: "cancel"}]}).show();
+        }
+      }
     }
   });
 
@@ -1636,7 +1678,12 @@ function copyTable(){
 
 }
 
+//セーブデータ関連
 function saveOpen(){
+  $("#saveModal").find("#tab1").show();
+  $("#saveModal").find("#tab2").hide();
+  $("#saveModal").find("#tab3").hide();
+
   $("#saveDataGroup").text(Group.groups.map(g=>{return g.name}));
   if(currentSave){
     $("[name='saveDataName']").val(currentSave.name);
@@ -1648,9 +1695,17 @@ function saveOpen(){
     $("[name='saveDataName']").val("無題");
     $("#saveTable").find("[value='" + saveDataArr.length + "']").click();
   }
+
+  //バックアップメニュー初期化
+  $("#backupFileImport").val("");
+  $("#importDataTable").text("▲ファイルを選択してください。");
 }
 
 function loadOpen(){
+  $("#saveModal").find("#tab1").hide();
+  $("#saveModal").find("#tab2").show();
+  $("#saveModal").find("#tab3").hide();
+
   if(currentSave){
     let value = saveDataArr.findIndex(f=>{
       return f === currentSave;
@@ -1659,6 +1714,10 @@ function loadOpen(){
   }else{
     $("#loadTable").find("[value='0']").click();
   }
+
+  //バックアップメニュー初期化
+  $("#backupFileImport").val("");
+  $("#importDataTable").text("▲ファイルを選択してください。");
 }
 
 function saveDataTableRedraw(){
@@ -1736,6 +1795,63 @@ function makeSavedata(name = "セーブデータ1"){
   saveData.createTime = now.toISOString();
 
   return saveData;
+}
+
+function exportBackup(){
+  let blob = new Blob([JSON.stringify(saveDataArr)], {type: "application/json"});
+  let a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "人口計算機セーブデータ.json";
+  a.click();
+}
+
+function importFileOnChange(e){
+  $("#importDataTable").empty();
+  if($(this)[0].files.length){
+    for(file of $(this)[0].files){
+      let reader = new FileReader();
+      reader.readAsText(file, "UTF-8");
+      reader.onload = ()=>{
+        data = JSON.parse(reader.result);
+        console.log(data);
+
+        try{
+          if(!Array.isArray(data)){
+            throw new Error("invalid data");
+          }
+          data.forEach((d, i)=>{
+            if(d.list != undefined){
+              throw new Error("visitlevel");
+            }
+            else if(!Array.isArray(d.features)){
+              throw new Error("invalid data");
+            }
+            
+            slot = $("<div>").attr({class: "slot", value: i}).appendTo($("#importDataTable"));
+            $("<div>").text(d.name).appendTo(slot);
+            $("<div>").text(d.groupNames).appendTo(slot);
+            $("<div>").text(dateFormat(new Date(d.createTime))).appendTo(slot);
+            slot.click();
+          });
+        }catch(err){
+          console.error(err);
+          if(err.message == "visitlevel"){
+            $("#importDataTable").append($("<span>").css({color: "#800"}).text("ファイルを読み込めませんでした。「人口計算機」用のファイルを選択してください。"));
+          }else{
+            $("#importDataTable").append($("<span>").css({color: "#800"}).text("ファイルを読み込めませんでした。"));
+          }
+        }
+      }
+    }
+  }
+}
+
+function importBackup(data){
+  saveDataArr = saveDataArr.concat(data);
+  saveDataArr.sort((a, b)=>{return new Date(b.createTime) - new Date(a.createTime)});
+  window.localStorage.setItem("calc_saveData", JSON.stringify(saveDataArr));
+  saveDataTableRedraw();
+  $("#saveTable").find("[value='0']").click();
 }
 
 function dateFormat(date){
