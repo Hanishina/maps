@@ -1,0 +1,32 @@
+.maplibreLayerControl_button{
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 0;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+    font-size: 25px;
+}
+
+.maplibreLayerControl_button:hover{
+    background-color: #eeeeee;
+}
+
+.maplibreLayerControl_window{
+    background-color: #ffffff;
+    box-shadow: 5px 5px 5px 5px rgba(0,0,0,.1);
+    width: 100%;
+}
+
+.maplibreLayerControl_closeBtn{
+    background-color: #ffffff;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    width: 2em;
+    height: 2em;
+}
+
+.maplibreLayerControl_closeBtn:hover{
+    background-color: #eeeeee;
+}

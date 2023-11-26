@@ -1,793 +1,958 @@
 let maps = [];
-let date = [];
-let lineLayers = [];
-let polygonLayers = [];
-let labelLayers = [];
-let labelLayerGroups = [];
-let baseLayerNames = [];
-let typeColoredLayers = [];
-let typeColoredLayerGroups = [];
-let gunColoredLayers = [];
-let gunColoredLayerGroups = [];
-let railLayers = [];
-let stationLayers = [];
-let railLayerGroups = [];
-let didLayers = [];
-let didLayerGroups = [];
+let geojsonBank = {};
+let currentDate = [];
 let dateSelectors = [];
+let layerControl = [];
 
-let polygonJson;
-let lineJson;
-let nameJson;
-let nameCsv;
-let railJson;
-let stationJson;
-let didJson;
+let mapState = {
+    x: 139.5,
+    y: 35.7,
+    z: 8,
+    date0: "2000-01-01",
+    date1: "2020-01-01",
+    base0: "paleMap",
+    base1: "paleMap",
+    label0: false,
+    label1: false,
+    color0: false,
+    color1: false,
+    did0: false,
+    did1: false,
+    rail0: false,
+    rail1: false,
+    dual: false
+};
+
+let syncCursorGeojson = {
+    type: "Feature",
+    geometry: {
+        type: "Point",
+        coordinates: [135, 35]
+    }
+}
 
 let mediaQ = matchMedia("screen and (orientation: portrait)");
 let orient;
-let dualChkbx;
-let containerA;
-let containerB;
 
-let layerControl = [];
-
-let clickedObj;
-let clickedOnFeature = false;
-
-let cookies;
+let clickedFeature = [];
 let urlParams;
+let setStateWaiting = false;
 
-async function getResources(name){
-  let path = "./json/" + name;
-  return $.getJSON(path, function(json){
-    let features = json.features;
-    //並べ替え処理(暫定的)
-    if (json.name === "line"){
-      let mura = features.filter(function(f){return f.properties.TYPE === "村"});
-      let ku = features.filter(function(f){return f.properties.TYPE === "区"});
-      let sp_ku  = features.filter(function(f){return f.properties.TYPE === "特別区"});
-      let gun = features.filter(function(f){return f.properties.TYPE === "郡"});
-      let shicho = features.filter(function(f){return f.properties.TYPE === "支庁"});
-      let ken = features.filter(function(f){return f.properties.TYPE === "県"});
-      let mizu = features.filter(function(f){return f.properties.TYPE === "湖"});
-      let umi = features.filter(function(f){return f.properties.TYPE === "海"});
-      features = mura.concat(ku, sp_ku, gun, shicho, ken, mizu, umi);
-    }
-
-    if (json.name === "polygon"){
-      //湖ポリゴンを削除
-      features = features.filter(function(f){return f.properties.TYPE !== "湖"});
-      //unique index追加
-      features.forEach(function(f, i){
-        f.properties.uid = i;
-      });
-    }
-
-    json.features = features;
-    return json;
-  });
-}
-
-async function getCsv(name){
-  let path = "./csv/" + name;
-  csvText = await $.get(path);
-  let tempArr = csvText.split(/\r\n|\r|\n/g);
-  let csvArr = [];
-  let columnNames;
-  tempArr.forEach((item, i)=>{
-    if(i == 0){
-      columnNames = item.split(",");
-    }else if(item){
-      let obj = {};
-      item.split(",").forEach((val, j)=>{
-        obj[columnNames[j]] = val;
-      });
-      csvArr.push(obj);
-    }
-  });
-  return csvArr;
-}
+let googleSessionToken = "";
 
 async function init(){
-  polygonJson = await getResources("polygon.geojson");
-  lineJson = await getResources("line.geojson");
-  //nameJson = await getResources("name.geojson");
-  nameCsv = await getCsv("shichosonname.csv");
+    await $.getJSON("./json/polygon.geojson").done((j)=>{geojsonBank.polygon = j});
+    await $.getJSON("./json/line.geojson").done((j)=>{geojsonBank.line = j});
+    await $.getJSON("./json/name.geojson").done((j)=>{geojsonBank.name = j});
 
-  cookies = getCookieArray();
-  urlParams = new URL(window.location.href).searchParams;
-  //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
-
-  maps[0] = L.map('mapA');
-  maps[1] = L.map('mapB');
-
-  //日付セレクトボックス初期設定
-  let formElemA = $("#dateSelectorA");
-  let commitBtnA = $("#dateSelectorA").find(".commit");
-  dateSelectors[0] = new DateSelector({formElem: formElemA, commitElem: commitBtnA, minYear: 1947});
-  $(commitBtnA).on("click", {n: 0} ,buttonClick);
-
-  let formElemB = $("#dateSelectorB");
-  let commitBtnB = $("#dateSelectorB").find(".commit");
-  dateSelectors[1] = new DateSelector({formElem: formElemB, commitElem: commitBtnB, minYear: 1947});
-  $(commitBtnB).on("click", {n: 1} , buttonClick);
-
-  //URLパラメータ・cookie・デフォルト値の優先順位で日付を取得
-  date[0] = new Date(urlParams.get("date0") ?? cookies.date0 ?? "");
-  if(date[0].toString() === "Invalid Date"){
-    date[0] = new Date(2000, 0 ,1);
-  }
-
-  date[1] = new Date(urlParams.get("date1") ?? cookies.date1 ?? "")
-  if(date[1].toString() === "Invalid Date"){
-    date[1] = new Date(2020, 0 ,1);
-  }
-
-  //formに日付セット
-  $(formElemA).find(".year").val(date[0].getFullYear());
-  $(formElemA).find(".month").val(date[0].getMonth() + 1);
-  $(formElemA).find(".date").val(date[0].getDate());
-  dateSelectors[0].sync();
-
-  $(formElemB).find(".year").val(date[1].getFullYear());
-  $(formElemB).find(".month").val(date[1].getMonth() + 1);
-  $(formElemB).find(".date").val(date[1].getDate());
-  dateSelectors[1].sync();
-
-  maps.forEach(async function(map, n){
-    map.setView([(urlParams.get("y") ?? cookies.y ?? 35.7), (urlParams.get("x") ?? cookies.x ?? 139.5)], (urlParams.get("z") ?? cookies.z ?? 10));
-    map.setMinZoom(5);
-    map.setMaxBounds([[10, 100], [60, 180]]);
-    map.createPane("base").style.zIndex = 100;
-    map.createPane("polygon").style.zIndex = 250;
-    map.createPane("colored").style.zIndex = 230;
-    map.createPane("did").style.zIndex = 240;
-    map.createPane("rail").style.zIndex = 380;
-    map.createPane("line").style.zIndex = 400;
-
-    labelLayerGroups[n] = new L.LayerGroup();
-    labelLayers[n] = new L.LayerGroup();
-    typeColoredLayerGroups[n] = new L.LayerGroup();
-    gunColoredLayerGroups[n] = new L.LayerGroup();
-    railLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
-    railLayers[n] = new L.LayerGroup();
-    stationLayers[n] = new L.LayerGroup();
-    didLayerGroups[n] = new L.LayerGroup(null, {attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"});
-    didLayers[n] = new L.LayerGroup();
-
-
-    let paleMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-        pane: "base"
-    });
-    let standardMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-        pane: "base"
-    });
-    let shadeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-        pane: "base",
-        opacity: 0.3
-    });
-    let altitudeMap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-        pane: "base",
-        opacity: 0.3
-    });
-    let shadeAltitudeMap = new L.LayerGroup([shadeMap, altitudeMap]);
-    let photo = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>",
-        pane: "base",
-        opacity: 0.7
-    });
-    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
-        pane: "base"
-    });
-
-    let googleRoads = L.gridLayer.googleMutant({
-		    type: "roadmap",
-        attribution: "Google"
-    });
-
-    let blank = L.tileLayer('', {pane:"base"});
-
-    let baseMaps = {
-      "淡色地図(地理院地図)": paleMap,
-      "標準地図(地理院地図)": standardMap,
-      "色別標高図+陰影起伏図": shadeAltitudeMap,
-      "航空写真": photo,
-      "OpenStreetMap": osm,
-      "GoogleMap": googleRoads,
-      "背景非表示":blank
-    };
-    let overlayMaps = {
-      "市区町村名ラベルを表示": labelLayerGroups[n],
-      "色分け(市・町・村)": typeColoredLayerGroups[n],
-      "色分け(郡)": gunColoredLayerGroups[n],
-      "鉄道路線(1950年～)[年単位]": railLayerGroups[n],
-      "人口集中地区(1960年～)[5年単位]": didLayerGroups[n]
-    };
-
-    layerControl[n] = L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-    //背景地図一覧(文字列)
-    let baseMapNames = {
-      "淡色地図(地理院地図)": "paleMap",
-      "標準地図(地理院地図)": "standardMap",
-      "色別標高図+陰影起伏図": "shadeAltitudeMap",
-      "航空写真": "photo",
-      "OpenStreetMap": "osm",
-      "GoogleMap": "googleRoads",
-      "背景非表示": "blank"
+    let featuresCopy = geojsonBank.line.features;
+    geojsonBank.line.features = [];
+    for(let type of ["村", "区", "郡", "特別区", "支庁", "県", "湖", "海"]){
+        geojsonBank.line.features.push(...featuresCopy.filter(f=>{return f.properties.TYPE === type}));
     }
 
-    //URLパラメータ・cookie・デフォルトの優先順位で背景レイヤを取得
-    let layerParams = {base: urlParams.get("base" + n) ?? cookies["base" + n] ?? "paleMap", label: urlParams.get("label" + n) ?? cookies["label" + n] ?? "false", color: urlParams.get("color" + n) ?? cookies["color" + n] ?? 0, rail: urlParams.get("rail" + n) ?? cookies["rail" + n] ?? "false", did: urlParams.get("did" + n) ?? cookies["did" + n] ?? "false"};
+    urlParams = new URL(window.location.href).searchParams;
+    //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
+    let lsMapState = JSON.parse(localStorage.getItem("hist_mapState")) ?? {};
 
-    if(Object.values(baseMapNames).includes(layerParams.base)){
-      map.addLayer(eval(layerParams.base));
-      baseLayerNames[n] = layerParams.base;
-    }else{
-      map.addLayer(paleMap);
-      baseLayerNames[n] = "paleMap";
+    maps[0] = new maplibregl.Map({container: "mapA"});
+    maps[1] = new maplibregl.Map({container: "mapB"});
+
+    //日付セレクトボックス初期設定
+    let formElemA = $("#dateSelectorA");
+    let commitBtnA = $("#dateSelectorA").find(".commit");
+    dateSelectors[0] = new DateSelector({formElem: formElemA, commitElem: commitBtnA, minYear: 1947});
+    $(commitBtnA).on("click", {n: 0} ,buttonClick);
+
+    let formElemB = $("#dateSelectorB");
+    let commitBtnB = $("#dateSelectorB").find(".commit");
+    dateSelectors[1] = new DateSelector({formElem: formElemB, commitElem: commitBtnB, minYear: 1947});
+    $(commitBtnB).on("click", {n: 1} , buttonClick);
+
+    //URLパラメータ・cookie・デフォルト値の優先順位で日付を取得
+    currentDate[0] = new Date(urlParams.get("date0") ?? lsMapState.date0 ?? "");
+    if(currentDate[0].toString() === "Invalid Date"){
+        currentDate[0] = new Date(mapState.date0);
     }
 
-    if(layerParams.label === "true"){
-      map.addLayer(labelLayerGroups[n]);
+    currentDate[1] = new Date(urlParams.get("date1") ?? lsMapState.date1 ?? "");
+    if(currentDate[1].toString() === "Invalid Date"){
+        currentDate[1] = new Date(mapState.date1);
     }
 
-    if(layerParams.color == 1){
-      map.addLayer(typeColoredLayerGroups[n]);
-    }else if(layerParams.color == 2){
-      map.addLayer(gunColoredLayerGroups[n]);
-    }
+    //formに日付セット
+    $(formElemA).find(".year").val(currentDate[0].getFullYear());
+    $(formElemA).find(".month").val(currentDate[0].getMonth() + 1);
+    $(formElemA).find(".date").val(currentDate[0].getDate());
+    dateSelectors[0].sync();
 
-    if(layerParams.rail === "true"){
-      map.addLayer(railLayerGroups[n]);
-    }
+    $(formElemB).find(".year").val(currentDate[1].getFullYear());
+    $(formElemB).find(".month").val(currentDate[1].getMonth() + 1);
+    $(formElemB).find(".date").val(currentDate[1].getDate());
+    dateSelectors[1].sync();
 
-    if(layerParams.did === "true"){
-      map.addLayer(didLayerGroups[n]);
-    }
-
-    L.control.scale({imperial: false, maxWidth: 300}).addTo(map);
-
-    //マップ(地物が存在しない部分)クリック時にハイライト消去
-    map.on("click", function(e){
-      if(!clickedOnFeature && clickedObj){
-        polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
-      }
-      clickedOnFeature = false;
-    });
-
-    map.on("baselayerchange", function(e){
-      baseLayerNames[n] = baseMapNames[e.name];
-      setUrlParam();
-    });
-
-
-    map.on("overlayadd", async(e)=>{
-      //レイヤー削除時に遅延処理が必要(leafletのバグ？)
-      if(e.name === "色分け(市・町・村)" && map.hasLayer(gunColoredLayerGroups[n])){
-        setTimeout(()=>{
-          map.removeLayer(gunColoredLayerGroups[n]);
-        }, 10);
-      }
-      if(e.name === "色分け(郡)" && map.hasLayer(typeColoredLayerGroups[n])){
-        setTimeout(()=>{
-          map.removeLayer(typeColoredLayerGroups[n]);
-        }, 10);
-      }
-
-      if(e.name === "鉄道路線(1950年～)[年単位]"){
-        //データ読み込み処理
-        if(!railJson){
-          if(n === 0){
-            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
-          }else{
-            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
-          }
-
-          railJson = await getResources("KSJrailroad_line.geojson");
-          stationJson = await getResources("KSJrailroad_point.geojson");
-          
-          
-          if(n === 0){
-            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
-          }else{
-            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
-          }
-        }
-        if(!railLayerGroups[n].hasLayer(railLayers[n])){
-          railRedraw(n);
-          stationRedraw(n);
-        }
-      }
-
-      if(e.name === "人口集中地区(1960年～)[5年単位]"){
-        //データ読み込み処理
-        if(!didJson){
-          if(n === 0){
-            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
-          }else{
-            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
-          }
-
-          didJson = await getResources("DIDall.geojson");
-        
-          if(n === 0){
-            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
-          }else{
-            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
-          }
-        }
-        if(!didLayerGroups[n].hasLayer(didLayers[n])){
-          didRedraw(n);
-        }
-      }
-
-      setUrlParam();
-    });
-
-    map.on("overlayremove", (e)=>{
-      setUrlParam();
-    });
-
-
-    typeColoredRedraw(n);
-    gunColoredRedraw(n);
-    polygonRedraw(n);
-    lineRedraw(n);
-    labelRedraw(n);
-
-    if(map.hasLayer(railLayerGroups[n])){
-      //データ読み込み処理
-      if(!railJson){
-        railJson = await getResources("KSJrailroad_line.geojson");
-        stationJson = await getResources("KSJrailroad_point.geojson");
-        railRedraw(n);
-        stationRedraw(n);
-      }
-    }
-    if(map.hasLayer(didLayerGroups[n])){
-      //データ読み込み処理
-      if(!didJson){
-        didJson = await getResources("DIDall.geojson");
-        didRedraw(n);
-      }
-    }
-
-
-    if(!("GUNCOLOR" in polygonJson.features[0].properties)){
-      console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
-    }
-
-    if(n === 0){
-      $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
-    }else{
-      $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
-    }
-  });
-
-  maps[0].sync(maps[1], {syncCursor: true});
-  maps[1].sync(maps[0], {syncCursor: true});
-
-  dualChkbx = document.getElementById("dual");
-  containerA = document.getElementById("containerA");
-  containerB = document.getElementById("containerB");
-  dualChkbx.addEventListener("change", changeDisplay);
-  if(urlParams.get("dual") === "true"){
-    dualChkbx.checked = true;
-  }else if(urlParams.get("dual") === null & cookies.dual === "true"){
-    dualChkbx.checked = true;
-  }else{
-    dualChkbx.checked = false;
-  }
-
-  maps[0].on("moveend", function(){
-    labelRedraw(0);
-    labelRedraw(1);
-    if(stationJson){
-      stationRedraw(0);
-      stationRedraw(1);
-    }
-
-    setUrlParam();
-  });
-
-  checkOrientation(mediaQ);
-  mediaQ.addListener(checkOrientation);
-
-}
-
-function lineRedraw(n){
-  lineLayers[n] = L.vectorGrid.slicer(itemFilter(lineJson, n), {
-    vectorTileLayerStyles: {
-      sliced: function(properties){
-          switch(properties.TYPE){
-            case '村': return{color:"#639394", weight:2}
-            case '区': return{color:"#857944", weight:2}
-            case '特別区': return{color:"#326333", weight:2.5}
-            case '郡': return{color:"#326333", weight:2.5}
-            case '支庁': return{color:"#995514", weight:2.5}
-            case '県': return{color:"#8a2725", weight:2.5}
-            case '湖': return{color:"#5363b5", weight:2.5}
-            case '海': return{color:"#223c8a", weight:2.5}
-         }
-      }
-    },
-    maxZoom: 18,
-    pane: "line"
-  });
-  lineLayers[n].addTo(maps[n]);
-}
-
-function railRedraw(n){
-  if(date[n].getFullYear() >= 1950){
-    railLayers[n] = L.vectorGrid.slicer(itemFilter(railJson, n), {
-      vectorTileLayerStyles: {
-        sliced: function(properties){
-          switch(properties.JigyoshaType){
-            case "1": return{color:"#114211", weight:2, dashArray: "8 8"}
-            case "2": return{color:"#333958", weight:1.5, dashArray: "5 5"}
-            case "3": return{color:"#687943", weight:1.5, dashArray: "5 5"}
-            case "4": return{color:"#80663a", weight:1.5, dashArray: "5 5"}
-            case "5": return{color:"#6a1a47", weight:1.5, dashArray: "5 5"}
-         }
-        }
-      },
-      maxZoom: 18,
-      pane: "rail"
-    });
-    railLayers[n].addTo(railLayerGroups[n]);
-  }
-}
-
-function stationRedraw(n){
-  stationLayers[n].clearLayers();
-  if(date[n].getFullYear() >= 1950){
-    if(maps[n].getZoom() >= 10){
-      itemFilter(stationJson, n, true).features.forEach(function(f){
-        let marker = L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
-          radius: 3,
-          fillColor: "#5d5d5d",
-          weight: 0,
-          fillOpacity: 0.8,
-          interactive: false
+    //googlemap用
+    try{
+        await $.ajax({
+            "type": "post",
+            "url": "https://tile.googleapis.com/v1/createSession?key=AIzaSyA05mQQCiqSlagtiU7Z0NoeX3n1snBdg44", 
+            "data": JSON.stringify({"mapType": "roadmap", "language": "ja", "region": "JP"}), 
+            "contentType": "application/json",
+            "dataType": "json"
+        }).done((data)=>{
+            googleSessionToken = data.session;
         });
-        stationLayers[n].addLayer(marker);
-        if(maps[n].getZoom() >= 12){
-          let divIcon = new L.DivIcon({
-            className: 'labelClassStation',
-            html: '<div>' + (f.properties.Name) + '</div>',
-            iconSize: [(f.properties.Name).length*12, 20],
-            iconAnchor: [-5, 8]
-          });
-          let label = L.marker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {
-            icon: divIcon,
-            interactive: false
-          });
-          stationLayers[n].addLayer(label);
-        }
-      });
-      stationLayers[n].addTo(railLayerGroups[n]);
+    }catch(err){
+        console.log(err);
     }
-  }
-}
 
-function polygonRedraw(n){
-  polygonLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
-    vectorTileLayerStyles: {
-      sliced:function(properties){
-        //1970年より前の日付を選んだ場合、データ未作成の県の色を灰色に
-        if(date[n] < new Date("1947/05/03")){
-          return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
-        }else if(date[n] < new Date("1970/04/01")){
-          if(["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県", "鳥取県", "島根県", "岡山県", "広島県", "山口県"].some(e => e === properties.KEN)){
-            return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
-          }else{
-            return {fill: true, fillColor:"#000000" ,fillOpacity:0.2, opacity:0}
-          }
+    maps.forEach(async function(map, n){
+        let layers = [{
+            layerId: "paleMap",
+            group: "ベースマップ",
+            groupType: "radio",
+            name: "淡色地図(地理院地図)",
+            id: "paleMap"
+        },{
+            layerId: "standardMap",
+            group: "ベースマップ",
+            name: "標準地図(地理院地図)",
+            id: "standardMap"
+        },{
+            layerId: "photo",
+            group: "ベースマップ",
+            name: "航空写真",
+            id: "photo"
+        },{
+            layerId: ["shadeMap", "altitudeMap"],
+            group: "ベースマップ",
+            name: "色別標高図+陰影起伏図",
+            id: "shadeAlittudeMap"
+        },{
+            layerId: "osm",
+            group: "ベースマップ",
+            name: "OpenStreetMap",
+            id: "osm"
+        },{
+            layerId: "google",
+            group: "ベースマップ",
+            name: "Googleマップ",
+            id: "google"
+        },{
+            layerId: null,
+            group: "ベースマップ",
+            name: "背景非表示",
+            id: "blank"
+        },{
+            layerId: "label",
+            group: "文字ラベル",
+            groupType: "checkbox",
+            name: "文字ラベル"
+        },{
+            layerId: "type_color",
+            group: "色分け",
+            groupType: "checkbox_excl",
+            name: "色分け(市・町・村)"
+        },{
+            layerId: "gun_color",
+            group: "色分け",
+            name: "色分け(郡)"
+        },{
+            layerId: "did",
+            group: "オーバーレイ",
+            name: "DID(1960年～)[5年単位]",
+            id: "did"
+        },{
+            layerId: ["railroad_line", "railroad_point", "railroad_label"],
+            group: "オーバーレイ",
+            name: "鉄道路線(1950年～)[年単位]",
+            id: "rail"
+        }]
+        let postLoad = {
+            sources: {"did": {
+                        type: "geojson",
+                        data: "./json/DIDall.geojson",
+                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
+                    }, "railroad_line": {
+                        type: "geojson",
+                        data: "./json/KSJrailroad_line.geojson",
+                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
+                    }, "railroad_point": {
+                        type: "geojson",
+                        data: "./json/KSJrailroad_point.geojson",
+                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
+            }},
+            layers: [{
+                id: "did",
+                source: "did",
+                filter: [
+                    "all",
+                    ["<=", "START", dateToStr(currentDate[n])],
+                    [">", "END", dateToStr(currentDate[n])]
+                ],
+                type: "fill",
+                paint: {
+                    "fill-color": "#ff6aba",
+                    "fill-opacity": 0.4
+                },
+                before: "polygon"
+            },{
+                id: "railroad_line",
+                source: "railroad_line",
+                filter: [
+                    "all",
+                    ["<=", "START", dateToStr(currentDate[n])],
+                    [">", "END", dateToStr(currentDate[n])]
+                ],
+                type: "line",
+                paint: {
+                    "line-color": [
+                        "match",
+                        ["get", "JigyoshaType"],
+                        "1",
+                        "#114211",
+                        "2",
+                        "#333958",
+                        "3",
+                        "#687943",
+                        "4",
+                        "#80663a",
+                        "5",
+                        "#6a1a47",
+                        "#114211"
+                    ],
+                    "line-width": [
+                        "match",
+                        ["get", "JigyoshaType"],
+                        "1",
+                        2,
+                        1.5
+                    ],
+                    "line-dasharray": [3,2]
+                },
+                before: "line"
+            }, {
+                id: "railroad_point",
+                source: "railroad_point",
+                filter: [
+                    "all",
+                    ["<=", "START", dateToStr(currentDate[n])],
+                    [">", "END", dateToStr(currentDate[n])]
+                ],
+                minzoom: 10,
+                type: "circle",
+                paint: {
+                    "circle-color": "#5d5d5d",
+                    "circle-radius": 3,
+                },
+                before: "line"
+            }, {
+                id: "railroad_label",
+                source: "railroad_point",
+                filter: [
+                    "all",
+                    ["<=", "START", dateToStr(currentDate[n])],
+                    [">", "END", dateToStr(currentDate[n])]
+                ],
+                minzoom: 10,
+                type: "symbol",
+                layout: {
+                    "text-field": ["get", "Name"],
+                    "text-font": ["Noto Sans CJK JP Regular"],
+                    "text-size": 12,
+                    "text-allow-overlap": true,
+                    "text-anchor": "left",
+                    "text-offset": [0.7,0]
+                },
+                paint: {
+                    "text-color": "#414eb5",
+                    "text-halo-color": "#ffffff",
+                    "text-halo-width": 2
+                },
+                before: "label"
+            }]
+        }
+
+        let baseMapNames = layers.filter(l=>{return l.group === "ベースマップ"}).map(l=>{return l.id});
+        if(baseMapNames.includes(urlParams.get("base" + n))){
+            mapState["base" + n] = urlParams.get("base" + n);
+        }else if(baseMapNames.includes(lsMapState["base" + n])){
+            mapState["base" + n] = lsMapState["base" + n];
         }else{
-          return {fill: true, fillColor:"#ff0000" ,fillOpacity:0, opacity:0}
+            mapState["base" + n] = "paleMap";
         }
-      }
-    },
-    maxZoom: 18,
-    interactive: true,
-    getFeatureId: function(f){
-      return n + "_" + f.properties.uid;
-    },
-    pane: "polygon"
-  }).on("click", function(e){
-    let prop = e.sourceTarget.properties;
-    L.popup(e.latlng, {content: ()=>{
-      let start = prop.START;
-      if(start == "1889-04-01"){start = "-";}
-      let end = prop.END;
-      if(end == "2999-12-31"){end = "-";}
-      let name = (prop.NAME ?? prop.TYPE);
-      if(prop.CODE5 === "01223X"){name = name + "(歯舞群島)";}
-      return '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (prop.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (prop.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (prop.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
-    }}).openOn(maps[n]);
-    clickEvent(e, n);
-  });
-  polygonLayers[n].addTo(maps[n]);
-}
 
-function typeColoredRedraw(n){
-  typeColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
-    vectorTileLayerStyles: {
-      sliced:function(properties){
-        switch(properties.TYPE){
-          case '村': return{fill: true, fillColor:"#e6d5ff" ,fillOpacity:0.4, opacity:0}
-          case '町': return{fill: true, fillColor:"#aaeaad" ,fillOpacity:0.4, opacity:0}
-          case '市': return{fill: true, fillColor:"#ffdda1" ,fillOpacity:0.4, opacity:0}
-          case '政令区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0}
-          case '特別区': return{fill: true, fillColor:"#ffc3da" ,fillOpacity:0.4, opacity:0}
-          default : return{fill: true, fillColor:"#ffffff" ,fillOpacity:0.4, opacity:0}
-       }
-      }
-    },
-    maxZoom: 18,
-    pane: "colored"
-  });
-  typeColoredLayers[n].addTo(typeColoredLayerGroups[n]);
-}
-
-function gunColoredRedraw(n){
-  gunColoredLayers[n] = L.vectorGrid.slicer(itemFilter(polygonJson, n), {
-    vectorTileLayerStyles: {
-      sliced:function(properties){
-         let op = 0.25;
-         if(properties.TYPE === "町"){op = 0.5}
-         switch(properties.GUNCOLOR){
-           case 1: return{fill: true, fillColor:"#ffb0b0" ,fillOpacity:op, opacity:0}
-           case 2: return{fill: true, fillColor:"#e3b77b" ,fillOpacity:op, opacity:0}
-           case 3: return{fill: true, fillColor:"#e6e491" ,fillOpacity:op, opacity:0}
-           case 4: return{fill: true, fillColor:"#beff8f" ,fillOpacity:op, opacity:0}
-           case 5: return{fill: true, fillColor:"#79ab85" ,fillOpacity:op, opacity:0}
-           case 6: return{fill: true, fillColor:"#bafff6" ,fillOpacity:op, opacity:0}
-           case 7: return{fill: true, fillColor:"#9e9eff" ,fillOpacity:op, opacity:0}
-           case 8: return{fill: true, fillColor:"#e2a9f5" ,fillOpacity:op, opacity:0}
-           default : return{fill: true, fillColor:"#ffffff" ,fillOpacity:0.0, opacity:0}
+        if(urlParams.get("label" + n) === "true" ?? lsMapState["label" + n] === "true"){
+            mapState["label" + n] = true;
         }
-      }
-    },
-    maxZoom: 18,
-    pane: "colored"
-  });
-  gunColoredLayers[n].addTo(gunColoredLayerGroups[n]);
-}
 
-function didRedraw(n){
-  didLayers[n] = L.vectorGrid.slicer(itemFilter(didJson, n), {
-    vectorTileLayerStyles: {
-      sliced: {fill: true, fillColor:"#ff6aba" ,fillOpacity:0.4, opacity:0}
-    },
-    maxZoom: 18,
-    pane: "did"
-  });
-  didLayers[n].addTo(didLayerGroups[n]);
-}
+        if(urlParams.get("color" + n) === "1" ?? lsMapState["color" + n] === "1"){
+            mapState["color" + n] = 1;
+        }else if(urlParams.get("color" + n) === "2" ?? lsMapState["color" + n] === "2"){
+            mapState["color" + n] = 2;
+        }
 
-function labelRedraw(n){
-  //マーカーを全消去
-  labelLayers[n].clearLayers();
-  //レイヤ再描画はz>=10の時のみ
-  if(maps[n].getZoom() >= 10){
-    itemFilter(nameCsv, n, true).forEach(function(f){
-      let nameLength = (f.name ?? f.type).length;
-      let className;
-      switch(f.type){
-        case '村': className = 'labelClassMura'; break;
-        case '町': className = 'labelClassMachi'; break;
-        case '市': className = 'labelClassShi'; break;
-        case '政令区': className = 'labelClassKu'; break;
-        case '特別区': className = 'labelClassTokubetsuku'; break;
-        default: className = 'labelClass';
-      }
-      let icon = new L.DivIcon({
-        className: className,
-        html: '<div>' + (f.name ?? f.type) + '</div>',
-        iconSize: [nameLength*30, 30]
-      });
-      let marker = L.marker([f.y, f.x], {
-        icon: icon,
-        interactive: false
-      });
-      labelLayers[n].addLayer(marker);
+        if(urlParams.get("rail" + n) === "true" ?? lsMapState["rail" + n] === "true"){
+            mapState["rail" + n] = true;
+        }
+
+        if(urlParams.get("did" + n) === "true" ?? lsMapState["did" + n] === "true"){
+            mapState["did" + n] = true;
+        }
+
+        let fillOpacity;
+        if(currentDate[n] < new Date("1947-05-03")){
+            fillOpacity = 0.3
+        }else if(currentDate[n] < new Date("1970-04-01")){
+            fillOpacity = [
+                "case",
+                ["boolean", ["feature-state", "clicked"], false],
+                0.3,
+                ["in", ["get", "KEN"], ["literal", ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県", "新潟県", "富山県", "石川県", "福井県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]]],
+                0.3,
+                0
+            ];
+        }else{
+            fillOpacity = [
+                "case",
+                ["boolean", ["feature-state", "clicked"], false],
+                0.3,
+                0
+            ];
+        }
+
+        map.setMaxBounds([[100, 10], [180, 60]]);
+        map.setMaxZoom(18);
+
+        await map.setStyle({
+            version: 8,
+            glyphs: "https://glyphs.geolonia.com/{fontstack}/{range}.pbf",
+            center: [(parseFloat(urlParams.get("x")) || parseFloat(lsMapState.x) || mapState.x), (parseFloat(urlParams.get("y")) || parseFloat(lsMapState.y) || mapState.y)],
+            zoom: (parseFloat(urlParams.get("z")) || parseFloat(lsMapState.z) || mapState.z),
+            sources: {
+                "paleMap": {
+                    type: "raster",
+                    tiles: ["https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"],
+                    tileSize: 256,
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                }, "standardMap": {
+                    type: "raster",
+                    tiles: ["https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"],
+                    tileSize: 256,
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                }, "shadeMap": {
+                    type: "raster",
+                    tiles: ["https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png"],
+                    tileSize: 256,
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                }, "altitudeMap": {
+                    type: "raster",
+                    tiles: ["https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png"],
+                    tileSize: 256,
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                }, "photo": {
+                    type: "raster",
+                    tiles: ["https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"],
+                    tileSize: 256,
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                }, "osm": {
+                    type: "raster",
+                    tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+                    tileSize: 256,
+                    attribution: "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a> contributors",
+                }, "google": {
+                    type: "raster",
+                    tiles: ["https://tile.googleapis.com/v1/2dtiles/{z}/{x}/{y}?session=" + googleSessionToken + "&key=AIzaSyA05mQQCiqSlagtiU7Z0NoeX3n1snBdg44"],
+                    tileSize: 256,
+                    attribution: "<a href='https://cloud.google.com/maps-platform/terms' target='_blank'>Google</a>",
+                }, "polygon": {
+                    type: "geojson",
+                    data: geojsonBank.polygon,
+                    generateId: true,
+                    attribution: "<a href='https://hanishina.github.io/maps/' target='_blank'>地図地理Sandbox</a>"
+                }, "line": {
+                    type: "geojson",
+                    data: geojsonBank.line
+                }, "name": {
+                    type: "geojson",
+                    data: geojsonBank.name
+                }, "syncCursor": {
+                    type: "geojson",
+                    data: syncCursorGeojson
+                }
+            }, layers: [
+                {
+                    id: "background",
+                    type: "background",
+                    paint: {
+                        "background-color": "#ffffff"
+                    }
+                }, {
+                    id: "paleMap",
+                    source: "paleMap",
+                    type: "raster",
+                    layout: {
+                        "visibility": mapState["base" + n] === "paleMap" ? "visible" : "none"
+                    }
+                }, {
+                    id: "standardMap",
+                    source: "standardMap",
+                    type: "raster",
+                    layout: {
+                        "visibility": mapState["base" + n] === "standardMap" ? "visible" : "none"
+                    }
+                }, {
+                    id: "shadeMap",
+                    source: "shadeMap",
+                    type: "raster",
+                    paint: {
+                        "raster-opacity": 0.3
+                    },
+                    layout: {
+                        "visibility": mapState["base" + n] === "shadeAltitudeMap" ? "visible" : "none"
+                    }
+                }, {
+                    id: "altitudeMap",
+                    source: "altitudeMap",
+                    type: "raster",
+                    paint: {
+                        "raster-opacity": 0.3
+                    },
+                    layout: {
+                        "visibility": mapState["base" + n] === "shadeAltitudeMap" ? "visible" : "none"
+                    }
+                }, {
+                    id: "photo",
+                    source: "photo",
+                    type: "raster",
+                    paint: {
+                        "raster-opacity": 0.7
+                    },
+                    layout: {
+                        "visibility": mapState["base" + n] === "photo" ? "visible" : "none"
+                    }
+                }, {
+                    id: "osm",
+                    source: "osm",
+                    type: "raster",
+                    layout: {
+                        "visibility": mapState["base" + n] === "osm" ? "visible" : "none"
+                    }
+                }, {
+                    id: "google",
+                    source: "google",
+                    type: "raster",
+                    layout: {
+                        "visibility": mapState["base" + n] === "google" ? "visible" : "none"
+                    }
+                },{
+                    id: "type_color",
+                    source: "polygon",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])],
+                        ["!=", "TYPE", "湖"]
+                    ],
+                    type: "fill",
+                    paint: {
+                        "fill-color": [
+                            "match",
+                            ["get", "TYPE"],
+                            "特別区",
+                            "#ffc3da",
+                            "政令区",
+                            "#ffc3da",
+                            "市",
+                            "#ffdda1",
+                            "町",
+                            "#aaeaad",
+                            "村",
+                            "#e6d5ff",
+                            "#ffffff"
+                        ],
+                        "fill-opacity": 0.5
+                    },
+                    layout: {
+                        "visibility": mapState["color" + n] === 1 ? "visible" : "none"
+                    }
+                },{
+                    id: "gun_color",
+                    source: "polygon",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])],
+                        ["!=", "TYPE", "湖"]
+                    ],
+                    type: "fill",
+                    paint: {
+                        "fill-color": [
+                            "match",
+                            ["get", "GUNCOLOR"],
+                            1,
+                            "#ffb0b0",
+                            2,
+                            "#e3b77b",
+                            3,
+                            "#e6e491",
+                            4,
+                            "#beff8f",
+                            5,
+                            "#79ab85",
+                            6,
+                            "#bafff6",
+                            7,
+                            "#9e9eff",
+                            8,
+                            "#e2a9f5",
+                            "rgba(255,255,255,0)"
+                        ],
+                        "fill-opacity": [
+                            "match",
+                            ["get", "TYPE"],
+                            "町",
+                            0.5,
+                            0.25
+                        ]
+                    },
+                    layout: {
+                        visibility: mapState["color" + n] === 2 ? "visible" : "none"
+                    }
+                },{
+                    id: "polygon",
+                    source: "polygon",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])],
+                        ["!=", "TYPE", "湖"]
+                    ],
+                    type: "fill",
+                    paint: {
+                        "fill-color": [
+                            "case",
+                            ["boolean", ["feature-state", "clicked"], false],
+                            "#ff0000",
+                            "#000000"
+                        ],
+                        "fill-opacity": fillOpacity
+                    }
+                },{
+                    id: "line",
+                    source: "line",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])]
+                    ],
+                    type: "line",
+                    paint: {
+                        "line-color": [
+                            "match",
+                            ["get", "TYPE"],
+                            "海",
+                            "#223c8a",
+                            "湖",
+                            "#5363b5",
+                            "県",
+                            "#8a2725",
+                            "支庁",
+                            "#995514",
+                            ["else", "郡", "特別区"],
+                            "#326333",
+                            "区",
+                            "#857944",
+                            "村",
+                            "#639394",
+                            "#00ff00"
+                        ],
+                        "line-width": [
+                            "match",
+                            ["get", "TYPE"],
+                            ["else", "村", "区"],
+                            2,
+                            2.5
+                        ]
+                    }
+                },{
+                    id: "label",
+                    type: "symbol",
+                    source: "name",
+                    minzoom: 8,
+                    filter: [
+                        "all",
+                        ["<=", "start", dateToStr(currentDate[n])],
+                        ["any", [">", "end", dateToStr(currentDate[n])], ["==", "end", ""]]
+                    ],
+                    layout: {
+                        "text-field": ["get", "name"],
+                        "text-font": ["Noto Sans CJK JP Regular"],
+                        "text-size": [
+                            "match",
+                            ["get", "type"],
+                            "市",
+                            18,
+                            "特別区",
+                            18,
+                            "政令区",
+                            16,
+                            "町",
+                            16,
+                            "村",
+                            12,
+                            12
+                        ],
+                        "text-allow-overlap": true,
+                        "visibility": mapState["label" + n] ? "visible" : "none"
+                    },
+                    paint: {
+                        "text-color": [
+                            "match",
+                            ["get", "type"],
+                            "市",
+                            "#724e00",
+                            "特別区",
+                            "#640026",
+                            "政令区",
+                            "#640026",
+                            "町",
+                            "#004b0a",
+                            "村",
+                            "#3d1f6d",
+                            "#3d1f6d"
+                        ],
+                        "text-halo-color": "#ffffff",
+                        "text-halo-width": 2
+                    }
+                },{
+                    id: "syncCursor",
+                    type: "circle",
+                    source: "syncCursor",
+                    layout: {
+                        visibility: "none"
+                    },
+                    paint: {
+                        "circle-color": "#ff0000",
+                        "circle-radius": 5
+                    }
+                }
+            ]
+        });
+        
+        map.addControl(new maplibregl.NavigationControl(), "top-right");
+        map.addControl(new maplibregl.ScaleControl({maxWidth: 150}));
+        layerControl[n] = new MaplibreLayerControl(layers, postLoad).addTo(map);
+
+        if(mapState["did" + n]){
+            $(layerControl[n].window).find("input[value='" + layerControl[n].layers.findIndex(l=>{return l.id === "did"}) + "']")[0].click();
+        }
+        if(mapState["rail" + n]){
+            $(layerControl[n].window).find("input[value='" + layerControl[n].layers.findIndex(l=>{return l.id === "rail"}) + "']")[0].click();
+        }
+
+        map.on("styledata", (e)=>{
+            setMapState();
+        });
+
+        map.on("moveend", (e)=>{
+            //呼び出し回数を減らすため遅延
+            setTimeout(setMapState, 1000);
+        });
+        map.on("zoomend", (e)=>{
+            //呼び出し回数を減らすため遅延
+            setTimeout(setMapState, 1000);
+        });
+
+        map.on("click", "polygon", (e)=>{
+            console.log(e.features[0]);
+            if(clickedFeature[n] != null){
+                map.setFeatureState({
+                    source: "polygon",
+                    id: clickedFeature[n]
+                },{
+                    clicked: false
+                });
+                clickedFeature[n] = null;
+            }
+            if(!e.features[0].state.clicked){
+                let start = e.features[0].properties.START;
+                if(start == "1889-04-01"){start = "-";}
+                let end = e.features[0].properties.END;
+                if(end == "2999-12-31"){end = "-";}
+                let name = (e.features[0].properties.NAME ?? e.features[0].properties.TYPE);
+                if(e.features[0].properties.CODE5 === "01223X"){name = name + "(歯舞群島)";}
+                let table = '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.features[0].properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.features[0].properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.features[0].properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';;
+                new maplibregl.Popup().setLngLat(e.lngLat).setHTML(table).addTo(map);
+                map.setFeatureState({
+                    source: "polygon",
+                    id: e.features[0].id
+                },{
+                    clicked: true
+                });
+                clickedFeature[n] = e.features[0].id;
+            }
+        });
+
+        map.on("move", function(e){
+            if(!e.sync){
+                sync(n);
+            }
+        });
+    
+        map.on("mousemove", function(e){
+            syncCursor(n, e.lngLat);
+        });
+        map.on("touchmove", function(e){
+            syncCursor(n, e.lngLat);
+        });
+
+
+        map.on("mouseout", syncCursorOff);
+        map.on("touchend", syncCursorOff);
+
+        if(!("GUNCOLOR" in geojsonBank.polygon.features[0].properties)){
+            console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
+        }
+
+        if(n === 0){
+            $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+        }else{
+            $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+        }
+
+
     });
-    labelLayers[n].addTo(labelLayerGroups[n]);
-  }
-}
 
-//JSONの日付フィルター
-function itemFilter(item, n, point = false){
-  //JSON or CSV
-  let itemType;
-  let features;
-  if(Array.isArray(item)){
-    itemType = "csv";
-    features = item;
-  }else{
-    itemType = "json";
-    features = item.features;
-  }
-
-  let newFeatures;
-  if(itemType === "json"){
-    newFeatures = features.filter(function(f){
-      return new Date(f.properties.START.replaceAll("-", "/")) <= (date[n]) && new Date(f.properties.END.replaceAll("-", "/")) > (date[n])
-    });
-
-    //画面内にあるものを取得
-    if(point){
-      let view = maps[n].getBounds();
-      newFeatures = newFeatures.filter(function(f){
-        return f.geometry.coordinates[0] >= view.getWest() && f.geometry.coordinates[0] <= view.getEast() && f.geometry.coordinates[1] >= view.getSouth() && f.geometry.coordinates[1] <= view.getNorth()
-      });
+    let dual = $("#dual");
+    dual.on("change", changeDisplay);
+    if(urlParams.get("dual") === "true" ?? lsMapState.dual === "true"){
+        dual[0].checked = true;
+    }else{
+        dual[0].checked = false;
     }
+    
+    /*
+    maps[0].on("moveend", function(){
+        labelRedraw(0);
+        labelRedraw(1);
+        if(stationJson){
+            stationRedraw(0);
+            stationRedraw(1);
+        }
 
-    let newJson = Object.assign({}, item);
-    newJson.features = newFeatures;
-    return newJson;
-
-  }else{
-    newFeatures = features.filter(function(f){
-      return new Date(f.start.replaceAll("-", "/")) <= (date[n]) && ( new Date(f.end.replaceAll("-", "/")) > (date[n]) || f.end === "0000-00-00")
+        setUrlParam();
     });
+    */
 
-    //画面内にあるものを取得
-    let view = maps[n].getBounds();
-    newFeatures = newFeatures.filter(function(f){
-      return f.x >= view.getWest() & f.x <= view.getEast() && f.y >= view.getSouth() && f.y <= view.getNorth()
-    });
+    checkOrientation(mediaQ);
+    mediaQ.addListener(checkOrientation);
 
-    return newFeatures;
-  }
 }
 
+function sync(n){
+    other = Number(!n); //n=0ならother=1
+    maps[other].jumpTo({center: maps[n].getCenter(), zoom: maps[n].getZoom(), bearing: maps[n].getBearing(), pitch: maps[n].getPitch()}, {"sync": true});
+}
+
+function syncCursor(n, lngLat){
+    other = Number(!n);
+    maps[n].setLayoutProperty("syncCursor", "visibility", "none");
+    syncCursorGeojson.geometry.coordinates = [lngLat.lng, lngLat.lat];
+    maps[other].getSource("syncCursor").setData(syncCursorGeojson);
+    maps[other].setLayoutProperty("syncCursor", "visibility", "visible");
+}
+
+function syncCursorOff(){
+    maps[0].setLayoutProperty("syncCursor", "visibility", "none");
+    maps[1].setLayoutProperty("syncCursor", "visibility", "none");
+}
 
 function buttonClick(e){
-  let n = e.data.n;
-  if(n === 0){
-    $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
-  }else{
-    $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
-  }
-
-  date[n] = dateSelectors[n].commit();
-  typeColoredLayerGroups[n].removeLayer(typeColoredLayers[n]);
-  gunColoredLayerGroups[n].removeLayer(gunColoredLayers[n]);
-  maps[n].removeLayer(lineLayers[n]);
-  maps[n].removeLayer(polygonLayers[n]);
-  labelLayerGroups[n].removeLayer(labelLayers[n]);
-  
-
-  typeColoredRedraw(n);
-  gunColoredRedraw(n);
-  polygonRedraw(n);
-  lineRedraw(n);
-  labelRedraw(n);
-
-  //鉄道データが読み込み済みの場合、鉄道レイヤのデータ更新
-  if(railJson){
-    if(railLayerGroups[n].hasLayer(railLayers[n])){
-      railLayerGroups[n].removeLayer(railLayers[n]);
+    let n = e.data.n;
+    if(n === 0){
+        $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "inline");
+    }else{
+        $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "inline");
     }
-    railRedraw(n);
-    stationRedraw(n);
-  }
-  if(didJson){
-    if(didLayerGroups[n].hasLayer(didLayers[n])){
-      didLayerGroups[n].removeLayer(didLayers[n]);
+
+    currentDate[n] = dateSelectors[n].commit();
+    let fillOpacity;
+    if(currentDate[n] < new Date("1947-05-03")){
+        fillOpacity = 0.3
+    }else if(currentDate[n] < new Date("1970-04-01")){
+        fillOpacity = [
+            "case",
+            ["boolean", ["feature-state", "clicked"], false],
+            0.3,
+            ["in", ["get", "KEN"], ["literal", ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県", "新潟県", "富山県", "石川県", "福井県", "徳島県", "香川県", "愛媛県", "高知県", "福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]]],
+            0.3,
+            0
+        ];
+    }else{
+        fillOpacity = [
+            "case",
+            ["boolean", ["feature-state", "clicked"], false],
+            0.3,
+            0
+        ];
     }
-    didRedraw(n);
-  }
+    maps[n].setFilter("polygon", [
+        "all",
+        ["<=", "START", dateToStr(currentDate[n])],
+        [">", "END", dateToStr(currentDate[n])],
+        ["!=", "TYPE", "湖"]
+    ]);
+    maps[n].setPaintProperty("polygon", "fill-opacity", fillOpacity);
+    maps[n].setFilter("type_color", [
+        "all",
+        ["<=", "START", dateToStr(currentDate[n])],
+        [">", "END", dateToStr(currentDate[n])],
+        ["!=", "TYPE", "湖"]
+    ]);
+    maps[n].setFilter("gun_color", [
+        "all",
+        ["<=", "START", dateToStr(currentDate[n])],
+        [">", "END", dateToStr(currentDate[n])],
+        ["!=", "TYPE", "湖"]
+    ]);
+    maps[n].setFilter("line", [
+        "all",
+        ["<=", "START", dateToStr(currentDate[n])],
+        [">", "END", dateToStr(currentDate[n])]
+    ]);
+    maps[n].setFilter("label", [
+        "all",
+        ["<=", "start", dateToStr(currentDate[n])],
+        ["any", [">", "end", dateToStr(currentDate[n])], ["==", "end", ""]]
+    ]);
+    if(maps[n].getLayer("did")){
+        maps[n].setFilter("did", [
+            "all",
+            ["<=", "START", dateToStr(currentDate[n])],
+            [">", "END", dateToStr(currentDate[n])]
+        ]);
+    }
+    if(maps[n].getLayer("railroad_line")){
+        maps[n].setFilter("railroad_line", [
+            "all",
+            ["<=", "START", dateToStr(currentDate[n])],
+            [">", "END", dateToStr(currentDate[n])]
+        ]);
+    }
+    if(maps[n].getLayer("railroad_point")){
+        maps[n].setFilter("railroad_point", [
+            "all",
+            ["<=", "START", dateToStr(currentDate[n])],
+            [">", "END", dateToStr(currentDate[n])]
+        ]);
+    }
+    if(maps[n].getLayer("railroad_label")){
+        maps[n].setFilter("railroad_label", [
+            "all",
+            ["<=", "START", dateToStr(currentDate[n])],
+            [">", "END", dateToStr(currentDate[n])]
+        ]);
+    }
 
-  setUrlParam();
+    setMapState();
 
-  if(n === 0){
-    $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
-  }else{
-    $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
-  }
+    if(n === 0){
+        $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
+    }else{
+        $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
+    }
 }
 
-
-
-function clickEvent(e, n){
-  //前回クリックしたオブジェクトのハイライトを消去
-  if(clickedObj){
-    //clickedObjの一文字目に前回クリックした地物のマップ番号が入っている
-    polygonLayers[clickedObj.substr(0, 1)].resetFeatureStyle(clickedObj);
-  }
-
-  //クリックしたオブジェクトをハイライト
-  polygonLayers[n].setFeatureStyle(n + "_" + e.layer.properties.uid, {fill: true, fillColor:"#ff0000" ,fillOpacity:0.3, opacity:0});
-  clickedObj = n + "_" + e.layer.properties.uid;
-
-  //mapクリックイベントを呼び出さないようにする
-  clickedOnFeature = true;
+function dateToStr(date){
+    let yyyy = String(date.getFullYear()).padStart(4, "0");
+    let mm = String(date.getMonth()+1).padStart(2, "0");
+    let dd = String(date.getDate()).padStart(2, "0");
+    return yyyy+"-"+mm+"-"+dd;
 }
 
 //画面の向きを検出
 function checkOrientation(mediaQ){
-  if(mediaQ.matches){
-    orient = "portrait";
-  }else{
-    orient = "landscape";
-  }
-  changeDisplay();
+    if(mediaQ.matches){
+        orient = "portrait";
+    }else{
+        orient = "landscape";
+    }
+    changeDisplay();
 }
 
 function changeDisplay(){
-  if(dualChkbx.checked){  //二画面表示
-    switch (orient) {
-      case "portrait":
+    if($("#dual")[0].checked){    //二画面表示
+        switch (orient) {
+            case "portrait":
+                containerA.style.width = "100%";
+                mapA.style.height = "41vh";
+            break;
+            case "landscape":
+                containerA.style.width = "50%";
+                mapA.style.height = "82vh";
+        }
+        containerB.style.display = "block";
+        maps[0].resize();
+    }else{    //一画面表示
+        switch (orient) {
+            case "portrait":
+                containerA.style.width = "100%";
+                mapA.style.height = "82vh";
+            break;
+            case "landscape":
+                containerA.style.width = "100%";
+                mapA.style.height = "82vh";
+        }
         containerA.style.width = "100%";
-        mapA.style.height = "41vh";
-      break;
-      case "landscape":
-        containerA.style.width = "50%";
-        mapA.style.height = "82vh";
+        containerB.style.display = "none";
+        maps[0].resize();
     }
-    containerB.style.display = "block";
-    maps[0]._onResize();
-  }else{  //一画面表示
-    switch (orient) {
-      case "portrait":
-        containerA.style.width = "100%";
-        mapA.style.height = "82vh";
-      break;
-      case "landscape":
-        containerA.style.width = "100%";
-        mapA.style.height = "82vh";
-    }
-    containerA.style.width = "100%";
-    containerB.style.display = "none";
-    maps[0]._onResize();
-  }
 }
 
-function getCookieArray(){
-  let arr = new Array();
-  if(document.cookie != ''){
-      let tmp = document.cookie.split('; ');
-      for(let i=0;i<tmp.length;i++){
-          let data = tmp[i].split('=');
-          arr[data[0]] = decodeURIComponent(data[1]);
-      }
-  }
-  return arr;
+function getBaseLayerName(n){
+    let vis = layerControl[n].layers.filter(l=>{return l.group === "ベースマップ" && l.layerId[0] && maps[n].getLayoutProperty(l.layerId[0], "visibility") === "visible"});
+    if(vis.length){
+        return vis[0].id;
+    }else{
+        return "blank";
+    }
 }
 
-function setUrlParam(){
-  function color(n){if(maps[n].hasLayer(typeColoredLayerGroups[n])){return 1}else if(maps[n].hasLayer(gunColoredLayerGroups[n])){return 2}else{return false}};
-  let statusParams = {
-    "y" : Math.round(maps[0].getCenter().lat * 10000)/10000,
-    "x" : Math.round(maps[0].getCenter().lng * 10000)/10000,
-    "z" : maps[0].getZoom(),
-    "date0" : date[0].getFullYear() + "/" + (date[0].getMonth() + 1).toString().padStart(2, 0) + "/" + date[0].getDate().toString().padStart(2, 0),
-    "date1" : date[1].getFullYear() + "/" + (date[1].getMonth() + 1).toString().padStart(2, 0) + "/" + date[1].getDate().toString().padStart(2, 0),
-    "base0" : baseLayerNames[0],
-    "base1" : baseLayerNames[1],
-    "label0" : maps[0].hasLayer(labelLayerGroups[0]),
-    "label1" : maps[1].hasLayer(labelLayerGroups[1]),
-    "color0" : color(0),
-    "color1" : color(1),
-    "rail0" : maps[0].hasLayer(railLayerGroups[0]),
-    "rail1" : maps[1].hasLayer(railLayerGroups[1]),
-    "did0" : maps[0].hasLayer(didLayerGroups[0]),
-    "did1" : maps[1].hasLayer(didLayerGroups[1]),
-    "dual" : dualChkbx.checked
-  }
-  for(let key in statusParams){
-    let val = statusParams[key];
-    document.cookie = key + "=" + val + ";path=" + location.pathname + ";max-age=7776000;samesite=strict";
-  }
-  history.replaceState("","","?y=" + statusParams.y + "&x=" + statusParams.x + "&z=" + statusParams.z + "&date0=" + statusParams.date0 + "&date1=" + statusParams.date1 + "&base0=" + statusParams.base0 + "&base1=" + statusParams.base1 + "&label0=" + statusParams.label0 + "&label1=" + statusParams.label1 + "&color0=" + statusParams.color0 + "&color1=" + statusParams.color1 + "&rail0=" + statusParams.rail0 + "&rail1=" + statusParams.rail1 + "&did0=" + statusParams.did0 + "&did1=" + statusParams.did1 + "&dual=" + statusParams.dual);
+function getColorLayer(n){
+    if(maps[n].getLayoutProperty("type_color", "visibility") === "visible"){
+        return 1;
+    }else if(maps[n].getLayoutProperty("gun_color", "visibility") === "visible"){
+        return 2;
+    }else{
+        return false;
+    }
+}
+
+function setMapState(){
+    if(maps[0].getStyle() && maps[1].getStyle()){
+        mapState.x = maps[0].getCenter().lng.toFixed(3);
+        mapState.y = maps[0].getCenter().lat.toFixed(3);
+        mapState.z = maps[0].getZoom().toFixed(0);
+        mapState.date0 = dateToStr(currentDate[0]);
+        mapState.date1 = dateToStr(currentDate[1]);
+        mapState.base0 = getBaseLayerName(0);
+        mapState.base1 = getBaseLayerName(1);
+        mapState.label0 = maps[0].getLayoutProperty("label", "visibility") === "visible";
+        mapState.label1 = maps[1].getLayoutProperty("label", "visibility") === "visible";
+        mapState.color0 = getColorLayer(0);
+        mapState.color1 = getColorLayer(1);
+        mapState.did0 = Boolean(maps[0].getLayer("did")) && maps[0].getLayoutProperty("did", "visibility") === "visible";
+        mapState.did1 = Boolean(maps[1].getLayer("did")) && maps[1].getLayoutProperty("did", "visibility") === "visible";
+        mapState.rail0 = Boolean(maps[0].getLayer("railroad_line")) && maps[0].getLayoutProperty("railroad_line", "visibility") === "visible";
+        mapState.rail1 = Boolean(maps[1].getLayer("railroad_line")) && maps[1].getLayoutProperty("railroad_line", "visibility") === "visible";
+        mapState.dual = $("#dual")[0].checked;
+    
+        if(!setStateWaiting && localStorage.getItem("hist_mapState") !== JSON.stringify(mapState)){
+            localStorage.setItem("hist_mapState", JSON.stringify(mapState));
+            history.replaceState("","","?y=" + mapState.y + "&x=" + mapState.x + "&z=" + mapState.z + "&date0=" + mapState.date0 + "&date1=" + mapState.date1 + "&base0=" + mapState.base0 + "&base1=" + mapState.base1 + "&label0=" + mapState.label0 + "&label1=" + mapState.label1 + "&color0=" + mapState.color0 + "&color1=" + mapState.color1 + "&rail0=" + mapState.rail0 + "&rail1=" + mapState.rail1 + "&did0=" + mapState.did0 + "&did1=" + mapState.did1 + "&dual=" + mapState.dual);
+            setStateWaiting = true;
+            setTimeout(function(){setStateWaiting = false}, 500);
+        }
+    }
 }
