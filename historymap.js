@@ -147,7 +147,7 @@ async function init(){
             layerId: "label",
             group: "文字ラベル",
             groupType: "checkbox",
-            name: "文字ラベル"
+            name: "市区町村名ラベルを表示"
         },{
             layerId: "type_color",
             group: "色分け",
@@ -159,12 +159,12 @@ async function init(){
             name: "色分け(郡)"
         },{
             layerId: "did",
-            group: "オーバーレイ",
+            group: "追加データ(国土数値情報)",
             name: "DID(1960年～)[5年単位]",
             id: "did"
         },{
             layerId: ["railroad_line", "railroad_point", "railroad_label"],
-            group: "オーバーレイ",
+            group: "追加データ(国土数値情報)",
             name: "鉄道路線(1950年～)[年単位]",
             id: "rail"
         }]
