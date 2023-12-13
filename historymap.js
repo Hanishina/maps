@@ -31,10 +31,19 @@ let syncCursorGeojson = {
     }
 }
 
+let emptyGeojson = {
+    type: "Feature",
+    geometry: {
+        type: "MultiPolygon",
+        coordinates: [[[0,0]]]
+    }
+}
+
 let mediaQ = matchMedia("screen and (orientation: portrait)");
 let orient;
 
 let clickedFeature = [];
+let featureCopyMode = false;
 let urlParams;
 let setStateWaiting = false;
 
@@ -379,6 +388,9 @@ async function init(){
                 }, "syncCursor": {
                     type: "geojson",
                     data: syncCursorGeojson
+                }, "copiedFeature": {
+                    type: "geojson",
+                    data: emptyGeojson
                 }
             }, layers: [
                 {
@@ -539,6 +551,17 @@ async function init(){
                         "fill-opacity": fillOpacity
                     }
                 },{
+                    id: "copiedFeature",
+                    type: "fill",
+                    source: "copiedFeature",
+                    layout: {
+                        visibility: "none"
+                    },
+                    paint: {
+                        "fill-color": "#3366ff",
+                        "fill-opacity": 0.3
+                    }
+                },{
                     id: "line",
                     source: "line",
                     filter: [
@@ -666,6 +689,7 @@ async function init(){
 
         map.on("click", "polygon", (e)=>{
             console.log(e.features[0]);
+            other = Number(!n);
             if(clickedFeature[n] != null){
                 map.setFeatureState({
                     source: "polygon",
@@ -674,6 +698,8 @@ async function init(){
                     clicked: false
                 });
                 clickedFeature[n] = null;
+
+                maps[other].getSource("copiedFeature").setData(emptyGeojson);
             }
             if(!e.features[0].state.clicked){
                 let start = e.features[0].properties.START;
@@ -691,6 +717,9 @@ async function init(){
                     clicked: true
                 });
                 clickedFeature[n] = e.features[0].id;
+
+                let gj = map.querySourceFeatures("polygon", {filter: ["==", ["id"], e.features[0].id]}).reduce((acc, cur)=>{return turf.union(acc, cur)}, turf.polygon([], {}));
+                maps[other].getSource("copiedFeature").setData(gj);
             }
         });
 
@@ -732,18 +761,17 @@ async function init(){
         dual[0].checked = false;
     }
     
-    /*
-    maps[0].on("moveend", function(){
-        labelRedraw(0);
-        labelRedraw(1);
-        if(stationJson){
-            stationRedraw(0);
-            stationRedraw(1);
+    let copy = $("#copy");
+    copy[0].checked = false;
+    copy.on("change", (e)=>{
+        if(e.target.checked){
+            maps[0].setLayoutProperty("copiedFeature", "visibility", "visible");
+            maps[1].setLayoutProperty("copiedFeature", "visibility", "visible");
+        }else{
+            maps[0].setLayoutProperty("copiedFeature", "visibility", "none");
+            maps[1].setLayoutProperty("copiedFeature", "visibility", "none");
         }
-
-        setUrlParam();
     });
-    */
 
     checkOrientation(mediaQ);
     mediaQ.addListener(checkOrientation);
@@ -894,6 +922,7 @@ function changeDisplay(){
         }
         containerB.style.display = "block";
         maps[0].resize();
+        $("#copy")[0].disabled = false;
     }else{    //一画面表示
         switch (orient) {
             case "portrait":
@@ -907,6 +936,7 @@ function changeDisplay(){
         containerA.style.width = "100%";
         containerB.style.display = "none";
         maps[0].resize();
+        $("#copy")[0].disabled = true;
     }
 }
 

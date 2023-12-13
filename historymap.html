@@ -23,6 +23,7 @@
   <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
   <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
   <script src="./dateselector.js"></script>
   <script src="./mapLibreLayerControl.js"></script>
@@ -62,7 +63,7 @@
       </form>
     </div>
   </div>
-  <div><input type="checkbox" id="dual" name="dual"/><label for="dual">2画面表示</label></div>
+  <div><label style="margin: 0 1.5em 0 0"><input type="checkbox" id="dual"/>2画面表示</label><label><input type="checkbox" id="copy"/>選択地物をもう一方の画面に表示</label></div>
   <div>[1947/5/3以降のデータを表示可能]関東地方、山梨県、長野県、岐阜県、静岡県、愛知県、近畿地方、中国地方<br>
   [1970/4/1以降のデータを表示可能]北海道、東北地方、新潟県、富山県、石川県、福井県、四国地方、九州地方</div>
 </body>
