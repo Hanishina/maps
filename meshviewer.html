@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no">
+    <meta name="description" content="">
+    <link rel="icon" href="favicon.ico" />
+    <title>meshviewer</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZC2WPE0KKJ');
+    </script>
+
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pixi-filters@latest/dist/pixi-filters.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <link href="historymap.css" rel="stylesheet" type="text/css">
+
+    <script>
+        const points = [{"name" : "稚内", "y" : 45.4, "x" : 141.7}, {"name" : "旭川", "y" : 43.8, "x" : 142.3}, {"name" : "北見", "y" : 43.8, "x" : 143.9}, {"name" : "帯広", "y" : 42.9, "x" : 143.2}, {"name" : "釧路", "y" : 43, "x" : 144.4}, {"name" : "根室", "y" : 43.3, "x" : 145.6}, {"name" : "留萌", "y" : 43.9, "x" : 141.7}, {"name" : "札幌", "y" : 43.1, "x" : 141.3}, {"name" : "苫小牧", "y" : 42.7, "x" : 141.6}, {"name" : "室蘭", "y" : 42.4, "x" : 141}, {"name" : "函館", "y" : 41.8, "x" : 140.7}, {"name" : "青森", "y" : 40.8, "x" : 140.7}, {"name" : "盛岡", "y" : 39.7, "x" : 141.2}, {"name" : "秋田", "y" : 39.7, "x" : 140.1}, {"name" : "仙台", "y" : 38.3, "x" : 140.9}, {"name" : "酒田", "y" : 38.9, "x" : 139.8}, {"name" : "郡山", "y" : 37.4, "x" : 140.4}, {"name" : "水戸", "y" : 36.3, "x" : 140.5}, {"name" : "宇都宮", "y" : 36.6, "x" : 139.9}, {"name" : "前橋", "y" : 36.4, "x" : 139}, {"name" : "東京", "y" : 35.7, "x" : 139.7}, {"name" : "伊豆諸島", "y" : 34.4, "x" : 139.4}, {"name" : "八丈島", "y" : 33, "x" : 139.8}, {"name" : "小笠原", "y" : 27.1, "x" : 142.2}, {"name" : "新潟", "y" : 37.9, "x" : 139}, {"name" : "長野", "y" : 36.6, "x" : 138.2}, {"name" : "松本", "y" : 36.2, "x" : 138}, {"name" : "甲府", "y" : 35.7, "x" : 138.6}, {"name" : "金沢", "y" : 36.6, "x" : 136.7}, {"name" : "福井", "y" : 36, "x" : 136.2}, {"name" : "静岡", "y" : 35, "x" : 138.4}, {"name" : "浜松", "y" : 34.7, "x" : 137.7}, {"name" : "名古屋", "y" : 35.2, "x" : 136.9}, {"name" : "津", "y" : 34.7, "x" : 136.5}, {"name" : "京都", "y" : 35, "x" : 135.8}, {"name" : "大阪", "y" : 34.7, "x" : 135.5}, {"name" : "和歌山", "y" : 34.2, "x" : 135.2}, {"name" : "新宮", "y" : 33.7, "x" : 136}, {"name" : "姫路", "y" : 34.8, "x" : 134.7}, {"name" : "福知山", "y" : 35.3, "x" : 135.1}, {"name" : "鳥取", "y" : 35.5, "x" : 134.2}, {"name" : "松江", "y" : 35.5, "x" : 133.1}, {"name" : "隠岐", "y" : 36.2, "x" : 133.2}, {"name" : "岡山", "y" : 34.7, "x" : 133.9}, {"name" : "広島", "y" : 34.4, "x" : 132.5}, {"name" : "山口", "y" : 34.2, "x" : 131.5}, {"name" : "徳島", "y" : 34.1, "x" : 134.5}, {"name" : "松山", "y" : 33.8, "x" : 132.8}, {"name" : "高知", "y" : 33.5, "x" : 133.5}, {"name" : "宇和島", "y" : 33.2, "x" : 132.6}, {"name" : "北九州", "y" : 33.9, "x" : 130.9}, {"name" : "福岡", "y" : 33.6, "x" : 130.4}, {"name" : "長崎", "y" : 32.8, "x" : 129.9}, {"name" : "壱岐", "y" : 33.8, "x" : 129.7}, {"name" : "対馬", "y" : 34.4, "x" : 129.3}, {"name" : "五島", "y" : 32.8, "x" : 128.9}, {"name" : "熊本", "y" : 32.8, "x" : 130.7}, {"name" : "大分", "y" : 33.2, "x" : 131.6}, {"name" : "延岡", "y" : 32.6, "x" : 131.7}, {"name" : "宮崎", "y" : 31.9, "x" : 131.4}, {"name" : "鹿児島", "y" : 31.6, "x" : 130.5}, {"name" : "種子島", "y" : 30.5, "x" : 130.8}, {"name" : "奄美", "y" : 28.3, "x" : 129.5}, {"name" : "那覇", "y" : 26.2, "x" : 127.7}, {"name" : "大東島", "y" : 25.9, "x" : 131.3}, {"name" : "宮古島", "y" : 24.8, "x" : 125.3}, {"name" : "石垣島", "y" : 24.4, "x" : 124.1}, {"name" : "与那国島", "y" : 24.5, "x" : 123}];
+
+        let app;
+        let renderer;
+        let layers = [];
+
+        let lineJson;
+        let jinkoCsv;
+
+        let scale;
+        let offset;
+
+        let meshID;
+        let centerPoint;
+        //let boundbox = [parseInt(meshID.substring(2,4))+100, parseInt(meshID.substring(0,2))*2/3, parseInt(meshID.substring(2,4))+101, parseInt(meshID.substring(0,2))*2/3+2/3];
+        let boundbox;
+        let resolution = 0;
+        //let sizeDyn = true;
+        let symbolType = "agingRate";
+
+        let animation = false;
+        let actionTime = 60; //1/60秒
+        let timer = 0;
+        let timerIncrease = true;
+
+        $(window).on("load", function(){
+            let ctx = $("#legend_color_aging")[0].getContext("2d");
+            ctx.fillStyle = "#666666";
+            ctx.fillText("全年齢に占める65歳以上の割合", 0, 10);
+            [["～20%", "#001eb4"], ["～30%", "#2fab37"], ["～40%", "#e7d537"], ["～50%", "#df863d"], ["50%～", "#900000"], ["nodata", "#666666"]].forEach((item, i)=>{
+                ctx.fillStyle = item[1];
+                ctx.beginPath();
+                ctx.arc(i*50 + 25, 25, 5, 0, Math.PI*2, true);
+                ctx.fill();
+
+                ctx.fillStyle = "#666666";
+                ctx.textAlign = "center";
+                ctx.fillText(item[0], i*50 + 25, 40);
+            });
+
+            ctx = $("#legend_color_incr")[0].getContext("2d");
+            ctx.fillStyle = "#666666";
+            ctx.fillText("人口増加率/年", 0, 10);
+            [["+10%～", "#339045"], ["0%～+10%", "#a6dba0"], ["0%", "#666666"], ["-10%～0%", "#c2a5cf"], ["～-10%", "#7b3294"]].forEach((item, i)=>{
+                ctx.fillStyle = item[1];
+                ctx.beginPath();
+                ctx.arc(i*60 + 25, 25, 5, 0, Math.PI*2, true);
+                ctx.fill();
+
+                ctx.fillStyle = "#666666";
+                ctx.textAlign = "center";
+                ctx.fillText(item[0], i*60 + 25, 40);
+            });
+
+            $("#legend_color_incr").parent().hide();
+
+            app = new PIXI.Application({
+                width: 800,
+                height: 800,
+                backgroundColor: "#ffffff",
+                antialias: true,
+                preserveDrawingBuffer: true
+            });
+            $("#main").append(app.view);
+            app.stage.eventMode = "static";
+            app.stage.hitArea = app.screen;
+
+            app.ticker.add(anime);
+
+            layers.symbol = new PIXI.Container();
+            layers.line = new PIXI.Container();
+            layers.test = new PIXI.Container();
+            app.stage.addChild(layers.symbol);
+            app.stage.addChild(layers.line);
+            app.stage.addChild(layers.test);
+
+            calcCoordinates({x: 136.9, y: 35.2});
+
+            $.getJSON("./json/line.geojson", (data)=>{
+                data.features = data.features.filter((f)=>{
+                    return f.properties.TYPE2 != "2" && f.properties.START <= "2020-10-01" && f.properties.END > "2020-10-01";
+                });
+
+                lineJson = data;
+
+                //drawItem([[[[135, 34.666667], [135, 35.333333], [136, 35.333333], [136, 34.666667], [135, 34.666667]]]], {fill: "#ffcccc", line: {width: 1.2, color: "#555555"}}, layers.line);
+
+                updateLineLayer();
+            });
+
+            $.get("./csv/人口及び世帯.csv", (data)=>{
+                let tempArr = data.split(/\r\n|\r|\n/g);
+                let csvArr = [];
+                tempArr.forEach((item, i)=>{
+                    csvArr[i] = item.split(",");
+                });
+
+                let mainObj = {};
+                let idIndex = csvArr[0].indexOf("メッシュid")
+                mainObj.header = csvArr[0].filter((i)=>{return i != "メッシュid"});
+
+                csvArr.forEach((row, i)=>{
+                    mainObj[row[idIndex]] = row;
+                    mainObj[row[idIndex]].splice(idIndex, 1);
+                });
+
+                jinkoCsv = mainObj;
+                
+                updateSymbolLayer();
+            });
+
+            points.forEach(p=>{
+                $("#selector").append($("<option>").attr({valx: p.x, valy: p.y}).text(p.name));
+            });
+
+
+            $("#size").find("[value='800']").prop("selected", true);
+            $("#size").on("change", (e)=>{
+                let val = $("#size").val();
+                if(scale != parseInt(val)){
+                    $("#main").find("canvas").css({width: parseInt(val), height: parseInt(val)});
+                    app.renderer.resize(parseInt(val), parseInt(val));
+                    layers.line.removeChildren();
+                    layers.symbol.removeChildren();
+                    calcCoordinates(centerPoint);
+                    updateLineLayer();
+                    updateSymbolLayer();
+                }
+            });
+
+            $("#selector").on("change", ()=>{
+                if($($("#selector")[0].selectedOptions[0]).attr("val") != "none"){
+                    let x = $($("#selector")[0].selectedOptions[0]).attr("valx");
+                    let y = $($("#selector")[0].selectedOptions[0]).attr("valy");
+                    layers.line.removeChildren();
+                    layers.symbol.removeChildren();
+                    calcCoordinates({x: parseFloat(x), y: parseFloat(y)});
+                    updateLineLayer();
+                    updateSymbolLayer();
+                }
+            });
+
+            $("[name='dotsize'][value='dynamic']").click();
+            $("[name='dotsize']").on("click", (e)=>{
+                let val = $("[name='dotsize']").filter((i, el)=>{return el.checked}).val();
+                if(val == "fixed"){
+                    animation = false;
+                    layers.symbol.children.forEach((c)=>{
+                        c.scale = {x:1, y:1};
+                    });
+                }else if(val == "dynamic"){
+                    animation = false;
+                    layers.symbol.children.forEach((c)=>{
+                        c.scale = {x: 1-c.scalingTick*actionTime, y: 1-c.scalingTick*actionTime};
+                    });
+                }else if(val == "animation"){
+                    animation = true;
+                }
+            });
+
+            $("[name='symbolType'][value='agingRate']").click();
+            $("[name='symbolType']").on("click", (e)=>{
+                let val = $("[name='symbolType']").filter((i, el)=>{return el.checked}).val();
+                if(symbolType != val){
+                    symbolType = val;
+                    layers.symbol.removeChildren();
+                    updateSymbolLayer();
+                    if(val == "agingRate"){
+                        $("#label_hirei").text("人口に比例");
+                        $("#legend_color_aging").parent().show();
+                        $("#legend_color_incr").parent().hide();
+                    }else if(val == "popIncrease"){
+                        $("#label_hirei").text("人口増減数に比例");
+                        $("#legend_color_aging").parent().hide();
+                        $("#legend_color_incr").parent().show();
+                    }
+                }
+            });
+
+            $("[name='resolution'][value='0']").click();
+            $("[name='resolution']").on("click", (e)=>{
+                let val = $("[name='resolution']").filter((i, el)=>{return el.checked}).val();
+                if(resolution != parseInt(val)){
+                    resolution = parseInt(val);
+                    layers.symbol.removeChildren();
+                    updateSymbolLayer();
+                }
+            });
+
+            $("#actionTime").find("[value='60']").prop("selected", true);
+            $("#actionTime").on("change", (e)=>{
+                let val = $("#actionTime").val();
+                if(actionTime != parseInt(val)){
+                    actionTime = parseInt(val);
+                    timer = 0;
+                    layers.symbol.removeChildren();
+                    updateSymbolLayer();
+                }
+            });
+
+            app.stage.on("mousedown", drag);
+            app.stage.on("touchstart", drag);
+        });
+
+        function drag(e){
+            let startPoint = {x: e.client.x, y: e.client.y};
+            let dist = {x:0, y:0};
+            $(window).on("mousemove touchmove", (e)=>{
+                dist = {x: (e.clientX ?? e.originalEvent.touches[0].clientX) - startPoint.x, y: (e.clientY ?? e.originalEvent.touches[0].clientY) - startPoint.y};
+                layers.line.position = dist;
+                layers.symbol.position = dist;
+            });
+            $(window).on("mouseup touchend", (e)=>{
+                layers.line.removeChildren();
+                layers.symbol.removeChildren();
+                layers.line.position = {x:0, y:0};
+                layers.symbol.position = {x:0, y:0};
+                calcCoordinates({x: centerPoint.x - dist.x/scale, y: centerPoint.y + dist.y/scale*2/3});
+                updateLineLayer();
+                updateSymbolLayer();
+                $(window).off("mousemove touchmove mouseup touchend");
+            });
+        }
+
+        function calcCoordinates(cp){
+            centerPoint = cp;
+            boundbox = [centerPoint.x-1/2, centerPoint.y-1/3, centerPoint.x+1/2, centerPoint.y+1/3];
+            scale = app.screen.width;
+            offset = [-scale*(boundbox[0] + 1/2) + app.screen.width/2, -scale*(-boundbox[1]*1.5 - 1/2) + app.screen.height/2];
+            let nwMesh = String(Math.floor((centerPoint.y+1/3)*3/2)*100 + Math.floor(centerPoint.x-1/2)-100);
+            let swMesh = String(Math.floor((centerPoint.y-1/3)*3/2)*100 + Math.floor(centerPoint.x-1/2)-100);
+            let neMesh = String(Math.floor((centerPoint.y+1/3)*3/2)*100 + Math.floor(centerPoint.x+1/2)-100);
+            let seMesh = String(Math.floor((centerPoint.y-1/3)*3/2)*100 + Math.floor(centerPoint.x+1/2)-100);
+            meshID = [nwMesh, swMesh, neMesh, seMesh];
+            $("#center").text("center: " + centerPoint.x.toFixed(3) + ", " + centerPoint.y.toFixed(3));
+        }
+
+        function updateLineLayer(){
+            let extendBbox = [boundbox[0]-1, boundbox[1]-3/2, boundbox[2]+1, boundbox[3]+3/2];
+            let clipped = lineJson.features.map((f)=>{
+                let c = turf.bboxClip(f, extendBbox);
+                if(c.geometry.coordinates.length){
+                    if(c.geometry.type == "LineString"){
+                        c.geometry.coordinates = [c.geometry.coordinates];
+                    }
+                    return c
+                }else{
+                    return null
+                }
+            }).filter((f)=>{return f});
+            clipped.forEach((f)=>{
+                let style = {width: 1.2, color: "#999999"};
+                if(["県", "海", "湖"].includes(f.properties.TYPE)){
+                    style.width = 1.8;
+                    style.color = "#555555";
+                }else if(["郡", "支庁", "特別区"].includes(f.properties.TYPE)){
+                    style.color = "#555555";
+                }
+                drawLine(f.geometry.coordinates, {line: style}, layers.line);
+            });
+        }
+
+        function updateSymbolLayer(){
+            let filtered = {};
+            Object.keys(jinkoCsv).forEach((key)=>{
+                if(meshID.includes(key.substring(0, 4))){
+                    filtered[key] = jinkoCsv[key];
+                }
+            });
+
+            if(resolution == 1){
+                Object.keys(filtered).forEach((k, i)=>{
+                    if(k != "header" && filtered[k.substring(0,8)] == undefined){
+                        filtered[k.substring(0,8)] = filtered[k].map(val=>{return parseInt(val) || 0});
+                        delete filtered[k];
+                    }else if(k != "header"){
+                        filtered[k.substring(0,8)].forEach((val, i, arr)=>{arr[i] += parseInt(filtered[k][i])});
+                        delete filtered[k];
+                    }
+                });
+            }
+            let dotCount = 0;
+            Object.keys(filtered).forEach((k, i)=>{
+                if(meshToPoint(k).x >= boundbox[0] && meshToPoint(k).x < boundbox[2] && meshToPoint(k).y >= boundbox[1] && meshToPoint(k).y < boundbox[3] ){
+                    drawCircle(k, filtered[k]);
+                    dotCount++;
+                }
+            });
+            $("#dotCount").text("dotCount: " + dotCount);
+
+            if($("[name='dotsize']").filter((i, el)=>{return el.checked}).val() == "dynamic"){
+                layers.symbol.children.forEach((c)=>{
+                    c.scale = {x: 1-c.scalingTick*actionTime, y: 1-c.scalingTick*actionTime};
+                });
+            }
+        }
+
+        function drawLine(geometry, style, container=app.stage, move=true, name=""){
+            let shape = new PIXI.Graphics();
+            shape.lineStyle(style.line);
+            geometry.forEach((line)=>{
+                line.forEach((point, i)=>{
+                    if(i==0){
+                        shape.moveTo(point[0]*scale+offset[0], point[1]*1.5*-scale+offset[1]);
+                    }else{
+                        shape.lineTo(point[0]*scale+offset[0], point[1]*1.5*-scale+offset[1])
+                    }
+                });
+            });
+            container.addChild(shape);
+        }
+
+        function drawCircle(meshId, properties){
+            let point = meshToPoint(meshId);
+
+            let size;
+            if(symbolType == "popIncrease"){
+                size = Math.sqrt(Math.abs(parseInt(properties[jinkoCsv.header.indexOf("人口増加数")])/5))*scale*3/10000;
+            }else{
+                size = Math.sqrt(parseInt(properties[jinkoCsv.header.indexOf("人口")]))*scale*4/100000;
+            }
+            let sizeConst = scale/320*Math.pow(2, resolution);
+            let color = "#666666";
+
+            if(symbolType == "agingRate"){
+                let jinko65 = parseInt(properties[jinkoCsv.header.indexOf("65歳以上人口")]);
+                let jinkoAll = parseInt(properties[jinkoCsv.header.indexOf("0～14歳人口")]) + parseInt(properties[jinkoCsv.header.indexOf("15歳～64歳人口")]) + jinko65;
+                if(jinko65){
+                    if(jinko65/jinkoAll < 0.2){
+                        color = "#001eb4"
+                    }else if(jinko65/jinkoAll < 0.3){
+                        color = "#2fab37"
+                    }else if(jinko65/jinkoAll < 0.4){
+                        color = "#e7d537"
+                    }else if(jinko65/jinkoAll < 0.5){
+                        color = "#df863d"
+                    }else{
+                        color = "#900000"
+                    }
+                }
+            }else if(symbolType == "popIncrease"){
+                let jinko = parseInt(properties[jinkoCsv.header.indexOf("人口")]);
+                let incr = parseInt(properties[jinkoCsv.header.indexOf("人口増加数")]);
+                if(incr / (jinko - incr) > 0.1){
+                    color = "#339045"; //green+
+                }else if(incr / (jinko - incr) > 0){
+                    color = "#a6dba0"; //green-
+                }else if(incr / (jinko - incr) < -0.1){
+                    color = "#7b3294"; //purple+
+                }else if(incr / (jinko - incr) < 0){
+                    color = "#c2a5cf"; //purple-
+                }
+            }
+
+            if(symbolType == "popIncrease" || parseInt(properties[jinkoCsv.header.indexOf("人口")]) > 0){
+                let shape = new PIXI.Graphics();
+                shape.beginFill(color);
+                shape.drawCircle(point.x*scale+offset[0], point.y*1.5*-scale+offset[1], sizeConst);
+                //shape.scalingTick = Math.pow(size/sizeConst, 1/actionTime);
+                shape.scalingTick = (1 - size/sizeConst)/actionTime;
+                shape.pivot = {x: point.x*scale+offset[0], y: point.y*1.5*-scale+offset[1]};
+                shape.position = {x: point.x*scale+offset[0], y: point.y*1.5*-scale+offset[1]};
+                layers.symbol.addChild(shape);
+            }
+        }
+
+        function anime(delta){
+            $("#fps").text("fps: " + (60/delta).toFixed(1));
+            if(animation){
+                $("#timer").text("timer: " + timer);
+                if(timerIncrease){
+                    layers.symbol.children.forEach((e)=>{
+                        //e.scale = {x: Math.pow(e.scalingTick, timer), y: Math.pow(e.scalingTick, timer)};
+                        e.scale = {x: 1-e.scalingTick*timer, y: 1-e.scalingTick*timer};
+                    });
+                }else{
+                    layers.symbol.children.forEach((e)=>{
+                        //e.scale = {x: Math.pow(e.scalingTick, (actionTime - timer)), y: Math.pow(e.scalingTick, (actionTime - timer))};
+                        e.scale = {x: 1-e.scalingTick*(actionTime-timer), y: 1-e.scalingTick*(actionTime-timer)};
+                    });
+                }
+                if(timer>=actionTime){
+                    if(timerIncrease){
+                        timerIncrease = false;
+                    }else{
+                        timerIncrease = true;
+                    }
+                    timer = 0;
+                }
+                timer++;
+            }
+        }
+
+        function meshToPoint(meshId){
+            let y = parseInt(meshId.substring(0, 2))*2/3 + parseInt(meshId.substring(4, 5))*1/12 + parseInt(meshId.substring(6, 7))*1/120;
+            let x = parseInt(meshId.substring(2, 4))+100 + parseInt(meshId.substring(5, 6))*1/8 + parseInt(meshId.substring(7, 8))*1/80;
+            if(parseInt(meshId.substring(8,9)) >= 3){
+                y = y + 1/240;
+            }
+            if(parseInt(meshId.substring(8,9)) % 2 == 0){
+                x = x + 1/160;
+            }
+            x += 1/360 * Math.pow(2, resolution);
+            y += 1/480 * Math.pow(2, resolution);
+            return {x: x, y: y};
+        }
+    </script>
+</head>
+<body>
+    <div style="display: flex;">
+        <div id="main"></div>
+        <div style="min-width: 20em">
+            <div id="timer" style="margin: 5px 0;">timer: 0</div>
+            <div id="center" style="margin: 5px 0;">center: 0,0</div>
+            <div id="dotCount" style="margin: 5px 0;">dotCount: 0</div>
+            <div id="fps" style="margin: 5px 0;">fps: 0</div>
+            <br>
+            <div style="margin: 5px 0;">画像サイズ：<select id="size"><option value="400">400px</option><option value="600">600px</option><option value="800">800px</option><option value="1000">1000px</option><option value="1200">1200px</option><option value="1500">1500px</option><option value="2000">2000px</option></select></div>
+            <div style="margin: 5px 0;">中心点を指定：<select id="selector"><option value="none">---</option></select></div>
+            <div style="margin: 5px 0;">ドットサイズ：<label><input name="dotsize" value="fixed" type="radio"></input>固定</label><label><input name="dotsize" value="dynamic" type="radio"></input><span id="label_hirei">人口に比例</span></label><label><input name="dotsize" value="animation" type="radio"></input>アニメーション</label></div>
+            <div style="margin: 5px 0;">色分け：<label><input name="symbolType" value="agingRate" type="radio"></input>高齢化率</label><label><input name="symbolType" value="popIncrease" type="radio"></input>人口増加率</label></div>
+            <div style="margin: 5px 0;">メッシュ解像度：<label><input name="resolution" value="0" type="radio"></input>デフォルト(500m)</label><label><input name="resolution" value="1" type="radio"></input>1/2(1km)</label></div>
+            <div style="margin: 5px 0;">アニメーション周期：<select id="actionTime"><option value="30">30frame</option><option value="60">60frame</option><option value="120">120frame</option><option value="180">180frame</option></select></div>
+            <br>
+            <div>
+                凡例：
+                <div><canvas id="legend_color_aging" width="300px" height="50px"></canvas></div>
+                <div><canvas id="legend_color_incr" width="300px" height="50px"></canvas></div>
+            </div>
+            <br>
+            <div>使用データ：<br>2020年国勢調査　500mメッシュ集計<br>2015年国勢調査　500mメッシュ集計</div>
+        </div>
+    </div>
+</body>
+</html>
