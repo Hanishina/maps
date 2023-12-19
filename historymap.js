@@ -64,6 +64,9 @@ async function init(){
     //Params Example→?x=139.5&y=35.7&z=10&date0=2000/01/01&date1=2020/01/01&base0=paleMap&base1=paleMap&label0=true&label1=true&dual=true
     let lsMapState = JSON.parse(localStorage.getItem("hist_mapState")) ?? {};
 
+    let pmProtocol = new pmtiles.Protocol();
+    maplibregl.addProtocol("pmtiles", pmProtocol.tile);
+
     maps[0] = new maplibregl.Map({container: "mapA"});
     maps[1] = new maplibregl.Map({container: "mapB"});
 
@@ -114,6 +117,7 @@ async function init(){
     }catch(err){
         console.log(err);
     }
+
 
     maps.forEach(async function(map, n){
         let layers = [{
@@ -177,110 +181,6 @@ async function init(){
             name: "鉄道路線(1950年～)[年単位]",
             id: "rail"
         }]
-        let postLoad = {
-            sources: {"did": {
-                        type: "geojson",
-                        data: "./json/DIDall.geojson",
-                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
-                    }, "railroad_line": {
-                        type: "geojson",
-                        data: "./json/KSJrailroad_line.geojson",
-                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
-                    }, "railroad_point": {
-                        type: "geojson",
-                        data: "./json/KSJrailroad_point.geojson",
-                        attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
-            }},
-            layers: [{
-                id: "did",
-                source: "did",
-                filter: [
-                    "all",
-                    ["<=", "START", dateToStr(currentDate[n])],
-                    [">", "END", dateToStr(currentDate[n])]
-                ],
-                type: "fill",
-                paint: {
-                    "fill-color": "#ff6aba",
-                    "fill-opacity": 0.4
-                },
-                before: "polygon"
-            },{
-                id: "railroad_line",
-                source: "railroad_line",
-                filter: [
-                    "all",
-                    ["<=", "START", dateToStr(currentDate[n])],
-                    [">", "END", dateToStr(currentDate[n])]
-                ],
-                type: "line",
-                paint: {
-                    "line-color": [
-                        "match",
-                        ["get", "JigyoshaType"],
-                        "1",
-                        "#114211",
-                        "2",
-                        "#333958",
-                        "3",
-                        "#687943",
-                        "4",
-                        "#80663a",
-                        "5",
-                        "#6a1a47",
-                        "#114211"
-                    ],
-                    "line-width": [
-                        "match",
-                        ["get", "JigyoshaType"],
-                        "1",
-                        2,
-                        1.5
-                    ],
-                    "line-dasharray": [3,2]
-                },
-                before: "line"
-            }, {
-                id: "railroad_point",
-                source: "railroad_point",
-                filter: [
-                    "all",
-                    ["<=", "START", dateToStr(currentDate[n])],
-                    [">", "END", dateToStr(currentDate[n])]
-                ],
-                minzoom: 10,
-                type: "circle",
-                paint: {
-                    "circle-color": "#5d5d5d",
-                    "circle-radius": 3,
-                },
-                before: "line"
-            }, {
-                id: "railroad_label",
-                source: "railroad_point",
-                filter: [
-                    "all",
-                    ["<=", "START", dateToStr(currentDate[n])],
-                    [">", "END", dateToStr(currentDate[n])]
-                ],
-                minzoom: 10,
-                type: "symbol",
-                layout: {
-                    "text-field": ["get", "Name"],
-                    "text-font": ["Noto Sans CJK JP Regular"],
-                    "text-size": 12,
-                    "text-allow-overlap": true,
-                    "text-anchor": "left",
-                    "text-offset": [0.7,0]
-                },
-                paint: {
-                    "text-color": "#414eb5",
-                    "text-halo-color": "#ffffff",
-                    "text-halo-width": 2
-                },
-                before: "label"
-            }]
-        }
 
         let baseMapNames = layers.filter(l=>{return l.group === "ベースマップ"}).map(l=>{return l.id});
         if(baseMapNames.includes(urlParams.get("base" + n))){
@@ -385,6 +285,14 @@ async function init(){
                 }, "name": {
                     type: "geojson",
                     data: geojsonBank.name
+                }, "did": {
+                    type: "vector",
+                    url: "pmtiles://https://hanishina.net/maps/tiles/DIDall.pmtiles",
+                    attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
+                }, "railroad": {
+                    type: "vector",
+                    url: "pmtiles://https://hanishina.net/maps/tiles/KSJrailroad.pmtiles",
+                    attribution: "<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>(一部改変)"
                 }, "syncCursor": {
                     type: "geojson",
                     data: syncCursorGeojson
@@ -457,7 +365,24 @@ async function init(){
                     layout: {
                         "visibility": mapState["base" + n] === "google" ? "visible" : "none"
                     }
-                },{
+                }, {
+                    id: "did",
+                    source: "did",
+                    "source-layer": "DIDall",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])]
+                    ],
+                    type: "fill",
+                    paint: {
+                        "fill-color": "#ff6aba",
+                        "fill-opacity": 0.4
+                    },
+                    layout: {
+                        visibility: mapState["did" + n] ? "visible" : "none"
+                    }
+                }, {
                     id: "type_color",
                     source: "polygon",
                     filter: [
@@ -562,6 +487,62 @@ async function init(){
                         "fill-opacity": 0.3
                     }
                 },{
+                    id: "railroad_line",
+                    source: "railroad",
+                    "source-layer": "line",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])]
+                    ],
+                    type: "line",
+                    paint: {
+                        "line-color": [
+                            "match",
+                            ["get", "jigyoshaType"],
+                            "1",
+                            "#114211",
+                            "2",
+                            "#333958",
+                            "3",
+                            "#687943",
+                            "4",
+                            "#80663a",
+                            "5",
+                            "#6a1a47",
+                            "#114211"
+                        ],
+                        "line-width": [
+                            "match",
+                            ["get", "jigyoshaType"],
+                            "1",
+                            2,
+                            1.5
+                        ],
+                        "line-dasharray": [3,2]
+                    },
+                    layout: {
+                        visibility: mapState["rail" + n] ? "visible" : "none"
+                    },
+                }, {
+                    id: "railroad_point",
+                    source: "railroad",
+                    "source-layer": "point",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])]
+                    ],
+                    minzoom: 10,
+                    type: "circle",
+                    paint: {
+                        "circle-color": "#5d5d5d",
+                        "circle-radius": 3,
+                    },
+                    layout: {
+                        visibility: mapState["rail" + n] ? "visible" : "none"
+                    }
+                }, {
                     id: "line",
                     source: "line",
                     filter: [
@@ -598,7 +579,32 @@ async function init(){
                             2.5
                         ]
                     }
-                },{
+                }, {
+                    id: "railroad_label",
+                    source: "railroad",
+                    "source-layer": "point",
+                    filter: [
+                        "all",
+                        ["<=", "START", dateToStr(currentDate[n])],
+                        [">", "END", dateToStr(currentDate[n])]
+                    ],
+                    minzoom: 10,
+                    type: "symbol",
+                    layout: {
+                        "text-field": ["get", "name"],
+                        "text-font": ["Noto Sans CJK JP Regular"],
+                        "text-size": 12,
+                        "text-allow-overlap": true,
+                        "text-anchor": "left",
+                        "text-offset": [0.7,0],
+                        visibility: mapState["rail" + n] ? "visible" : "none"
+                    },
+                    paint: {
+                        "text-color": "#414eb5",
+                        "text-halo-color": "#ffffff",
+                        "text-halo-width": 2
+                    }
+                }, {
                     id: "label",
                     type: "symbol",
                     source: "name",
@@ -665,14 +671,7 @@ async function init(){
         
         map.addControl(new maplibregl.NavigationControl(), "top-right");
         map.addControl(new maplibregl.ScaleControl({maxWidth: 150}));
-        layerControl[n] = new MaplibreLayerControl(layers, postLoad).addTo(map);
-
-        if(mapState["did" + n]){
-            $(layerControl[n].window).find("input[value='" + layerControl[n].layers.findIndex(l=>{return l.id === "did"}) + "']")[0].click();
-        }
-        if(mapState["rail" + n]){
-            $(layerControl[n].window).find("input[value='" + layerControl[n].layers.findIndex(l=>{return l.id === "rail"}) + "']")[0].click();
-        }
+        layerControl[n] = new MaplibreLayerControl(layers).addTo(map);
 
         map.on("styledata", (e)=>{
             setMapState();
