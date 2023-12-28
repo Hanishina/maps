@@ -7,6 +7,8 @@
     height: 60px;
     box-shadow: 0 0 0 2px rgba(0,0,0,.1);
     font-size: 25px;
+    color: #333333;
+    padding: 0;
 }
 
 .maplibreLayerControl_button:hover{
@@ -21,10 +23,12 @@
 
 .maplibreLayerControl_closeBtn{
     background-color: #ffffff;
+    color: #333333;
     cursor: pointer;
     border: 1px solid #cccccc;
     width: 2em;
     height: 2em;
+    padding: 0;
 }
 
 .maplibreLayerControl_closeBtn:hover{
