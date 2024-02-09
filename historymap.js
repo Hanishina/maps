@@ -3,6 +3,7 @@ let geojsonBank = {};
 let currentDate = [];
 let dateSelectors = [];
 let layerControl = [];
+let filteredNames = [];
 
 let mapState = {
     x: 139.5,
@@ -65,7 +66,19 @@ async function init(){
     let lsMapState = JSON.parse(localStorage.getItem("hist_mapState")) ?? {};
 
     let pmProtocol = new pmtiles.Protocol();
-    maplibregl.addProtocol("pmtiles", pmProtocol.tile);
+    //maplibregl.addProtocol("pmtiles", pmProtocol.tile);
+    maplibregl.addProtocol('pmtiles', (request) => {
+        return new Promise((resolve, reject) => {
+            const callback = (err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({data});
+                }
+            };
+            pmProtocol.tile(request, callback);
+        });
+    });
 
     maps[0] = new maplibregl.Map({container: "mapA"});
     maps[1] = new maplibregl.Map({container: "mapB"});
@@ -210,9 +223,9 @@ async function init(){
         }
 
         let fillOpacity;
-        if(currentDate[n] < new Date("1947-05-03")){
+        if(currentDate[n] < new Date(1947, 4, 3)){
             fillOpacity = 0.3
-        }else if(currentDate[n] < new Date("1970-04-01")){
+        }else if(currentDate[n] < new Date(1970, 3, 1)){
             fillOpacity = [
                 "case",
                 ["boolean", ["feature-state", "clicked"], false],
@@ -687,7 +700,7 @@ async function init(){
         });
 
         map.on("click", "polygon", (e)=>{
-            console.log(e.features[0]);
+            //console.log(e.features[0]);
             other = Number(!n);
             if(clickedFeature[n] != null){
                 map.setFeatureState({
@@ -707,7 +720,17 @@ async function init(){
                 if(end == "2999-12-31"){end = "-";}
                 let name = (e.features[0].properties.NAME ?? e.features[0].properties.TYPE);
                 if(e.features[0].properties.CODE5 === "01223X"){name = name + "(歯舞群島)";}
-                let table = '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.features[0].properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.features[0].properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.features[0].properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';;
+                let yomi = "";
+                if(e.features[0].properties.CODE6){
+                    yomi = filteredNames[n].find(f=>{return f.code6 == [e.features[0].properties.CODE6]});
+                    if(yomi){
+                        yomi = yomi.yomi;
+                    }else{
+                        yomi = "???";
+                    }
+                }
+                let table = '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.features[0].properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.features[0].properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.features[0].properties.GUN ?? '') + '</td></tr><tr><th>読み</th><td>' + yomi + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
+                //let table = '<div class="tableTitle">' + name + '</div>' + '<table><tr><th>都道府県</th><td>' + (e.features[0].properties.KEN ?? '') + '</td></tr><tr><th>支庁</th><td>' + (e.features[0].properties.SHICHO ?? '') + '</td></tr><tr><th>郡</th><td>' + (e.features[0].properties.GUN ?? '') + '</td></tr><tr><th>開始</th><td>' + start + '</td></tr><tr><th>終了</th><td>' + end + '</td></tr></table>';
                 new maplibregl.Popup().setLngLat(e.lngLat).setHTML(table).addTo(map);
                 map.setFeatureState({
                     source: "polygon",
@@ -742,6 +765,8 @@ async function init(){
         if(!("GUNCOLOR" in geojsonBank.polygon.features[0].properties)){
             console.log("WARNING! : ポリゴンファイルにフィールド「GUNCOLOR」が存在しません。");
         }
+
+        nameFilter(n);
 
         if(n === 0){
             $("#loaderCoverA, #loaderBGA, #loaderA").css("display", "none");
@@ -805,9 +830,9 @@ function buttonClick(e){
 
     currentDate[n] = dateSelectors[n].commit();
     let fillOpacity;
-    if(currentDate[n] < new Date("1947-05-03")){
+    if(currentDate[n] < new Date(1947, 4, 3)){
         fillOpacity = 0.3
-    }else if(currentDate[n] < new Date("1970-04-01")){
+    }else if(currentDate[n] < new Date(1970, 3, 1)){
         fillOpacity = [
             "case",
             ["boolean", ["feature-state", "clicked"], false],
@@ -882,6 +907,8 @@ function buttonClick(e){
         ]);
     }
 
+    nameFilter(n);
+
     setMapState();
 
     if(n === 0){
@@ -889,6 +916,10 @@ function buttonClick(e){
     }else{
         $("#loaderCoverB, #loaderBGB, #loaderB").css("display", "none");
     }
+}
+
+function nameFilter(n){
+    filteredNames[n] = geojsonBank.name.features.filter((f)=>{return f.properties.start <= dateToStr(currentDate[n]) && (f.properties.end > dateToStr(currentDate[n]) || f.properties.end == "")}).map(f=>{return f.properties});
 }
 
 function dateToStr(date){

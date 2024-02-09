@@ -30,7 +30,7 @@ summary{
   cursor: pointer;
 }
 
-summary:after{
+summary:after :not(.maplibregl-ctrl-attrib-button){
   font-size: 14px;
   color: #666;
   content:'【クリックで展開】'
