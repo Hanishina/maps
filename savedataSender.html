@@ -8,9 +8,9 @@
             localStorage.setItem("test", JSON.stringify(item));
             console.log(localStorage.getItem("test"));
         }else{
-            const data = localStorage.getItem("test");
-            console.log(data);
-            window.parent.postMessage(JSON.parse(data), "https://hanishina.net");
+            const calc_data = localStorage.getItem("calc_saveData");
+            const visit_data = localStorage.getItem("visitlevel_saveData");
+            window.parent.postMessage({calc_data: calc_data, visit_data: visit_data}, "https://hanishina.net");
         }
 
     </script>
