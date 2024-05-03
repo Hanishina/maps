@@ -14,8 +14,8 @@
             console.log(localStorage.getItem("calc_saveData"));
             console.log(localStorage.getItem("visitlevel_saveData"));
         }else{
-            const calc_data = localStorage.getItem("calc_saveData");
-            const visit_data = localStorage.getItem("visitlevel_saveData");
+            let calc_data = localStorage.getItem("calc_saveData");
+            let visit_data = localStorage.getItem("visitlevel_saveData");
             if(calc_data == null || calc_data.length == 0){
                 calc_data = "nodata";
             }
