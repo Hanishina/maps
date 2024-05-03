@@ -6,7 +6,7 @@
   <meta name="description" content="市区町村を地図上で選んで、人口・面積など様々なデータの合計値を算出できるツールです。">
   <link rel="icon" href="favicon.ico" />
   <title>人口計算機</title>
-  <link rel="canonical" href="https://hanishina.github.io/maps/calculator.html"/>
+  <link rel="canonical" href="https://hanishina.net/maps/calculator.html"/>
     <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
   <script>
@@ -46,7 +46,7 @@
     <div class="title">市区町村人口計算機</div>
     <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./calculator_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
   </div>
-  <div>地図上で選択した市区町村の合計人口・合計面積などを算出します。</div>
+  <div>こちらは旧サイトです。新サイトは<a href="https://hanishina.net/maps/calculator.html">こちら</a></div>
 
   <div class="border">
     <div style="position: relative;">
@@ -194,6 +194,20 @@
     </div>
   </div>
 
+  <div id="noticeModal" style="display: none;">
+    <div style="color: #800; font-size: larger; font-weight: bold;">お知らせ：「市区町村人口計算機」は、新しいサイトに移転しました。</div>
+    <div>
+      新しいサイトはこちら：<br>
+      <span><a href="https://hanishina.net/maps/calculator.html" style="font-weight: bold;">https://hanishina.net/maps/calculator.html</a></span><br>
+      <br>
+      現在表示しているページは旧ページになります。<br>
+      ブラウザ内に保存されているセーブデータをダウンロードするため、一時的にこちらのページを残してあります。<br>
+      セーブデータの引き継ぎ方法について詳しくは<a href="https://hanishina.net/maps/savedatamanual.html" target="_blank">こちら</a>をご覧ください。<br>
+      今後、旧サイトは予告なく配信を停止する可能性があります。
+    </div>
+    <button id="noticeModal_close">閉じる</button>
+  </div>
+
   <div id="dialogCont">
     <div id="dialogBG"></div>
     <div id="dialog">
@@ -201,6 +215,5 @@
       <div id="dialogButtons"><input type="button"/><input type="button"/></div>
     </div>
   </div>
-
 </body>
 </html>

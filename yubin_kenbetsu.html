@@ -2,111 +2,12 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <!--<meta name="description" content="">-->
     <link rel="icon" href="favicon.ico" />
-    <title>都道府県別郵便番号地図</title>
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-ZC2WPE0KKJ');
-    </script>
-
-    <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <title>此処に地図地理Andbox在りき</title>
     <link href="historymap.css" rel="stylesheet" type="text/css">
-    <script>
-        function onload(){
-            let options = {
-                "全国(郵便番号上2桁)": "全国",
-                "東京都(区部)": "10",
-                "東京都(多摩・島嶼)": "18",
-                "神奈川県": "21",
-                "千葉県": "26",
-                "茨城県": "30",
-                "栃木県": "32",
-                "埼玉県": "33",
-                "群馬県": "37",
-                "長野県": "38",
-                "山梨県": "40",
-                "静岡県": "41",
-                "愛知県": "44",
-                "岐阜県": "50",
-                "三重県": "51",
-                "滋賀県": "52",
-                "大阪府": "53",
-                "京都府": "60",
-                "奈良県": "63",
-                "和歌山県": "64",
-                "兵庫県": "65",
-                "鳥取県・隠岐": "68",
-                "島根県": "69",
-                "岡山県": "70",
-                "広島県": "72",
-                "山口県": "74",
-                "香川県": "76",
-                "徳島県": "77",
-                "高知県": "78",
-                "愛媛県": "79",
-                "福岡県・壱岐・対馬": "80",
-                "佐賀県": "84",
-                "長崎県": "85",
-                "熊本県": "86",
-                "大分県": "87",
-                "宮崎県": "88",
-                "鹿児島県": "89",
-                "沖縄県": "90",
-                "福井県": "91",
-                "石川県": "92",
-                "富山県": "93",
-                "新潟県": "94",
-                "福島県": "96",
-                "宮城県": "98",
-                "山形県": "99",
-                "秋田県": "01",
-                "岩手県": "02",
-                "青森県": "03",
-                "北海道(渡島・檜山・後志)": "04",
-                "北海道(胆振・日高)": "05",
-                "北海道(石狩・空知南)": "06",
-                "北海道(空知北・留萌・上川南)": "07",
-                "北海道(十勝・釧路・根室)": "08",
-                "北海道(オホーツク・上川北・宗谷)": "09"
-            };
 
-            Object.keys(options).forEach((key)=>{
-                $("#mapselector").append("<option value='" + options[key] + "'>" + key + "</option>");
-            });
-
-            $("#mapselector").val("全国");
-            $("#mainimg").attr({src: "./img/yubin/全国.png"});
-
-            $("#mapselector").on("change", (e)=>{
-                $("#mainimg").attr({src: "./img/yubin/" + $("#mapselector").val() + ".png"});
-            });
-        }
-    </script>
+    <meta http-equiv="refresh" content="0;URL='https://hanishina.net/maps/yubin_kenbetsu.html'">
 </head>
-<body onload="onload()">
-    <div class="header">
-        <div class="title">都道府県別郵便番号地図</div>
-        <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
-    </div>
-    <div>
-        郵便番号の上5桁ごとに区分した都道府県別の地図です。<br>
-        資料：2023年度郵便番号簿(<a href="https://www.post.japanpost.jp/zipcode/" target="_blank">日本郵便HP</a>)<br>
-        郵便番号境界のGISデータダウンロードは<a href="./yubindata.html">こちら</a>
-    </div>
-    <div>
-        <select id="mapselector"></select>
-    </div>
-    <div>
-        <img id="mainimg" src="./img/yubin/全国.png" style="max-width: 100%;"/>
-    </div>
+<body>
 </body>
 </html>

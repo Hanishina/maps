@@ -204,21 +204,21 @@ async function init(){
             mapState["base" + n] = "paleMap";
         }
 
-        if(urlParams.get("label" + n) === "true" ?? lsMapState["label" + n] === "true"){
+        if(urlParams.get("label" + n) === "true" || (urlParams.get("label" + n) == null && lsMapState["label" + n] === true)){
             mapState["label" + n] = true;
         }
 
-        if(urlParams.get("color" + n) === "1" ?? lsMapState["color" + n] === "1"){
+        if(urlParams.get("color" + n) === "1" || (urlParams.get("color" + n) == null && lsMapState["color" + n] === 1)){
             mapState["color" + n] = 1;
-        }else if(urlParams.get("color" + n) === "2" ?? lsMapState["color" + n] === "2"){
+        }else if(urlParams.get("color" + n) === "2" || (urlParams.get("color" + n) == null && lsMapState["color" + n] === 2)){
             mapState["color" + n] = 2;
         }
 
-        if(urlParams.get("rail" + n) === "true" ?? lsMapState["rail" + n] === "true"){
+        if(urlParams.get("rail" + n) === "true" || (urlParams.get("rail" + n) == null && lsMapState["rail" + n] === true)){
             mapState["rail" + n] = true;
         }
 
-        if(urlParams.get("did" + n) === "true" ?? lsMapState["did" + n] === "true"){
+        if(urlParams.get("did" + n) === "true" || (urlParams.get("did" + n) == null && lsMapState["did" + n] === true)){
             mapState["did" + n] = true;
         }
 
@@ -779,7 +779,7 @@ async function init(){
 
     let dual = $("#dual");
     dual.on("change", changeDisplay);
-    if(urlParams.get("dual") === "true" ?? lsMapState.dual === "true"){
+    if(urlParams.get("dual") === "true" || (urlParams.get("dual") == null && lsMapState.dual === true)){
         dual[0].checked = true;
     }else{
         dual[0].checked = false;

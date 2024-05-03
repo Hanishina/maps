@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="favicon.ico" />
+    <title>ダウンロード(郵便番号境界データ)</title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZC2WPE0KKJ');
+    </script>
+    <link href="historymap.css" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="title">郵便番号境界データ</div>
+        <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+    </div>
+    <div>
+        <img src="./img/yubindl1.png" style="max-height: 60vh"></img>
+        <img src="./img/yubindl2.png" style="max-height: 60vh"></img>
+    </div>
+    <div>
+        <h2>このデータについて</h2>
+        全国を郵便番号の上5桁に基づいて区分した境界データです。<br>
+        shapefile形式、geojson形式のいずれかでダウンロードできます。GISソフト等で読み込んでご利用ください。<br>
+        <br>
+        2023/3/11　郵便番号境界データ公開<br>
+        2023/8/29　調整版郵便区データ公開<br>
+        2023/12/10　データ更新
+    </div>
+    <div>
+        <h2>ダウンロード</h2>
+        <div><a href="./UploadFiles/yubinbango.shp.zip" download>郵便番号境界データ(shapefile)</a></div>
+        <div><a href="./UploadFiles/yubinbango.geojson.zip" download>郵便番号境界データ(geojson)</a></div>
+        <br>
+        <div>▼区域調整版郵便区データ(ページ下部の解説を参照)</div>
+        <div><a href="./UploadFiles/yubinku_edit.shp.zip" download>調整版郵便区データ(shapefile)</a></div>
+        <div><a href="./UploadFiles/yubinku_edit.geojson.zip" download>調整版郵便区データ(geojson)</a></div>
+    </div>
+    <div>
+        <h2>ジオメトリ</h2>
+        マルチポリゴン形式のデータです。<br>
+        各ポリゴンは、「市区町村」「郵便番号の上5桁」「集配局の管轄区域」のうち、最も小さい単位で区分されています。<br>
+        例えば「集配局の管轄区域」を単位とするポリゴンを得たい場合、属性値による結合作業を行う必要があります。<br>
+        郵便番号上5桁は、高層ビル専用番号・事業所個別番号・集配局の郵便番号等の特殊な番号を除きます。
+    </div>
+    <div>
+        <h2>属性</h2>
+        <table>
+            <tr><th>ken</th><td>ポリゴンの都道府県名。</td></tr>
+            <tr><th>shichoson</th><td>ポリゴンの市区町村名。</td></tr>
+            <tr><th>jichi_code</th><td>市区町村の自治体コード(5桁)。</td></tr>
+            <tr><th>zip_pre</th><td>郵便番号の1・2・3桁目。</td></tr>
+            <tr><th>zip_mid</th><td>郵便番号の4・5桁目。</td></tr>
+            <tr><th>3keta</th><td>郵便区番号の桁数を格納する属性(boolean)<br>1:郵便区番号が3桁<br>0:郵便区番号が5桁</td></tr>
+            <tr><th>shuhaikyok</th><td>管轄する集配局名。</td></tr>
+            <tr><th>kyoku_ken</th><td>集配局の所在都道府県名(同名の集配局の区別用。)</td></tr>
+        </table>
+        <b>※郵便区番号について</b><br>
+        郵便番号のうち、集配局区分の基準となる部分を「郵便区番号」と呼びます。<br>
+        郵便区番号は「郵便番号の上3桁」を指す地域と「郵便番号の上5桁」を指す地域があります。<br>
+        これらは7桁化以前の旧郵便番号(3桁・5桁)に対応するものです。<br>
+        当データでは、郵便区番号の桁数を格納する属性を設定しています。(また、郵便区番号が3桁の地域に関しても4・5桁目のデータを格納しています。)<br>
+
+        (参考：<a href="https://www.post.japanpost.jp/zipcode/zipmanual/p04.html" target="_blank">郵便番号・バーコードマニュアル</a>)
+    </div>
+    <div>
+        <h2>区域調整版郵便区データについて</h2>
+        <img src="./img/yubindl3.png" style="max-height: 60vh"></img><br>
+        「<a href="./yubinbangogacha.html">郵便番号ガチャ</a>」のコンテンツで使用している、郵便区ごとに地域を区分したデータです。<br>
+        郵便区は通常郵便区番号によって区分されますが、実質的に同じ郵便区でありながら都合上異なる郵便区番号が設定されている地域があります。<br>
+        こうした地域を当サイト独自の基準により統合し、同一の郵便区としてまとめたデータになります。<br>
+        「郵便番号境界データ」との相違点は、一部のポリゴンが統合されているほか、収録する属性値(以下の表のとおり)が異なります。<br>
+        (注：ここでいう「郵便区」は、当サイト独自に使用しているものです。日本郵便が使用している用語の定義とは異なります。)
+        <table>
+            <tr><th>code</th><td>郵便番号の上5桁。複数の番号をまとめた郵便区の場合、代表するひとつのみを表示。</td></tr>
+            <tr><th>name</th><td>郵便区の名称。原則その地域の集配を担当する(担当していた)郵便局の名前を用いたが、独自に命名したものもある。</td></tr>
+            <tr><th>yomi</th><td>郵便局名称の読み方。</td></tr>
+            <tr><th>ken</th><td>都道府県の名称。複数県にまたがる郵便区は、集配局が所在する県。</td></tr>
+            <tr><th>area</th><td>管轄する地域。その市区町村の一部のみが含まれる場合、市区町村名の後に[]を付して地域名を記入した。例：中央市[玉穂・田富]、昭和町</td></tr>
+            <tr><th>fullcode</th><td>その郵便区の郵便番号上5桁を列挙したもの。単体の郵便区番号からなる地域は「code」と同一。複数の郵便区番号からなる地域は複数の番号を「/」で繋いだ文字列。例：52000/52008</td></tr>
+        </table>
+    </div>
+    <div>
+        <h2>データ出典</h2>
+        郵便番号および管轄集配局：<a href="https://www.post.japanpost.jp/zipcode/" target="_blank">日本郵便：郵便番号簿</a><br>
+        管轄集配局のデータは2023年7月時点の情報に基づきます。ただし、静岡県浜松市の行政区に関しては2024年1月1日時点のものです。
+    </div>
+    <div>
+        <h2>利用について</h2>
+        このデータは、目的を問わず利用・改変・再配布可能です。<br>
+        データには誤りを含む可能性があります。このデータを使用したことにより発生した損害等については責任を負いかねます。<br>
+        データについてお気づきの点があればご連絡ください。<br>
+        データ作成：はにしな　<a href="https://twitter.com/hanishina?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @hanishina</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> <br>
+    </div>
+</body>

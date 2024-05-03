@@ -26,6 +26,7 @@ let dragStart = {x:0, y:0};
 let saveDataArr = [];
 let currentSave;
 let saveModal_prevTab = "tab1";
+let oldSaveData;
 
 let geojsonFiles = {};
 let csvObjs = {};
@@ -461,6 +462,11 @@ function getCsvData(mainObj, index, ignoreZero = false){
 }
 
 async function init(){
+  let temp = $("<div>").attr({id: "dummy"});
+  temp.appendTo($(document.body));
+  $("#dummy").modaal({content_source: "#noticeModal"});
+  $("#dummy").modaal("open");
+  $("#noticeModal_close").on("click", function(){$("#dummy").modaal("close")});
 
   /*--- mapの初期化処理 ---*/
 
@@ -702,8 +708,8 @@ async function init(){
   saveDataTableRedraw();
 
   table.on("click", ".slot", e=>{
-    table.children().removeAttr("style selected");
-    $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+    table.children().removeClass("selected").removeAttr("selected");
+    $(e.currentTarget).addClass("selected").attr({selected: 1});
   });
 
   table.on("click", ".slot .delete", e=>{
@@ -724,9 +730,9 @@ async function init(){
 
   $("#importDataTable").on("click", ".slot", e=>{
     if($(e.currentTarget).attr("selected")){
-      $(e.currentTarget).removeAttr("style selected");
+      $(e.currentTarget).removeClass("selected").removeAttr("selected");
     }else{
-      $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+      $(e.currentTarget).addClass("selected").attr({selected: 1});
     }
 
     if($("#importDataTable").find("[selected]").length){

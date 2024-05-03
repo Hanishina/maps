@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>市の人口推移グラフ</title>
+  <link rel="icon" href="favicon.ico" />
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZC2WPE0KKJ');
+  </script>
+
+  <link href="historymap.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+  <script src="./graph/graph.js"></script>
+</head>
+
+<body>
+  <div class="header">
+    <div class="title">市の人口推移グラフ</div>
+    <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
+  </div>
+  <div>
+    1960年～2020年の各市の人口推移をグラフに表したものです。<br>
+    人口データは国勢調査によるもので、調査当時の市域における人口を示します。グラフ上の破線はこの期間に合併があったことを示しています。<br>
+    マウスホイール、または右側のボタン/スライダーで縦軸の倍率を変更できます。グラフ上の点にカーソルを重ねるとポップアップで人口を表示します。(最終更新　2021/12)
+  </div>
+  <div>
+    表示する都道府県：<select id="select" name="ken" style="margin: 10px;"></select>
+  </div>
+  <div>
+    <object id="graphA" data="./graph/graphA.svg" type="image/svg+xml"></object>
+  </div>
+
+</body>
+</html>

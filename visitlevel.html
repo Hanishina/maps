@@ -7,8 +7,8 @@
 
   <meta property="og:title" content="市区町村訪問ポイント"/>
   <meta property="og:description" content="あなたが訪問した市区町村から「訪問ポイント」を算出します。"/>
-  <meta property="og:image" content="https://hanishina.github.io/maps/img/visitlevel.png"/>
-  <meta property="og:url" content="https://hanishina.github.io/maps/visitlevel.html"/>
+  <meta property="og:image" content="https://hanishina.net/maps/img/visitlevel.png"/>
+  <meta property="og:url" content="https://hanishina.net/maps/visitlevel.html"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="地図地理Sandbox"/>
   <meta name="twitter:card" content="summary"/>
@@ -16,7 +16,7 @@
 
   <link rel="icon" href="favicon.ico" />
   <title>市区町村訪問ポイント</title>
-  <link rel="canonical" href="https://hanishina.github.io/maps/visitlevel.html"/>
+  <link rel="canonical" href="https://hanishina.net/maps/visitlevel.html"/>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
   <script>
@@ -51,7 +51,7 @@
         <div><i class="far fa-question-circle" style="color: #05a"></i><a href="./visitlevel_manual.html" target="_blank">このページについて(操作説明)</a> / <i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a></div>
     </div>
     <div>
-      あなたが行ったことのある市区町村をクリックしてください。「訪問ポイント」を算出します。<br>
+      こちらは旧サイトです。新サイトは<a href="https://hanishina.net/maps/visitlevel.html">こちら</a><br>
       <span id="ifUrlParams" style="display:none; color:#800">(他の人の訪問ポイントが表示されている場合は、「リセット」ボタンをクリックしてからあなたの訪問市区町村を選択してください。)</span>
     </div>
     <div id="flexbox" style="display: flex;">
@@ -133,6 +133,20 @@
       <div style="color: #555">「結果をツイートする」ボタンを押すか、下のメッセージをコピーしてSNSの投稿画面に貼り付けてください。</div>
       <textarea id="shareContent" rows="10" style="width:100%;"></textarea>
       <button class="btn_twitter"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイートする</button>
+    </div>
+
+    <div id="noticeModal" style="display: none;">
+      <div style="color: #800; font-size: larger; font-weight: bold;">お知らせ：「市区町村訪問ポイント」は、新しいサイトに移転しました。</div>
+      <div>
+        新しいサイトはこちら：<br>
+        <span><a href="https://hanishina.net/maps/visitlevel.html" style="font-weight: bold;">https://hanishina.net/maps/visitlevel.html</a></span><br>
+        <br>
+        現在表示しているページは旧ページになります。<br>
+        ブラウザ内に保存されているセーブデータをダウンロードするため、一時的にこちらのページを残してあります。<br>
+        セーブデータの引き継ぎ方法について詳しくは<a href="https://hanishina.net/maps/savedatamanual.html" target="_blank">こちら</a>をご覧ください。<br>
+        今後、旧サイトは予告なく配信を停止する可能性があります。
+      </div>
+      <button id="noticeModal_close">閉じる</button>
     </div>
 
     <div id="dialogCont">

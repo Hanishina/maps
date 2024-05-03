@@ -201,7 +201,7 @@ div.historymapImg{
   position: relative;
   width: 800px;
   height: 500px;
-  background: url("./img/historymap.jpg");
+  background: url("./img/historymap.png");
   background-size: cover;
   background-position: 50% 50%;
   box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
@@ -211,7 +211,7 @@ div.calcImg{
   position: relative;
   width: 800px;
   height: 500px;
-  background: url("./img/calc.jpg");
+  background: url("./img/calc.png");
   background-size: cover;
   background-position: 50% 50%;
   box-shadow: inset 0px 80px 50px 0 rgba(0, 0, 0, 0.5);
@@ -555,12 +555,21 @@ div.chartContainer{
   padding: 3px;
 }
 
-#saveTable .slot{
+#saveTable .slot:not(.selected){
   background-color: #e9f7ff;
 }
 
-#loadTable .slot{
+#loadTable .slot:not(.selected){
   background-color: #e9ffdf;
+}
+
+#importDataTable .slot:not(.selected),#receiveDataTable .slot:not(.selected){
+  background-color: #dadada;
+}
+
+.saveTable .selected{
+  background-color: #feffde;
+  box-shadow: inset 0px 0px 0px 2px #ff0000;
 }
 
 .saveTable .slot div:nth-child(1){

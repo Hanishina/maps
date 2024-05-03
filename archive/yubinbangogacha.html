@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="全国を郵便番号により区分した郵便区からランダムでひとつ表示します。">
+    <link rel="icon" href="favicon.ico" />
+    <title>郵便番号ガチャ</title>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZC2WPE0KKJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-ZC2WPE0KKJ');
+    </script>
+
+    <link href="./Plugins/modaal.min.css" rel="stylesheet"  type="text/css"/>
+    <script src="https://kit.fontawesome.com/04cffbc1d1.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./Plugins/modaal.min.js"></script>
+    <link href="historymap.css" rel="stylesheet" type="text/css">
+    <style>
+        .maintable{
+            width: 400px;
+            max-width: 95vw;
+            text-align: center;
+            border: 2px solid #555;
+        }
+        .maintable>div{
+            border: 1px solid #555;
+        }
+        #histTable tr td{
+            cursor: pointer;
+        }
+        #histTable tr:hover td{
+            background-color: #eee;
+        }
+    </style>
+    <script>
+        const KenCode = [{"ken" : "北海道", "code" : 1}, {"ken" : "青森県", "code" : 2}, {"ken" : "岩手県", "code" : 3}, {"ken" : "宮城県", "code" : 4}, {"ken" : "秋田県", "code" : 5}, {"ken" : "山形県", "code" : 6}, {"ken" : "福島県", "code" : 7}, {"ken" : "茨城県", "code" : 8}, {"ken" : "栃木県", "code" : 9}, {"ken" : "群馬県", "code" : 10}, {"ken" : "埼玉県", "code" : 11}, {"ken" : "千葉県", "code" : 12}, {"ken" : "東京都", "code" : 13}, {"ken" : "神奈川県", "code" : 14}, {"ken" : "新潟県", "code" : 15}, {"ken" : "富山県", "code" : 16}, {"ken" : "石川県", "code" : 17}, {"ken" : "福井県", "code" : 18}, {"ken" : "山梨県", "code" : 19}, {"ken" : "長野県", "code" : 20}, {"ken" : "岐阜県", "code" : 21}, {"ken" : "静岡県", "code" : 22}, {"ken" : "愛知県", "code" : 23}, {"ken" : "三重県", "code" : 24}, {"ken" : "滋賀県", "code" : 25}, {"ken" : "京都府", "code" : 26}, {"ken" : "大阪府", "code" : 27}, {"ken" : "兵庫県", "code" : 28}, {"ken" : "奈良県", "code" : 29}, {"ken" : "和歌山県", "code" : 30}, {"ken" : "鳥取県", "code" : 31}, {"ken" : "島根県", "code" : 32}, {"ken" : "岡山県", "code" : 33}, {"ken" : "広島県", "code" : 34}, {"ken" : "山口県", "code" : 35}, {"ken" : "徳島県", "code" : 36}, {"ken" : "香川県", "code" : 37}, {"ken" : "愛媛県", "code" : 38}, {"ken" : "高知県", "code" : 39}, {"ken" : "福岡県", "code" : 40}, {"ken" : "佐賀県", "code" : 41}, {"ken" : "長崎県", "code" : 42}, {"ken" : "熊本県", "code" : 43}, {"ken" : "大分県", "code" : 44}, {"ken" : "宮崎県", "code" : 45}, {"ken" : "鹿児島県", "code" : 46}, {"ken" : "沖縄県", "code" : 47}];
+        let csv;
+        let csvf;
+        let hist = [];
+        let twObj;
+        let buffer;
+
+        let startFlg = false;
+        let reserved;
+        let rouletteId;
+        async function onload(){
+            csv = await getCsv("郵便番号.csv");
+            csvf = csv.filter(e=>{return e["alias"] == ""});
+
+            $("#btn").on("click", e=>{
+                if(startFlg){
+                    stopRoulette();
+                }else{
+                    roulette();
+                }
+                
+            });
+            $("#twBtn").on("click", e=>{
+                if(twObj){
+                    let bango = twObj["fullcode"].split("/").map(e=>{return e.substring(0,3) + "-" + e.substring(3,5) + "XX"}).join(",");
+                    let yubinku = twObj["name"] + "<" + twObj["yomi"] + ">" + "(" + twObj["ken"] + ")";
+                    let path = "https://twitter.com/intent/tweet?text=" + encodeURIComponent("【郵便番号ガチャ】\n〒"+bango+"\n郵便区名："+yubinku+"\n地域："+twObj["area"]+"\n\nhttps://hanishina.github.io/maps/yubinbangogacha.html");
+                    window.open(path, "_blank");
+                }
+            });
+            $("#aboutBtn").modaal({
+                content_source: "#aboutMod"
+            });
+            $("#confBtn").modaal({
+                content_source: "#confMod",
+                before_close: kenChecked
+            });
+            $("#histBtn").modaal({
+                content_source: "#histMod",
+                before_open: histTable
+            });
+            $("#areaListBtn").modaal({
+                content_source: "#areaListMod",
+                before_open: areaListTable
+            });
+
+            KenCode.forEach(obj=>{
+                $("<div>").css({margin: "5px"}).append($("<label>").append($("<input>").attr({type: "checkbox", name: "ken", value: obj["ken"]})).append(obj["ken"])).appendTo("#kenInputs")
+            });
+
+            console.info("隠しコマンド(コンソール上で実行可能)：\n「set('10000')」のように入力すると、指定した番号を表示します。\n「reserve('10000')」のように入力すると、次にSTOPボタンを押したときに指定した番号が必ず出ます。");
+        }
+
+        async function getCsv(name){
+            let path = "./csv/" + name;
+            csvText = await $.get(path);
+            let tempArr = csvText.split(/\r\n|\r|\n/g);
+            let csvArr = [];
+            let columnNames;
+            tempArr.forEach((item, i)=>{
+                if(i == 0){
+                columnNames = item.split(",");
+                }else if(item){
+                let obj = {};
+                item.split(",").forEach((val, j)=>{
+                    obj[columnNames[j]] = val;
+                });
+                csvArr.push(obj);
+                }
+            });
+            return csvArr;
+        }
+
+        function set(bango, addHistory=true){
+            stopRoulette(bango, addHistory);
+        }
+
+        function reserve(bango){
+            reserved = csv.filter(e=>{return e["code"] == bango})[0];
+            if(reserved["alias"]){
+                reserved = csvf.filter(e=>{return e["code"] == reserved["alias"]})[0];
+            }
+        }
+
+        function roulette(){
+            $("#mapImg").attr({src: ""}).hide();
+            $("#areaListBtn").hide();
+            $("#btn").text("STOP!");
+            startFlg = true;
+            buffer = null;
+            rouletteId = setInterval(()=>{
+                let selection = csvf[Math.floor(Math.random()*csvf.length)];
+
+                let codes = selection["fullcode"].split("/");
+                $("#bango").text("");
+                codes.forEach(c=>{
+                    if($("#bango").text()){
+                        $("#bango").html($("#bango").html() + "<br>" + c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                    }else{
+                        $("#bango").html(c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                    }
+                    
+                });
+                $("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["yomi"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+                //$("#yubinku").text(selection["name"] + "(" + selection["ken"] + ")");
+                $("#area").text(selection["area"]);
+            }, 50);
+        }
+
+        function stopRoulette(bango, addHistory=true){
+            clearInterval(rouletteId);
+            $("#btn").text("START");
+            $("#areaListBtn").show();
+            startFlg = false;
+            buffer = null;
+            let selection = csvf[Math.floor(Math.random()*csvf.length)];
+            if(bango){
+                selection = csv.filter(e=>{return e["code"] == bango})[0];
+                if(selection["alias"]){
+                    selection = csvf.filter(e=>{return e["code"] == selection["alias"]})[0];
+                }
+            }else if(reserved){
+                selection = reserved;
+                reserved = "";
+            }
+            console.log(selection);
+
+            let codes = selection["fullcode"].split("/");
+            $("#bango").text("");
+            codes.forEach(c=>{
+                if($("#bango").text()){
+                    $("#bango").html($("#bango").html() + "<br>" + c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                }else{
+                    $("#bango").html(c.substring(0,3) + "-" + c.substring(3,5) + "XX");
+                }
+                
+            });
+            $("#yubinku").html("<ruby>" + selection["name"] + "<rt>" + selection["yomi"] + "</rt>" + "</ruby>" + "(" + selection["ken"] + ")");
+            //$("#yubinku").html(selection["name"] + "(" + selection["ken"] + ")");
+            $("#area").text(selection["area"]);
+            $("#mapImg").attr({src: "https://hanishina.net/maps/img/yubinku/" + selection["code"] + ".jpg"});
+            $("#mapImg").show();
+            if(addHistory){
+                hist.push(selection);
+            }
+            twObj = selection;
+        }
+
+        function histTable(){
+            let tbl = $("#histTable");
+            tbl.empty();
+            tbl.html("<tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>");
+            hist.forEach(data=>{
+                let tr = $("<tr>").attr({code: data["code"]});
+                $("<td>").text(data["fullcode"]).appendTo(tr);
+                $("<td>").text(data["name"] + "(" + data["ken"] + ")").appendTo(tr);
+                $("<td>").text(data["area"]).appendTo(tr);
+                tr.appendTo(tbl);
+                tr.on("click", e=>{
+                    set($(e.currentTarget).attr("code"), false);
+                });
+            });
+        }
+
+        async function areaListTable(){
+            $("#areaListTable").empty();
+            $("#areaListMsg").text("読み込み中…").show();
+            if(!buffer){
+                buffer = await $.getJSON("https://hanishina.net/maps/php/yubinbangoapi.php?f=" + twObj["fullcode"]);
+            }
+            $("#areaListMsg").hide()
+            if(buffer){
+                let tr = $("<tr>");
+                $("<th>").text("郵便番号").appendTo(tr);
+                $("<th>").text("都道府県").appendTo(tr);
+                $("<th>").text("市区町村").appendTo(tr);
+                $("<th>").text("町域").appendTo(tr);
+                tr.appendTo($("#areaListTable"));
+                buffer.sort((a,b)=>{return a["bango"] - b["bango"]});
+                buffer.forEach(r=>{
+                    let tr = $("<tr>");
+                    $("<td>").text(r["bango"].substring(0,3) + "-" + r["bango"].substring(3,7)).appendTo(tr);
+                    $("<td>").text(r["ken"]).attr({title: r["ken_kana"]}).appendTo(tr);
+                    $("<td>").text(r["shi"]).attr({title: r["shi_kana"]}).appendTo(tr);
+                    $("<td>").text(r["choiki"]).attr({title: r["choiki_kana"]}).appendTo(tr);
+                    tr.appendTo($("#areaListTable"));
+                });
+            }else{
+                $("#areaListMsg").text("データを読み込めませんでした。");
+                console.log(buffer);
+            }
+        }
+
+        function ken(...kenArr){
+            if(kenArr.length == 0){
+                csvf = csv.filter(e=>{return e["alias"] == ""});
+            }else{
+                csvf = csv.filter(e=>{return e["alias"] == "" && kenArr.includes(e["ken"])});
+            } 
+        }
+
+        function kenChecked(){
+            let checked = $(":checkbox[name='ken']:checked");
+            if(checked.length == 0 || checked.length == 47){
+                ken();
+            }else{
+                let kenArr = [];
+                checked.each(function(){
+                    kenArr.push($(this).val());
+                });
+                ken(...kenArr);
+            }
+        }
+
+    </script>
+</head>
+<body onload="onload()">
+    <div class="header">
+        <div class="title">郵便番号ガチャ</div>
+        <div><i class="fas fa-home" style="color: #05a"></i><a href="./">トップページ</a>　関連：<a href="./yubin_kenbetsu.html">都道府県別郵便番号地図</a></div>
+    </div>
+    <div style="width: 400px; max-width: 100%; position: relative;">
+        <button id="btn" style="font-size: x-large; margin: 3px;">START</button><button id="twBtn" style="position: absolute; right: 0; bottom: 0;"><i class="fab fa-twitter" style="color: #1d9bf0"></i>結果をツイート</button>
+    </div>
+    <div class="maintable">
+        <div style="background-color: #cbd3ff;">郵便番号</div>
+        <div id="bango" style="font-size: xx-large; font-weight: bold; color: #770000;">　</div>
+        <div style="background-color: #cbd3ff;">郵便区名</div>
+        <div id="yubinku" style="font-weight: bold;"><ruby>　<rt>　</rt></ruby></div>
+        <div style="background-color: #cbd3ff; position:relative;">地域<button id="areaListBtn" style="position: absolute; right: 0; display: none;">町域一覧</button></div>
+        <div id="area">　</div>
+    </div>
+    <div><img id="mapImg" style="width: 500px; max-width: 100%; display: none;"></div>
+    <div style="width: 400px; max-width: 100%;"><button id="aboutBtn" style="width: 30%; margin: 5px;">説明</button><button id="confBtn" style="width: 30%; margin: 5px;">設定</button><button id="histBtn" style="width: 30%; margin: 5px;">履歴</button></div>
+
+    <div id="aboutMod" style="display: none;">
+        <div>
+            全国を郵便番号により区分した郵便区からランダムでひとつ表示します。<br>
+            <b>START</b>ボタンを押すとルーレットを開始します。<b>STOP!</b>ボタンで止まります。<br>
+            「郵便区」は、ここでは「郵便番号の上5桁が同じ地域」を指すものとします。ただし、いくつかの地域に関しては郵便番号上5桁が異なる複数の地域をひとつにまとめています。
+        </div>
+        <div>
+            <h3>郵便番号</h3>
+            該当地域の郵便番号上5桁。複数の郵便番号をまとめて表示する場合もあります。<br>
+            ※町域に振られる番号のみ。建物に対して振られる番号(高層ビル用番号、事業所個別番号、集配郵便局の番号など)は対象外。
+        </div>
+        <div>
+            <h3>郵便区名</h3>
+            該当地域の名前。原則として、その地域の集配を担当する(担当していた)集配局の名前としています。<br>
+            ※現在の集配局とは異なる場合がある。現在の集配局については「<a href="./yubin_kenbetsu.html" target="_blank">都道府県別郵便番号地図</a>」を参照。
+        </div>
+        <div>
+            <h3>地域</h3>
+            該当する地域。市町村名の後に[]がつくものは、その市町村の一部。[]がないものはその市町村の全域が該当します。<br>
+            「町域一覧」ボタンをクリックすると該当する町域の一覧表が表示されます。
+        </div>
+        <div>
+            <h3>地図</h3>
+            該当地域が赤色で表示されます。
+        </div>
+    </div>
+
+    <div id="confMod" style="display: none;">
+        <div>対象になる都道府県を選択できます。全てのチェックを外すか全てにチェックを入れると全都道府県が対象になります。</div>
+        <div id="kenInputs" style="display: flex; flex-wrap: wrap"></div>
+    </div>
+
+    <div id="histMod" style="display: none;">
+        <div style="overflow-y: scroll; max-height: 80vh;"><table id="histTable">
+            <tr><th>郵便番号</th><th>郵便区名</th><th>地域</th></tr>
+        </table></div>
+    </div>
+
+    <div id="areaListMod" style="display: none;">
+        <div style="color: #555; font-size: small;"><a href="https://www.post.japanpost.jp/zipcode/dl/utf-zip.html" target="_blank">日本郵便HP:郵便番号データ</a>(2023/07/31現在)を使用しています</div>
+        <div style="overflow-y: scroll; max-height: 80vh;"><div id="areaListMsg" style="display: none;"></div><table id="areaListTable">
+        </table></div>
+    </div>
+</body>
+</html>

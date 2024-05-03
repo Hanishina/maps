@@ -12,6 +12,7 @@ let selectedFeatures = [];
 let currentSave;
 let saveDataArr = [];
 let saveModal_prevTab = "tab1";
+let oldSaveData;
 
 let pattern;
 const Color = ["", "#a24cc2", "#7575f0", "#3e9cfe", "#18d7cb", "#48f882", "#a4fc3c", "#e2dc38", "#fea331", "#ef5911", "#c22403"];
@@ -19,6 +20,12 @@ const Color = ["", "#a24cc2", "#7575f0", "#3e9cfe", "#18d7cb", "#48f882", "#a4fc
 const Pref = [{"ken" : "北海道", "code" : "01"}, {"ken" : "青森県", "code" : "02"}, {"ken" : "岩手県", "code" : "03"}, {"ken" : "宮城県", "code" : "04"}, {"ken" : "秋田県", "code" : "05"}, {"ken" : "山形県", "code" : "06"}, {"ken" : "福島県", "code" : "07"}, {"ken" : "茨城県", "code" : "08"}, {"ken" : "栃木県", "code" : "09"}, {"ken" : "群馬県", "code" : "10"}, {"ken" : "埼玉県", "code" : "11"}, {"ken" : "千葉県", "code" : "12"}, {"ken" : "東京都", "code" : "13"}, {"ken" : "神奈川県", "code" : "14"}, {"ken" : "新潟県", "code" : "15"}, {"ken" : "富山県", "code" : "16"}, {"ken" : "石川県", "code" : "17"}, {"ken" : "福井県", "code" : "18"}, {"ken" : "山梨県", "code" : "19"}, {"ken" : "長野県", "code" : "20"}, {"ken" : "岐阜県", "code" : "21"}, {"ken" : "静岡県", "code" : "22"}, {"ken" : "愛知県", "code" : "23"}, {"ken" : "三重県", "code" : "24"}, {"ken" : "滋賀県", "code" : "25"}, {"ken" : "京都府", "code" : "26"}, {"ken" : "大阪府", "code" : "27"}, {"ken" : "兵庫県", "code" : "28"}, {"ken" : "奈良県", "code" : "29"}, {"ken" : "和歌山県", "code" : "30"}, {"ken" : "鳥取県", "code" : "31"}, {"ken" : "島根県", "code" : "32"}, {"ken" : "岡山県", "code" : "33"}, {"ken" : "広島県", "code" : "34"}, {"ken" : "山口県", "code" : "35"}, {"ken" : "徳島県", "code" : "36"}, {"ken" : "香川県", "code" : "37"}, {"ken" : "愛媛県", "code" : "38"}, {"ken" : "高知県", "code" : "39"}, {"ken" : "福岡県", "code" : "40"}, {"ken" : "佐賀県", "code" : "41"}, {"ken" : "長崎県", "code" : "42"}, {"ken" : "熊本県", "code" : "43"}, {"ken" : "大分県", "code" : "44"}, {"ken" : "宮崎県", "code" : "45"}, {"ken" : "鹿児島県", "code" : "46"}, {"ken" : "沖縄県", "code" : "47"}];
 
 async function init(){
+    let temp = $("<div>").attr({id: "dummy"});
+    temp.appendTo($(document.body));
+    $("#dummy").modaal({content_source: "#noticeModal"});
+    $("#dummy").modaal("open");
+    $("#noticeModal_close").on("click", function(){$("#dummy").modaal("close")});
+
     map = L.map("map", {zoomControl: false, doubleClickZoom: false});
     map.setView([35, 137], 8);
     map.setMinZoom(5);
@@ -309,8 +316,8 @@ async function init(){
     saveDataTableRedraw();
     
     table.on("click", ".slot", e=>{
-        table.children().removeAttr("style selected");
-        $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+        table.children().removeClass("selected").removeAttr("selected");
+        $(e.currentTarget).addClass("selected").attr({selected: 1});
     });
     
     table.on("click", ".slot .delete", e=>{
@@ -331,9 +338,9 @@ async function init(){
 
     $("#importDataTable").on("click", ".slot", e=>{
         if($(e.currentTarget).attr("selected")){
-            $(e.currentTarget).removeAttr("style selected");
+            $(e.currentTarget).removeClass("selected").removeAttr("selected");
         }else{
-            $(e.currentTarget).css({backgroundColor: "#feffde", "box-shadow": "inset 0px 0px 0px 2px #ff0000"}).attr({selected: 1});
+            $(e.currentTarget).addClass("selected").attr({selected: 1});
         }
     
         if($("#importDataTable").find("[selected]").length){
@@ -342,7 +349,6 @@ async function init(){
             $("#importBtn").attr({"valid": 0});
         }
     });
-    
     
     $("#saveModal").find(".cancel").on("click", ()=>{
         $("#savebtn").modaal("close");
@@ -683,7 +689,7 @@ function importFileOnChange(e){
 
                         slot = $("<div>").attr({class: "slot", value: i}).appendTo($("#importDataTable"));
                         $("<div>").text(d.name).appendTo(slot);
-                        $("<div>").text(d.groupNames).appendTo(slot);
+                        $("<div>").text(d.points + " pt").appendTo(slot);
                         $("<div>").text(dateFormat(new Date(d.createTime))).appendTo(slot);
                         slot.click();
                     });
@@ -713,9 +719,9 @@ function shareModal(){
     let point = selectedFeatures.reduce((sum, f)=>{return sum+Number(f.visit_diff)}, 0);
     if($("input[value='withcode']").prop("checked")){
         let code = codecomp_encode(selectedFeatures.map(f=>{return f.CODE5}));
-        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n(リンクから訪問市区町村の一覧を確認できます。)\n\n#市区町村訪問ポイント\nhttps://hanishina.github.io/maps/visitlevel.html?list=" + code);
+        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n(リンクから訪問市区町村の一覧を確認できます。)\n\n#市区町村訪問ポイント\nhttps://hanishina.net/maps/visitlevel.html?list=" + code);
     }else{
-        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n\n#市区町村訪問ポイント\nhttps://hanishina.github.io/maps/visitlevel.html");
+        $("#shareContent").html("私の市区町村訪問ポイントは "+point+" ptです。\n\n#市区町村訪問ポイント\nhttps://hanishina.net/maps/visitlevel.html");
     }
 }
 
