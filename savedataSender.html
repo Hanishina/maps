@@ -2,10 +2,15 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         if(window.parent == null || window.parent == window){
             let item = {a: "aaa", b: "bbb"};
             localStorage.setItem("test", JSON.stringify(item));
+            window.onload = function(){
+                $("<div>").text(localStorage.getItem("calc_saveData")).appendTo(document.body);
+                $("<div>").text(localStorage.getItem("visitlevel_saveData")).appendTo(document.body);
+            }
             console.log(localStorage.getItem("calc_saveData"));
             console.log(localStorage.getItem("visitlevel_saveData"));
         }else{
