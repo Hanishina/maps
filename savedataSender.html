@@ -6,7 +6,8 @@
         if(window.parent == null || window.parent == window){
             let item = {a: "aaa", b: "bbb"};
             localStorage.setItem("test", JSON.stringify(item));
-            console.log(localStorage.getItem("test"));
+            console.log(localStorage.getItem("calc_saveData"));
+            console.log(localStorage.getItem("visitlevel_saveData"));
         }else{
             const calc_data = localStorage.getItem("calc_saveData");
             const visit_data = localStorage.getItem("visitlevel_saveData");
